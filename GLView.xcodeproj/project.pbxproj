@@ -1,0 +1,350 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0116539113C8FD7600942540 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539013C8FD7600942540 /* UIKit.framework */; };
+		0116539313C8FD7600942540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539213C8FD7600942540 /* Foundation.framework */; };
+		0116539513C8FD7600942540 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539413C8FD7600942540 /* CoreGraphics.framework */; };
+		0116539713C8FD7600942540 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539613C8FD7600942540 /* QuartzCore.framework */; };
+		0116539913C8FD7600942540 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539813C8FD7600942540 /* OpenGLES.framework */; };
+		016B4BCE13CB825000A06541 /* GLViewExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BB513CB825000A06541 /* GLViewExampleController.xib */; };
+		016B4BD013CB825000A06541 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BB913CB825000A06541 /* MainWindow.xib */; };
+		016B4BD213CB825000A06541 /* GLViewExampleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BBE13CB825000A06541 /* GLViewExampleAppDelegate.m */; };
+		016B4BD313CB825000A06541 /* GLViewExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BC013CB825000A06541 /* GLViewExampleController.m */; };
+		016B4BD413CB825000A06541 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BC213CB825000A06541 /* logo.png */; };
+		016B4BD513CB825000A06541 /* logo.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BC313CB825000A06541 /* logo.pvr */; };
+		016B4BD613CB825000A06541 /* logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BC413CB825000A06541 /* logo@2x.png */; };
+		016B4BD713CB825000A06541 /* logo@2x.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BC513CB825000A06541 /* logo@2x.pvr */; };
+		016B4BD813CB825000A06541 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BC613CB825000A06541 /* main.m */; };
+		016B4BD913CB825000A06541 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BC913CB825000A06541 /* GLImage.m */; };
+		016B4BDA13CB825000A06541 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BCB13CB825000A06541 /* GLImageView.m */; };
+		016B4BDB13CB825000A06541 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BCD13CB825000A06541 /* GLView.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0116538C13C8FD7600942540 /* GLView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GLView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0116539013C8FD7600942540 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		0116539213C8FD7600942540 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		0116539413C8FD7600942540 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		0116539613C8FD7600942540 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		0116539813C8FD7600942540 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		016B4BB613CB825000A06541 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GLViewExampleController.xib; sourceTree = "<group>"; };
+		016B4BB813CB825000A06541 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		016B4BBA13CB825000A06541 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		016B4BBB13CB825000A06541 /* GLView-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GLView-Info.plist"; sourceTree = "<group>"; };
+		016B4BBC13CB825000A06541 /* GLView-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GLView-Prefix.pch"; sourceTree = "<group>"; };
+		016B4BBD13CB825000A06541 /* GLViewExampleAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLViewExampleAppDelegate.h; path = GLViewExample/GLViewExampleAppDelegate.h; sourceTree = SOURCE_ROOT; };
+		016B4BBE13CB825000A06541 /* GLViewExampleAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GLViewExampleAppDelegate.m; path = GLViewExample/GLViewExampleAppDelegate.m; sourceTree = SOURCE_ROOT; };
+		016B4BBF13CB825000A06541 /* GLViewExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLViewExampleController.h; path = GLViewExample/GLViewExampleController.h; sourceTree = SOURCE_ROOT; };
+		016B4BC013CB825000A06541 /* GLViewExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GLViewExampleController.m; path = GLViewExample/GLViewExampleController.m; sourceTree = SOURCE_ROOT; };
+		016B4BC213CB825000A06541 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		016B4BC313CB825000A06541 /* logo.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = logo.pvr; sourceTree = "<group>"; };
+		016B4BC413CB825000A06541 /* logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo@2x.png"; sourceTree = "<group>"; };
+		016B4BC513CB825000A06541 /* logo@2x.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = "logo@2x.pvr"; sourceTree = "<group>"; };
+		016B4BC613CB825000A06541 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		016B4BC813CB825000A06541 /* GLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImage.h; sourceTree = "<group>"; };
+		016B4BC913CB825000A06541 /* GLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImage.m; sourceTree = "<group>"; };
+		016B4BCA13CB825000A06541 /* GLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImageView.h; sourceTree = "<group>"; };
+		016B4BCB13CB825000A06541 /* GLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImageView.m; sourceTree = "<group>"; };
+		016B4BCC13CB825000A06541 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
+		016B4BCD13CB825000A06541 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0116538913C8FD7600942540 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0116539113C8FD7600942540 /* UIKit.framework in Frameworks */,
+				0116539313C8FD7600942540 /* Foundation.framework in Frameworks */,
+				0116539513C8FD7600942540 /* CoreGraphics.framework in Frameworks */,
+				0116539713C8FD7600942540 /* QuartzCore.framework in Frameworks */,
+				0116539913C8FD7600942540 /* OpenGLES.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0116538113C8FD7600942540 = {
+			isa = PBXGroup;
+			children = (
+				016B4BC713CB825000A06541 /* GLView */,
+				016B4BB413CB825000A06541 /* GLViewExample */,
+				0116538F13C8FD7600942540 /* Frameworks */,
+				0116538D13C8FD7600942540 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0116538D13C8FD7600942540 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0116538C13C8FD7600942540 /* GLView.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0116538F13C8FD7600942540 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0116539013C8FD7600942540 /* UIKit.framework */,
+				0116539213C8FD7600942540 /* Foundation.framework */,
+				0116539413C8FD7600942540 /* CoreGraphics.framework */,
+				0116539613C8FD7600942540 /* QuartzCore.framework */,
+				0116539813C8FD7600942540 /* OpenGLES.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		016B4BB413CB825000A06541 /* GLViewExample */ = {
+			isa = PBXGroup;
+			children = (
+				016B4BDC13CB831700A06541 /* Classes */,
+				016B4BDD13CB833500A06541 /* Nibs */,
+				016B4BC113CB825000A06541 /* Images */,
+				016B4BB713CB825000A06541 /* InfoPlist.strings */,
+				016B4BBB13CB825000A06541 /* GLView-Info.plist */,
+				016B4BBC13CB825000A06541 /* GLView-Prefix.pch */,
+				016B4BC613CB825000A06541 /* main.m */,
+			);
+			path = GLViewExample;
+			sourceTree = "<group>";
+		};
+		016B4BC113CB825000A06541 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				016B4BC213CB825000A06541 /* logo.png */,
+				016B4BC313CB825000A06541 /* logo.pvr */,
+				016B4BC413CB825000A06541 /* logo@2x.png */,
+				016B4BC513CB825000A06541 /* logo@2x.pvr */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		016B4BC713CB825000A06541 /* GLView */ = {
+			isa = PBXGroup;
+			children = (
+				016B4BC813CB825000A06541 /* GLImage.h */,
+				016B4BC913CB825000A06541 /* GLImage.m */,
+				016B4BCA13CB825000A06541 /* GLImageView.h */,
+				016B4BCB13CB825000A06541 /* GLImageView.m */,
+				016B4BCC13CB825000A06541 /* GLView.h */,
+				016B4BCD13CB825000A06541 /* GLView.m */,
+			);
+			path = GLView;
+			sourceTree = "<group>";
+		};
+		016B4BDC13CB831700A06541 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				016B4BBD13CB825000A06541 /* GLViewExampleAppDelegate.h */,
+				016B4BBE13CB825000A06541 /* GLViewExampleAppDelegate.m */,
+				016B4BBF13CB825000A06541 /* GLViewExampleController.h */,
+				016B4BC013CB825000A06541 /* GLViewExampleController.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		016B4BDD13CB833500A06541 /* Nibs */ = {
+			isa = PBXGroup;
+			children = (
+				016B4BB513CB825000A06541 /* GLViewExampleController.xib */,
+				016B4BB913CB825000A06541 /* MainWindow.xib */,
+			);
+			name = Nibs;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0116538B13C8FD7600942540 /* GLView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 011653B813C8FD7800942540 /* Build configuration list for PBXNativeTarget "GLView" */;
+			buildPhases = (
+				0116538813C8FD7600942540 /* Sources */,
+				0116538913C8FD7600942540 /* Frameworks */,
+				0116538A13C8FD7600942540 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GLView;
+			productName = GLView;
+			productReference = 0116538C13C8FD7600942540 /* GLView.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0116538313C8FD7600942540 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 0116538613C8FD7600942540 /* Build configuration list for PBXProject "GLView" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0116538113C8FD7600942540;
+			productRefGroup = 0116538D13C8FD7600942540 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0116538B13C8FD7600942540 /* GLView */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0116538A13C8FD7600942540 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				016B4BCE13CB825000A06541 /* GLViewExampleController.xib in Resources */,
+				016B4BD013CB825000A06541 /* MainWindow.xib in Resources */,
+				016B4BD413CB825000A06541 /* logo.png in Resources */,
+				016B4BD513CB825000A06541 /* logo.pvr in Resources */,
+				016B4BD613CB825000A06541 /* logo@2x.png in Resources */,
+				016B4BD713CB825000A06541 /* logo@2x.pvr in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0116538813C8FD7600942540 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				016B4BD213CB825000A06541 /* GLViewExampleAppDelegate.m in Sources */,
+				016B4BD313CB825000A06541 /* GLViewExampleController.m in Sources */,
+				016B4BD813CB825000A06541 /* main.m in Sources */,
+				016B4BD913CB825000A06541 /* GLImage.m in Sources */,
+				016B4BDA13CB825000A06541 /* GLImageView.m in Sources */,
+				016B4BDB13CB825000A06541 /* GLView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		016B4BB513CB825000A06541 /* GLViewExampleController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				016B4BB613CB825000A06541 /* en */,
+			);
+			name = GLViewExampleController.xib;
+			sourceTree = "<group>";
+		};
+		016B4BB713CB825000A06541 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				016B4BB813CB825000A06541 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		016B4BB913CB825000A06541 /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				016B4BBA13CB825000A06541 /* en */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		011653B613C8FD7800942540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		011653B713C8FD7800942540 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		011653B913C8FD7800942540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GLViewExample/GLView-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				INFOPLIST_FILE = "GLViewExample/GLView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		011653BA13C8FD7800942540 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GLViewExample/GLView-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				INFOPLIST_FILE = "GLViewExample/GLView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0116538613C8FD7600942540 /* Build configuration list for PBXProject "GLView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				011653B613C8FD7800942540 /* Debug */,
+				011653B713C8FD7800942540 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		011653B813C8FD7800942540 /* Build configuration list for PBXNativeTarget "GLView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				011653B913C8FD7800942540 /* Debug */,
+				011653BA13C8FD7800942540 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0116538313C8FD7600942540 /* Project object */;
+}
