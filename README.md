@@ -144,14 +144,14 @@ As stated previously, these files will appear like heavily compressed JPEG image
 
 The typical TexturePacker settings you will want to use are one of the following:
 
-	TexturePacker --disable-rotation --no-trim --opt RGBA8888 logo@2x.png --sheet logo@2x.pvr
+	TexturePacker --disable-rotation --no-trim --opt RGBA8888 {input_file_name}.png --sheet {output_file_name}.pvr
 	
 This creates a 32-bit maximum-quality PVR image with alpha transparency.
 
-	TexturePacker --disable-rotation --no-trim --dither-fs-alpha --opt RGBA4444 logo@2x.png --sheet logo@2x.pvr
+	TexturePacker --disable-rotation --no-trim --dither-fs-alpha --opt RGBA4444 {input_file_name}.png --sheet {output_file_name}.pvr
 	
 This creates a 16-bit dithered PVR image with alpha transparency.
 
-	TexturePacker --disable-rotation --no-trim --dither-fs --opt RGB565 logo@2x.png --sheet logo@2x.pvr
+	TexturePacker --disable-rotation --no-trim --dither-fs --opt RGB565 {input_file_name}.png --sheet {output_file_name}.pvr
 	
 This creates an opaque 16-bit dithered PVR image without alpha transparency.
