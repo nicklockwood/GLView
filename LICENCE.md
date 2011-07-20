@@ -1,7 +1,9 @@
 GLView
-version 1.0, July 11th, 2011
+version 1.1, July 20th, 2011
 
 Copyright (C) 2011 Charcoal Design
+
+Water droplet video courtesy of http://www.stockfootageforfree.com
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages

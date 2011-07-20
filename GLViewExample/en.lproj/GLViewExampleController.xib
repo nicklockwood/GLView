@@ -44,7 +44,7 @@
 					<object class="IBUIView" id="264447310">
 						<reference key="NSNextResponder" ref="184854543"/>
 						<int key="NSvFlags">293</int>
-						<string key="NSFrame">{{96, 70}, {128, 128}}</string>
+						<string key="NSFrame">{{96, 36}, {128, 128}}</string>
 						<reference key="NSSuperview" ref="184854543"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1049560432"/>
@@ -57,14 +57,14 @@
 					<object class="IBUIView" id="1049560432">
 						<reference key="NSNextResponder" ref="184854543"/>
 						<int key="NSvFlags">269</int>
-						<string key="NSFrame">{{96, 258}, {128, 128}}</string>
+						<string key="NSFrame">{{96, 248}, {128, 128}}</string>
 						<reference key="NSSuperview" ref="184854543"/>
 						<reference key="NSWindow"/>
 						<reference key="IBUIBackgroundColor" ref="373070095"/>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 				</object>
-				<string key="NSFrameSize">{320, 460}</string>
+				<string key="NSFrame">{{0, 20}, {320, 411}}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="264447310"/>
@@ -73,6 +73,8 @@
 					<bytes key="NSWhite">MC43OTQzNTQ4Mzg3AA</bytes>
 				</object>
 				<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
+				<object class="IBUISimulatedStatusBarMetrics" key="IBUISimulatedStatusBarMetrics"/>
+				<object class="IBUISimulatedTabBarMetrics" key="IBUISimulatedBottomBarMetrics"/>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 			</object>
 		</object>

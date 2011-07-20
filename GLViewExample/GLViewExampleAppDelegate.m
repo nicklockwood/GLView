@@ -10,7 +10,6 @@
 
 @implementation GLViewExampleAppDelegate
 
-
 @synthesize window;
 @synthesize viewController;
 
