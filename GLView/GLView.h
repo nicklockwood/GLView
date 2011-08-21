@@ -7,7 +7,7 @@
 //  Get the latest version from either of these locations:
 //
 //  http://charcoaldesign.co.uk/source/cocoa#glview
-//  https://github.com/demosthenese/GLView
+//  https://github.com/nicklockwood/GLView
 //
 //  This software is provided 'as-is', without any express or implied
 //  warranty.  In no event will the authors be held liable for any damages
