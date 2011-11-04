@@ -1,5 +1,5 @@
 GLView
-version 1.1, July 20th, 2011
+version 1.1.1, November 4th, 2011
 
 Copyright (C) 2011 Charcoal Design
 

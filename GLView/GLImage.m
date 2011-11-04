@@ -1,5 +1,6 @@
 //
 //  GLImage.m
+//  Version 1.1.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design. All rights reserved.
@@ -21,8 +22,10 @@
 //  claim that you wrote the original software. If you use this software
 //  in a product, an acknowledgment in the product documentation would be
 //  appreciated but is not required.
+//
 //  2. Altered source versions must be plainly marked as such, and must not be
 //  misrepresented as being the original software.
+//
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
@@ -40,16 +43,16 @@ typedef struct
 	GLuint headerSize;
 	GLuint height;
 	GLuint width;
-	GLuint numMipmaps;
-	GLuint pfFlags;
+	GLuint mipmapCount;
+	GLuint pixelFormatFlags;
 	GLuint textureDataSize;
 	GLuint bitCount; 
-	GLuint rBitMask;
-	GLuint gBitMask;
-	GLuint bBitMask;
+	GLuint redBitMask;
+	GLuint greenBitMask;
+	GLuint blueBitMask;
 	GLuint alphaBitMask;
-	GLuint pvr;
-	GLuint numSurfs;
+	GLuint magicNumber;
+	GLuint surfaceCount;
 }
 PVRTextureHeader;
 
@@ -205,7 +208,7 @@ static NSMutableDictionary *imageCache = nil;
     {
         if ((self = [super init]))
         {
-            //get scale factor
+			//get scale factor
             NSString *scaleSuffix = [[self class] scaleSuffixForImagePath:path];
             scale = scaleSuffix? [[scaleSuffix substringWithRange:NSMakeRange(1, 1)] floatValue]: 1.0;
         
@@ -215,6 +218,14 @@ static NSMutableDictionary *imageCache = nil;
             //parse header
             PVRTextureHeader *header = (PVRTextureHeader *)[data bytes];
 
+			//check magic number
+			if (CFSwapInt32HostToBig(header->magicNumber) != 'PVR!')
+			{
+				NSLog(@"PVR image data was not in a recognised format, or is missing header information");
+				[self release];
+				return nil;
+			}
+			
             //dimensions
             GLint width = header->width;
             GLint height = header->height;
@@ -227,7 +238,7 @@ static NSMutableDictionary *imageCache = nil;
             GLuint format;
             premultipliedAlpha = NO;
             BOOL hasAlpha = header->alphaBitMask;
-            switch (header->pfFlags & 0xff)
+            switch (header->pixelFormatFlags & 0xff)
             {
                 case OGL_RGB_565:
                 {
@@ -291,7 +302,7 @@ static NSMutableDictionary *imageCache = nil;
                 }
                 default:
                 {
-                    NSLog(@"Unrecognised PVR image format: %i", header->pfFlags & 0xff);
+                    NSLog(@"Unrecognised PVR image format: %i", header->pixelFormatFlags & 0xff);
                     [self release];
                     return nil;
                 }

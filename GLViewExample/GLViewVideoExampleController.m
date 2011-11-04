@@ -29,6 +29,8 @@
 	
 	//add frames to image view
     videoView.animationImages = frames;
+	
+	//auto-play
 	[videoView startAnimating];
 }
 

@@ -6,6 +6,16 @@ GLView is a collection of classes designed to make it as easy as possible to get
 Specifically, the GLImage and GLImageView classes make it possible to load and display PVR formatted images and video clips in your app without needing to know any OpenGL whatsoever. See more about PVR images and video below.
 
 
+Supported iOS & SDK Versions
+-----------------------------
+
+* Supported build target - iOS 5.0 (Xcode 4.2)
+* Earliest supported deployment target - iOS 4.0 (Xcode 4.2)
+* Earliest compatible deployment target - iOS 4.0
+
+NOTE: 'Supported' means that the library has been tested with this version. 'Compatible' means that the library should work on this iOS version (i.e. it doesn't rely on any unavailable SDK features) but is no longer being tested for compatibility and may require tweaking or bug fixes to run correctly.
+
+
 Installation
 ---------------
 
