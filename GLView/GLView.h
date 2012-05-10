@@ -1,10 +1,13 @@
 //
 //  GLView.h
-//  Version 1.1.1
+//
+//  GLView Project
+//  Version 1.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
-//  Copyright 2011 Charcoal Design. All rights reserved.
+//  Copyright 2011 Charcoal Design
 //
+//  Distributed under the permissive zlib License
 //  Get the latest version from either of these locations:
 //
 //  http://charcoaldesign.co.uk/source/cocoa#glview
@@ -30,11 +33,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GLARCHelper.h"
 
 
 @interface GLView : UIView
 
+@property (nonatomic, assign) CGFloat fov;
+@property (nonatomic, assign) CGFloat near;
+@property (nonatomic, assign) CGFloat far;
+
+- (void)setUp;
 - (void)bindFramebuffer;
 - (BOOL)presentFramebuffer;
+
+@property (nonatomic, assign) NSTimeInterval elapsedTime;
+
+- (void)startAnimating;
+- (void)stopAnimating;
+- (BOOL)isAnimating;
+- (void)step:(NSTimeInterval)dt;
 
 @end

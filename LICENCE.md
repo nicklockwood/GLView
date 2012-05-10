@@ -1,9 +1,12 @@
 GLView
-version 1.1.1, November 4th, 2011
+
+version 1.2, May 10th, 2011
 
 Copyright (C) 2011 Charcoal Design
 
-Water droplet video courtesy of http://www.stockfootageforfree.com
+* Water droplet video courtesy of http://www.stockfootageforfree.com
+* Demon model courtesy of Apple iPhoneGLEssentials example project
+* Chair model courtesy of http://opengameart.org
 
 This software is provided 'as-is', without any express or implied
 warranty.  In no event will the authors be held liable for any damages
@@ -17,6 +20,8 @@ freely, subject to the following restrictions:
    claim that you wrote the original software. If you use this software
    in a product, an acknowledgment in the product documentation would be
    appreciated but is not required.
+
 2. Altered source versions must be plainly marked as such, and must not be
    misrepresented as being the original software.
+
 3. This notice may not be removed or altered from any source distribution.

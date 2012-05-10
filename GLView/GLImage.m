@@ -1,10 +1,13 @@
 //
 //  GLImage.m
-//  Version 1.1.1
+//
+//  GLView Project
+//  Version 1.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
-//  Copyright 2011 Charcoal Design. All rights reserved.
+//  Copyright 2011 Charcoal Design
 //
+//  Distributed under the permissive zlib License
 //  Get the latest version from either of these locations:
 //
 //  http://charcoaldesign.co.uk/source/cocoa#glview
@@ -34,41 +37,39 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 
 
 typedef struct
 {
-	GLuint headerSize;
-	GLuint height;
-	GLuint width;
-	GLuint mipmapCount;
-	GLuint pixelFormatFlags;
-	GLuint textureDataSize;
-	GLuint bitCount; 
-	GLuint redBitMask;
-	GLuint greenBitMask;
-	GLuint blueBitMask;
-	GLuint alphaBitMask;
-	GLuint magicNumber;
-	GLuint surfaceCount;
+    GLuint headerSize;
+    GLuint height;
+    GLuint width;
+    GLuint mipmapCount;
+    GLuint pixelFormatFlags;
+    GLuint textureDataSize;
+    GLuint bitCount; 
+    GLuint redBitMask;
+    GLuint greenBitMask;
+    GLuint blueBitMask;
+    GLuint alphaBitMask;
+    GLuint magicNumber;
+    GLuint surfaceCount;
 }
 PVRTextureHeader;
 
 
 typedef enum
 {
-	OGL_RGBA_4444 = 0x10,
-	OGL_RGBA_5551,
-	OGL_RGBA_8888,
-	OGL_RGB_565,
-	OGL_RGB_555,
-	OGL_RGB_888,
-	OGL_I_8,
-	OGL_AI_88,
-	OGL_PVRTC2,
-	OGL_PVRTC4
+    OGL_RGBA_4444 = 0x10,
+    OGL_RGBA_5551,
+    OGL_RGBA_8888,
+    OGL_RGB_565,
+    OGL_RGB_555,
+    OGL_RGB_888,
+    OGL_I_8,
+    OGL_AI_88,
+    OGL_PVRTC2,
+    OGL_PVRTC4
 }
 PVRPixelType;
 
@@ -91,7 +92,6 @@ PVRPixelType;
 
 #pragma mark -
 #pragma mark Utils
-
 
 + (NSString *)scaleSuffixForImagePath:(NSString *)nameOrPath
 {
@@ -144,27 +144,11 @@ PVRPixelType;
 #pragma mark -
 #pragma mark Caching
 
-static NSMutableDictionary *imageCache = nil;
+static NSCache *imageCache = nil;
 
 + (void)initialize
 {
-    imageCache = [[NSMutableDictionary alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(flushCache)
-                                                 name:UIApplicationDidReceiveMemoryWarningNotification
-                                               object:nil];
-}
-
-+ (void)flushCache
-{
-    for (NSString *key in [imageCache allKeys])
-    {
-        GLImage *image = [imageCache objectForKey:key];
-        if ([image retainCount] == 1)
-        {
-            [imageCache removeObjectForKey:key];
-        }
-    }
+    imageCache = [[NSCache alloc] init];
 }
 
 + (GLImage *)imageNamed:(NSString *)name
@@ -185,47 +169,61 @@ static NSMutableDictionary *imageCache = nil;
     }
     return image;
 }
-            
-            
+
+
 #pragma mark -
 #pragma mark Loading
 
 + (GLImage *)imageWithContentsOfFile:(NSString *)path
 {
-    return [[[self alloc] initWithContentsOfFile:path] autorelease];
+    return AH_AUTORELEASE([[self alloc] initWithContentsOfFile:path]);
 }
 
 + (GLImage *)imageWithUIImage:(UIImage *)image
 {
-    return [[[self alloc] initWithUIImage:image] autorelease];
+    return AH_AUTORELEASE([[self alloc] initWithUIImage:image]);
 }
 
 - (GLImage *)initWithContentsOfFile:(NSString *)path
 {
     path = [[self class] normalisedImagePath:path];
-	NSString *extension = [[path pathExtension] lowercaseString];
+    NSString *extension = [[path pathExtension] lowercaseString];
     if ([extension isEqualToString:@"pvr"] || [extension isEqualToString:@"pvrtc"])
     {
         if ((self = [super init]))
         {
-			//get scale factor
+            //get scale factor
             NSString *scaleSuffix = [[self class] scaleSuffixForImagePath:path];
             scale = scaleSuffix? [[scaleSuffix substringWithRange:NSMakeRange(1, 1)] floatValue]: 1.0;
-        
+            
             //load data
-            NSData *data = [[NSData alloc] initWithContentsOfFile:path];
+            NSData *data = [NSData dataWithContentsOfFile:path];
+            if (!data)
+            {
+                //bail early before something bad happens
+                AH_RELEASE(self);
+                return nil;
+            }
+            
+            if ([data length] < sizeof(PVRTextureHeader))
+            {
+                //can't be correct file type
+                NSLog(@"PVR image data was not in a recognised format, or is missing header information");
+                AH_RELEASE(self);
+                return nil;
+            }
             
             //parse header
             PVRTextureHeader *header = (PVRTextureHeader *)[data bytes];
-
-			//check magic number
-			if (CFSwapInt32HostToBig(header->magicNumber) != 'PVR!')
-			{
-				NSLog(@"PVR image data was not in a recognised format, or is missing header information");
-				[self release];
-				return nil;
-			}
-			
+            
+            //check magic number
+            if (CFSwapInt32HostToBig(header->magicNumber) != 'PVR!')
+            {
+                NSLog(@"PVR image data was not in a recognised format, or is missing header information");
+                AH_RELEASE(self);
+                return nil;
+            }
+            
             //dimensions
             GLint width = header->width;
             GLint height = header->height;
@@ -275,13 +273,13 @@ static NSMutableDictionary *imageCache = nil;
                 case OGL_I_8:
                 {
                     NSLog(@"I8 PVR format is not currently supported");
-                    [self release];
+                    AH_RELEASE(self);
                     return nil;
                 }
                 case OGL_AI_88:
                 {
                     NSLog(@"AI88 PVR format is not currently supported");
-                    [self release];
+                    AH_RELEASE(self);
                     return nil;
                 }
                 case OGL_PVRTC2:
@@ -303,14 +301,14 @@ static NSMutableDictionary *imageCache = nil;
                 default:
                 {
                     NSLog(@"Unrecognised PVR image format: %i", header->pixelFormatFlags & 0xff);
-                    [self release];
+                    AH_RELEASE(self);
                     return nil;
                 }
             }
             
             //bind context
             [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
-
+            
             //create texture
             glGenTextures(1, &texture);
             glBindTexture(GL_TEXTURE_2D, texture);
@@ -327,9 +325,6 @@ static NSMutableDictionary *imageCache = nil;
                 glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type,
                              [data bytes] + header->headerSize);
             }
-            
-            //release image data
-            [data release];
         }
         return self;
     }
@@ -371,7 +366,7 @@ static NSMutableDictionary *imageCache = nil;
         {
             [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
         }
-
+        
         //create texture
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -385,19 +380,23 @@ static NSMutableDictionary *imageCache = nil;
     }
     return self;
 }
-                                 
+
 - (void)dealloc
 {     
     glDeleteTextures(1, &texture); 
-    [super dealloc];
+    AH_SUPER_DEALLOC;
 }
-        
-            
+
+
 #pragma mark -
 #pragma mark Drawing
 
 - (void)bindTexture
 {
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(premultipliedAlpha? GL_ONE: GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
     glBindTexture(GL_TEXTURE_2D, texture);
 }
 
@@ -418,19 +417,20 @@ static NSMutableDictionary *imageCache = nil;
     
     GLfloat texCoords[] =
     {
-        0, 0, 1, 0, 1, 1, 0, 1
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f
     };
     
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glBlendFunc(premultipliedAlpha? GL_ONE: GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    [self bindTexture];
     
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    
     glVertexPointer(2, GL_FLOAT, 0, vertices);
+    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 }
 

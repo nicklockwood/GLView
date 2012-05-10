@@ -16,6 +16,12 @@ Supported iOS & SDK Versions
 NOTE: 'Supported' means that the library has been tested with this version. 'Compatible' means that the library should work on this iOS version (i.e. it doesn't rely on any unavailable SDK features) but is no longer being tested for compatibility and may require tweaking or bug fixes to run correctly.
 
 
+ARC Compatibility
+------------------
+
+GLView makes use of the ARC Helper library to automatically work with both ARC and non-ARC projects through conditional compilation. There is no need to exclude GLView files from the ARC validation process, or to convert GLView using the ARC conversion tool.
+
+
 Installation
 ---------------
 
@@ -33,11 +39,42 @@ The GLView library currently includes the following classes:
 
 - GLImageView - this is a subclass of GLView, specifically designed for displaying GLImages. It behaves in a similar way to UIImageView and mostly mirrors its interface.
 
+- GLModel - this is a class for loading 3D mesh geometry for rendering in a GLView. It currently supports Wavefront .obj files and the bespoke model format used in the Apple OpenGL sample code. It will support additional formats in future.
+
+- GLModelView - this is a subclass of GLView, specifically designed for displaying GLModels as simply and easily as possible.
+
+
+- UIColor+GL - this is a category on UIColor that makes it easier to convert UIKit color values for use with OpenGL.
+
+
+GLView properties
+----------------
+
+    @property (nonatomic, assign) CGFloat fov;
+
+This is the field of view, in radians. This defaults to zero, which gives an orthographic projection (no perspective) but set it to around Pi/2 (90 degrees) for a perspective projection.
+
+    @property (nonatomic, assign) CGFloat near;
+
+The near clipping plane. This is used by OpenGL to clip geometry that is too close to the camera. In orthographic projection mode, this value can be negative, but in perspective mode the value must be greater than zero.
+
+    @property (nonatomic, assign) CGFloat far;
+
+The far clipping plane. This is used by OpenGL to clip geometry that is too far from the camera. A smaller value for the far plane improves the precision of the z-buffer and reduces rendering artifacts, so try to set this value as low as possible (Note: it must be larger than the near value).
+
+    @property (nonatomic, assign) NSTimeInterval elapsedTime;
+
+This property is used when animating the view. It indicates the total animation time elapsed since the startAnimating method was first called. It is not reset when stop is called, but you can reset it manually at any time as it is a read/write property.
+
 
 GLView methods
 ----------------
 
 GLView has the following methods:
+
+    - (void)setUp
+    
+Called by `initWithCoder: and `initWithFrame:` to initialise the view. Override this method to do setup code in your own GLView subclasses. Remember to call [super setUp] or the view won't work properly.
 
 	- (void)bindFramebuffer;
 
@@ -46,6 +83,22 @@ Call this method to bind the GLView before attempting any drawing using OpenGL c
 	- (BOOL)presentFramebuffer;
 
 Call this method to update the view and display the result of any previous drawing commands. This would typically be called at the end of a drawing loop.
+
+    - (void)startAnimating;
+    
+Begin animating the view. This will cause the `step:` method to be called repeatedly every 60th second, allowing you to do frame-by-frame animation of your OpenGL geometry.
+    
+    - (void)stopAnimating;
+    
+Pauses the animation. The elapsedTime property is not automatically reset so calling `startAnimating` again will resume the animation from the point at which it stopped.
+    
+    - (BOOL)isAnimating;
+    
+Returns YES if the view is currently animating and NO if it isn't.
+    
+    - (void)step:(NSTimeInterval)dt;
+
+This method is called every 60th of a second while the view is animating. The dt paramater is the time (in seconds) since the last step (this will usually be ~1/60 seconds depending on the complexity of your rendering code and device performance). The default implementation does nothing, but you can override this method to create your own animation logic.
 
 
 GLImage properties
@@ -57,7 +110,7 @@ The size of the image, in points. As with UIImage, on a retina display device th
 	
 	@property (nonatomic, readonly) CGFloat scale;
 
-The image scale. For @2x images on retina display devices this will have a value of 2.0. On iOS3.x this will always return 1.0;
+The image scale. For @2x images on Retina display devices this will have a value of 2.0. On iOS3.x this will always return 1.0;
 
 
 GLImage methods
@@ -99,9 +152,13 @@ GLImageView properties
 
 The GLImage view has the following properties:
 
-	@property (nonatomic, retain) GLImage *image;
+	@property (nonatomic, strong) GLImage *image;
 
 This is used to set and display a GLImage within the view. The standard UIView `contentMode` property is respected when drawing the image, in terms of how it is cropped, stretched and positioned within the view.
+
+    @property (nonatomic, strong) UIColor *blendColor;
+    
+An (optional) color to blend with the image before it is rendered. This can be used to tint the image, or modify its opacity, etc. Defaults to white.
 
 	@property (nonatomic, copy) NSArray *animationImages;
 	
@@ -125,15 +182,64 @@ This method creates a GLImageView containing the specified image and sets the vi
 
 	- (void)startAnimating;
 	
-This method starts the `animationImages` sequence. Playback always starts from the first frame. Calling play when the animation is already playing will start it again from the beginning.
+Inherited from GLView, this method starts the `animationImages` sequence. Playback always starts from the first frame. Calling play when the animation is already playing will start it again from the beginning.
 	
-- (void)stopAnimating;
+    - (void)stopAnimating;
 
 This method stops the animation sequence. Once stopped, the sequence can not be resumed, only started again from the beginning.
 
-- (BOOL)isAnimating;
+    - (BOOL)isAnimating;
 
 This method returns YES if the `animationImages` sequence is currently playing.
+
+
+GLModel methods
+--------------------
+
+    + (GLModel *)modelWithContentsOfFile:(NSString *)path;
+    - (GLModel *)initWithContentsOfFile:(NSString *)path;
+    
+These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple binar model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way.
+	
+    - (void)draw;
+
+Renders the model in the current GLView.  In practice you may wish to configure the OpenGL state fro the model before calling draw, e.g. by setting a texture image to use for the rendering. See the GLModelView `layoutSubviews` method for an example.
+
+
+GLModelView properties
+-----------------------
+
+    @property (nonatomic, strong) GLModel *model;
+    
+The model that will be rendered by the view.
+    
+    @property (nonatomic, strong) GLImage *texture;
+    
+A GLImage that will be used to texture the model. The model must have texture coordinates defined in order for the texture to be applied correctly.
+    
+    @property (nonatomic, strong) UIColor *blendColor;
+    
+A color to blend with the model texture. This can be used to tint the model or modify its opacity. If no texture image is specified, the model will be flat-shaded in this color.
+    
+    @property (nonatomic, assign) CATransform3D transform;
+    
+A 3D transform to apply to the model. This can be used to center, scale or rotate the model to fit the view frame. See the example project for how this can be used.
+
+
+UIColor+GL methods
+---------------------
+
+    - (void)getGLComponents:(GLfloat *)rgba;
+    
+Pass in a pointer to an array of four GLfloats and this method will populate them with the red, green, blue and alpha components of the UIColor. Works with monochromatic and RGB UIColors, but will fail if the color contains a pattern image, or some other unsupported color format.
+    
+    - (void)bindGLClearColor;
+
+Binds the UIColor as the current OpenGL clear color.
+    
+    - (void)bindGLBlendColor;
+    
+Binds the UIColor as the current OpenGL blend color.
 
 
 PVR images

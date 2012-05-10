@@ -1,10 +1,13 @@
 //
 //  GLImageView.m
-//  Version 1.1.1
+//
+//  GLView Project
+//  Version 1.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
-//  Copyright 2011 Charcoal Design. All rights reserved.
+//  Copyright 2011 Charcoal Design
 //
+//  Distributed under the permissive zlib License
 //  Get the latest version from either of these locations:
 //
 //  http://charcoaldesign.co.uk/source/cocoa#glview
@@ -32,16 +35,12 @@
 #import "GLImageView.h"
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
+#import "UIColor+GL.h"
 
 
 @interface GLImageView ()
 
-@property (nonatomic, assign) NSTimeInterval lastTime;
-@property (nonatomic, assign) NSTimeInterval elapsedTime;
-@property (nonatomic, assign) CADisplayLink *timer;
 @property (nonatomic, assign) id currentFrame;
 
 @end
@@ -50,12 +49,10 @@
 @implementation GLImageView
 
 @synthesize image;
+@synthesize blendColor;
 @synthesize animationImages;
 @synthesize animationDuration;
 @synthesize animationRepeatCount;
-@synthesize timer;
-@synthesize lastTime;
-@synthesize elapsedTime;
 @synthesize currentFrame;
 
 
@@ -63,7 +60,7 @@
 {
 	if ((self = [self initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)]))
 	{
-		image = [_image retain];
+		image = AH_RETAIN(_image);
 	}
 	return self;
 }
@@ -72,8 +69,8 @@
 {
     if (image != _image)
     {
-        [image release];
-        image = [_image retain];
+        AH_RELEASE(image);
+        image = AH_RETAIN(_image);
         [self setNeedsLayout];
     }
 }
@@ -83,48 +80,28 @@
 	if (animationImages != _animationImages)
 	{
 		[self stopAnimating];
-		[animationImages release];
+		AH_RELEASE(animationImages);
 		animationImages = [_animationImages copy];
 		animationDuration = [animationImages count] / 30.0;
 	}
 }
 
+#pragma mark Animation
+
 - (void)startAnimating
 {
 	if (animationImages)
 	{
-		lastTime = CACurrentMediaTime();
-		elapsedTime = 0;
-		if (!timer)
-		{
-			timer = [CADisplayLink displayLinkWithTarget:self selector:@selector(step)];
-			[timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-		}
+		[super startAnimating];
 	}
 }
 
-- (void)stopAnimating
+- (void)step:(NSTimeInterval)dt
 {
-	[timer invalidate];
-	timer = nil;
-}
-
-- (BOOL)isAnimating
-{
-	return timer != nil;
-}
-
-- (void)step
-{
-	//update time
-	NSTimeInterval currentTime = CACurrentMediaTime();
-	elapsedTime += currentTime - lastTime;
-	lastTime = currentTime;
-    
     //end animation?
-    if (animationRepeatCount > 0 && elapsedTime / animationDuration >= animationRepeatCount)
+    if (animationRepeatCount > 0 && self.elapsedTime / animationDuration >= animationRepeatCount)
     {
-        elapsedTime = animationDuration * animationRepeatCount - 0.001;
+        self.elapsedTime = animationDuration * animationRepeatCount - 0.001;
         [self stopAnimating];
     }
 	
@@ -132,7 +109,7 @@
 	NSInteger numberOfFrames = [animationImages count];
 	if (numberOfFrames)
 	{
-        NSInteger frameIndex = numberOfFrames * (elapsedTime / animationDuration);
+        NSInteger frameIndex = numberOfFrames * (self.elapsedTime / animationDuration);
 		id frame = [animationImages objectAtIndex:frameIndex % numberOfFrames];
 		if (frame != currentFrame)
 		{
@@ -170,6 +147,9 @@
     
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    //set blend color
+    [blendColor ?: [UIColor whiteColor] bindGLBlendColor];
 	
 	CGRect rect;
 	switch (self.contentMode)
@@ -270,9 +250,10 @@
 
 - (void)dealloc
 {
-    [image release];
-	[animationImages release];
-    [super dealloc];
+    AH_RELEASE(image);
+    AH_RELEASE(blendColor);
+	AH_RELEASE(animationImages);
+    AH_SUPER_DEALLOC;
 }
 
 @end

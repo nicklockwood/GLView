@@ -1,5 +1,5 @@
 //
-//  GLImage.h
+//  GLModel.h
 //
 //  GLView Project
 //  Version 1.2
@@ -32,27 +32,16 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import <UIKit/UIKit.h>
+
+#import <Foundation/Foundation.h>
 #import "GLARCHelper.h"
 
 
-#define DEFAULT_FILE_EXTENSION @"png"
+@interface GLModel : NSObject
 
++ (GLModel *)modelWithContentsOfFile:(NSString *)path;
+- (GLModel *)initWithContentsOfFile:(NSString *)path;
 
-@interface GLImage : NSObject
-
-@property (nonatomic, readonly) CGSize size;
-@property (nonatomic, readonly) CGFloat scale;
-
-+ (GLImage *)imageNamed:(NSString *)name;
-+ (GLImage *)imageWithContentsOfFile:(NSString *)path;
-+ (GLImage *)imageWithUIImage:(UIImage *)image;
-
-- (GLImage *)initWithContentsOfFile:(NSString *)path;
-- (GLImage *)initWithUIImage:(UIImage *)image;
-
-- (void)bindTexture;
-- (void)drawAtPoint:(CGPoint)point;
-- (void)drawInRect:(CGRect)rect;
+- (void)draw;
 
 @end

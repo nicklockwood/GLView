@@ -1,5 +1,5 @@
 //
-//  GLImage.h
+//  GLModelView.h
 //
 //  GLView Project
 //  Version 1.2
@@ -32,27 +32,18 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import <UIKit/UIKit.h>
+#import "GLView.h"
+#import "GLModel.h"
+#import "GLImage.h"
 #import "GLARCHelper.h"
+#import <QuartzCore/QuartzCore.h>
 
 
-#define DEFAULT_FILE_EXTENSION @"png"
+@interface GLModelView : GLView
 
-
-@interface GLImage : NSObject
-
-@property (nonatomic, readonly) CGSize size;
-@property (nonatomic, readonly) CGFloat scale;
-
-+ (GLImage *)imageNamed:(NSString *)name;
-+ (GLImage *)imageWithContentsOfFile:(NSString *)path;
-+ (GLImage *)imageWithUIImage:(UIImage *)image;
-
-- (GLImage *)initWithContentsOfFile:(NSString *)path;
-- (GLImage *)initWithUIImage:(UIImage *)image;
-
-- (void)bindTexture;
-- (void)drawAtPoint:(CGPoint)point;
-- (void)drawInRect:(CGRect)rect;
+@property (nonatomic, strong) GLModel *model;
+@property (nonatomic, strong) GLImage *texture;
+@property (nonatomic, strong) UIColor *blendColor;
+@property (nonatomic, assign) CATransform3D transform;
 
 @end

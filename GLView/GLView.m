@@ -1,10 +1,13 @@
 //
 //  GLView.m
-//  Version 1.1.1
+//
+//  GLView Project
+//  Version 1.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
-//  Copyright 2011 Charcoal Design. All rights reserved.
+//  Copyright 2011 Charcoal Design
 //
+//  Distributed under the permissive zlib License
 //  Get the latest version from either of these locations:
 //
 //  http://charcoaldesign.co.uk/source/cocoa#glview
@@ -33,17 +36,18 @@
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 
 
 @interface GLView ()
 
-@property (nonatomic, retain) EAGLContext *context;
+@property (nonatomic, strong) EAGLContext *context;
 @property (nonatomic, assign) GLint framebufferWidth;
 @property (nonatomic, assign) GLint framebufferHeight;
 @property (nonatomic, assign) GLuint defaultFramebuffer;
 @property (nonatomic, assign) GLuint colorRenderbuffer;
+@property (nonatomic, assign) GLuint depthRenderbuffer;
+@property (nonatomic, assign) NSTimeInterval lastTime;
+@property (nonatomic, assign) CADisplayLink *timer;
 
 - (void)createFramebuffer;
 - (void)deleteFramebuffer;
@@ -58,6 +62,24 @@
 @synthesize framebufferHeight;
 @synthesize defaultFramebuffer;
 @synthesize colorRenderbuffer;
+@synthesize depthRenderbuffer;
+@synthesize lastTime;
+@synthesize elapsedTime;
+@synthesize timer;
+@synthesize fov;
+@synthesize near;
+@synthesize far;
+
+- (void)dealloc
+{
+    [self deleteFramebuffer];
+    if ([EAGLContext currentContext] == context)
+    {
+        [EAGLContext setCurrentContext:nil];
+    }
+    AH_RELEASE(context);
+    AH_SUPER_DEALLOC;
+}
 
 + (EAGLContext *)sharedContext
 {
@@ -76,10 +98,7 @@
     return [CAEAGLLayer class];
 }
 
-#pragma mark -
-#pragma mark View lifecyle
-
-- (void)setup
+- (void)setUp
 {
     //set up layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
@@ -93,14 +112,19 @@
                                     sharegroup:[[self class] sharedContext].sharegroup];
     
     //create framebuffer
+    framebufferWidth = 0.0f;
+    framebufferHeight = 0.0f;
     [self createFramebuffer];
+	
+	//defaults
+	fov = 0.0f; //orthographic
 }
 
 - (id)initWithCoder:(NSCoder*)coder
 {
 	if ((self = [super initWithCoder:coder]))
     {
-        [self setup];
+        [self setUp];
     }
     return self;
 }
@@ -109,9 +133,27 @@
 {
 	if ((self = [super initWithFrame:frame]))
     {
-        [self setup];
+        [self setUp];
     }
     return self;
+}
+
+- (void)setFov:(CGFloat)_fov
+{
+	fov = _fov;
+	[self setNeedsLayout];
+}
+
+- (void)setNear:(CGFloat)_near
+{
+	near = _near;
+	[self setNeedsLayout];
+}
+
+- (void)setFar:(CGFloat)_far
+{
+	far = _far;
+	[self setNeedsLayout];
 }
 
 - (void)layoutSubviews
@@ -119,17 +161,6 @@
     //rebuild framebuffer
     [self deleteFramebuffer];
     [self createFramebuffer];
-}
-
-- (void)dealloc
-{
-    [self deleteFramebuffer];
-    if ([EAGLContext currentContext] == context)
-    {
-        [EAGLContext setCurrentContext:nil];
-    }
-    [context release];
-    [super dealloc];
 }
 
 - (void)createFramebuffer
@@ -140,13 +171,21 @@
     glGenFramebuffers(1, &defaultFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
     
-    //create color render buffer and allocate backing store
+    //set up color render buffer
     glGenRenderbuffers(1, &colorRenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+    
+    //set up depth buffer
+    glGenRenderbuffers(1, &depthRenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+
+    //check success
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
         NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
@@ -168,6 +207,12 @@
         glDeleteRenderbuffers(1, &colorRenderbuffer);
         colorRenderbuffer = 0;
     }
+    
+    if (depthRenderbuffer)
+    {
+        glDeleteRenderbuffers(1, &depthRenderbuffer);
+        depthRenderbuffer = 0;
+    }
 }
 
 - (void)bindFramebuffer
@@ -175,11 +220,25 @@
     [EAGLContext setCurrentContext:context];
     
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-    glViewport(0, 0, framebufferWidth, framebufferHeight);
-    
+	glViewport(0, 0, framebufferWidth, framebufferHeight);
+	
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrthof(0, self.bounds.size.width, self.bounds.size.height, 0, -1.0, 1.0);
+	if (fov <= 0.0f)
+	{
+		GLfloat _near = near ?: (-framebufferWidth * 0.5f);
+		GLfloat _far = far ?: (framebufferWidth * 0.5f);
+    	glOrthof(0, framebufferWidth, framebufferHeight, 0.0f, _near, _far);
+	}
+	else
+	{
+		GLfloat _near = (near > 0.0f)? near: 1.0f;
+		GLfloat _far = (far > near)? far: (_near + 50.0f);
+		GLfloat aspect = (GLfloat)framebufferWidth / (GLfloat)framebufferHeight;
+		GLfloat top = tanf(fov * 0.5f) * _near;
+		glFrustumf(aspect * -top, aspect * top, -top, top, _near, _far);
+		glTranslatef(0.0f, 0.0f, -_near);
+	}
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -191,6 +250,51 @@
     
     glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
     return [context presentRenderbuffer:GL_RENDERBUFFER];
+}
+
+
+#pragma mark Animation
+
+- (void)startAnimating
+{
+	lastTime = CACurrentMediaTime();
+	elapsedTime = 0.0;
+	if (!timer)
+	{
+		timer = [CADisplayLink displayLinkWithTarget:self selector:@selector(step)];
+		[timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+	}
+}
+
+- (void)stopAnimating
+{
+	[timer invalidate];
+	timer = nil;
+}
+
+- (BOOL)isAnimating
+{
+	return timer != nil;
+}
+
+- (void)step
+{
+	//update time
+	NSTimeInterval currentTime = CACurrentMediaTime();
+	NSTimeInterval deltaTime = currentTime - lastTime;
+	elapsedTime += deltaTime;
+	lastTime = currentTime;
+	
+	//step animation
+	[self step:deltaTime];
+	
+	//update view
+	[self setNeedsLayout];
+}
+
+- (void)step:(NSTimeInterval)dt
+{
+	//override this
 }
 
 @end
