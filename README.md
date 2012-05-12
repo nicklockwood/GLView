@@ -52,7 +52,7 @@ GLView properties
 
     @property (nonatomic, assign) CGFloat fov;
 
-This is the field of view, in radians. This defaults to zero, which gives an orthographic projection (no perspective) but set it to around Pi/2 (90 degrees) for a perspective projection.
+This is the vertical field of view, in radians. This defaults to zero, which gives an orthographic projection (no perspective) but set it to around Pi/2 (90 degrees) for a perspective projection.
 
     @property (nonatomic, assign) CGFloat near;
 
@@ -60,7 +60,7 @@ The near clipping plane. This is used by OpenGL to clip geometry that is too clo
 
     @property (nonatomic, assign) CGFloat far;
 
-The far clipping plane. This is used by OpenGL to clip geometry that is too far from the camera. A smaller value for the far plane improves the precision of the z-buffer and reduces rendering artifacts, so try to set this value as low as possible (Note: it must be larger than the near value).
+The far clipping plane. This is used by OpenGL to clip geometry that is too far from the camera. A smaller value for the far plane improves the precision of the z-buffer and reduces rendering artefacts, so try to set this value as low as possible (Note: it must be larger than the near value).
 
     @property (nonatomic, assign) NSTimeInterval elapsedTime;
 
@@ -98,7 +98,7 @@ Returns YES if the view is currently animating and NO if it isn't.
     
     - (void)step:(NSTimeInterval)dt;
 
-This method is called every 60th of a second while the view is animating. The dt paramater is the time (in seconds) since the last step (this will usually be ~1/60 seconds depending on the complexity of your rendering code and device performance). The default implementation does nothing, but you can override this method to create your own animation logic.
+This method is called every 60th of a second while the view is animating. The dt parameter is the time (in seconds) since the last step (this will usually be ~1/60 seconds depending on the complexity of your rendering code and device performance). The default implementation does nothing, but you can override this method to create your own animation logic.
 
 
 GLImage properties
@@ -199,11 +199,11 @@ GLModel methods
     + (GLModel *)modelWithContentsOfFile:(NSString *)path;
     - (GLModel *)initWithContentsOfFile:(NSString *)path;
     
-These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple binar model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way.
+These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple binary model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way.
 	
     - (void)draw;
 
-Renders the model in the current GLView.  In practice you may wish to configure the OpenGL state fro the model before calling draw, e.g. by setting a texture image to use for the rendering. See the GLModelView `layoutSubviews` method for an example.
+Renders the model in the current GLView.  In practice you may wish to configure the OpenGL state for the model before calling draw, e.g. by setting a texture image to use for the rendering. See the GLModelView `layoutSubviews` method for an example.
 
 
 GLModelView properties
@@ -231,7 +231,7 @@ UIColor+GL methods
 
     - (void)getGLComponents:(GLfloat *)rgba;
     
-Pass in a pointer to an array of four GLfloats and this method will populate them with the red, green, blue and alpha components of the UIColor. Works with monochromatic and RGB UIColors, but will fail if the color contains a pattern image, or some other unsupported color format.
+Pass in a pointer to a C array of four GLfloats and this method will populate them with the red, green, blue and alpha components of the UIColor. Works with monochromatic and RGB UIColors, but will fail if the color contains a pattern image, or some other unsupported color format.
     
     - (void)bindGLClearColor;
 
