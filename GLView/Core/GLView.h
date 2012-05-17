@@ -1,10 +1,10 @@
 //
-//  UIColor+GL.h
+//  GLView.h
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
-//  Created by Nick Lockwood on 10/05/2012.
+//  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
@@ -33,13 +33,24 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <OpenGLES/ES1/gl.h>
+#import "GLARCHelper.h"
 
 
-@interface UIColor (GL)
+@interface GLView : UIView
 
-- (void)getGLComponents:(GLfloat *)rgba;
-- (void)bindGLClearColor;
-- (void)bindGLBlendColor;
+@property (nonatomic, assign) CGFloat fov;
+@property (nonatomic, assign) CGFloat near;
+@property (nonatomic, assign) CGFloat far;
+
+- (void)setUp;
+- (void)bindFramebuffer;
+- (BOOL)presentFramebuffer;
+
+@property (nonatomic, assign) NSTimeInterval elapsedTime;
+
+- (void)startAnimating;
+- (void)stopAnimating;
+- (BOOL)isAnimating;
+- (void)step:(NSTimeInterval)dt;
 
 @end

@@ -1,3 +1,9 @@
+Version 1.2.1
+
+- Added GLLight object
+- Added lights property to GLModelView
+- Fixed intermittent crash when loading .obj models that have normals but do not have texture coordinates (e.g. cube.obj)
+
 Version 1.2
 
 - Added GLModel and GLModelView for loading and displaying polygonal models

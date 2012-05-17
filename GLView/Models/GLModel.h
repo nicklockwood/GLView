@@ -1,8 +1,8 @@
 //
-//  GLImageView.h
+//  GLModel.h
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -32,20 +32,16 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import <UIKit/UIKit.h>
-#import "GLView.h"
-#import "GLImage.h"
+
+#import <Foundation/Foundation.h>
 #import "GLARCHelper.h"
 
 
-@interface GLImageView : GLView
+@interface GLModel : NSObject
 
-@property (nonatomic, strong) GLImage *image;
-@property (nonatomic, strong) UIColor *blendColor;
-@property (nonatomic, copy) NSArray *animationImages;
-@property (nonatomic, assign) NSTimeInterval animationDuration;
-@property (nonatomic, assign) NSInteger animationRepeatCount;
++ (GLModel *)modelWithContentsOfFile:(NSString *)path;
+- (GLModel *)initWithContentsOfFile:(NSString *)path;
 
-- (GLImageView *)initWithImage:(GLImage *)image;
+- (void)draw;
 
 @end

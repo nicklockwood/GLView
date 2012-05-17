@@ -15,17 +15,18 @@
 		012AB10A14A140910016FFF1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 012AB10914A140910016FFF1 /* AppDelegate.m */; };
 		012AB10D14A140910016FFF1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 012AB10C14A140910016FFF1 /* ViewController.m */; };
 		012AB11014A140910016FFF1 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 012AB10E14A140910016FFF1 /* ViewController.xib */; };
-		012AB12114A141050016FFF1 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 012AB11C14A141050016FFF1 /* GLImage.m */; };
-		012AB12214A141050016FFF1 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 012AB11E14A141050016FFF1 /* GLImageView.m */; };
-		012AB12314A141050016FFF1 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 012AB12014A141050016FFF1 /* GLView.m */; };
-		012AB12F14A1458C0016FFF1 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 012AB12E14A1458C0016FFF1 /* GLModel.m */; };
-		012AB13214A146660016FFF1 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 012AB13114A146660016FFF1 /* GLModelView.m */; };
 		012AB13414A14D6C0016FFF1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012AB13314A14D6C0016FFF1 /* QuartzCore.framework */; };
 		012AB13614A14D750016FFF1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 012AB13514A14D750016FFF1 /* OpenGLES.framework */; };
 		01400A56153244D900EE0FB5 /* quad.obj in Resources */ = {isa = PBXBuildFile; fileRef = 01400A55153244D900EE0FB5 /* quad.obj */; };
 		0157F57B153228AA0015AFF1 /* cube.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0157F579153228AA0015AFF1 /* cube.obj */; };
 		0157F57C153228AA0015AFF1 /* diamond.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0157F57A153228AA0015AFF1 /* diamond.obj */; };
-		B25F01E1155BF9300048E5DF /* UIColor+GL.m in Sources */ = {isa = PBXBuildFile; fileRef = B25F01E0155BF9300048E5DF /* UIColor+GL.m */; };
+		01F00A4E1565978500CF44D9 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A3F1565978500CF44D9 /* GLView.m */; };
+		01F00A4F1565978500CF44D9 /* UIColor+GL.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A411565978500CF44D9 /* UIColor+GL.m */; };
+		01F00A501565978500CF44D9 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A441565978500CF44D9 /* GLImage.m */; };
+		01F00A511565978500CF44D9 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A461565978500CF44D9 /* GLImageView.m */; };
+		01F00A521565978500CF44D9 /* GLLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A491565978500CF44D9 /* GLLight.m */; };
+		01F00A531565978500CF44D9 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A4B1565978500CF44D9 /* GLModel.m */; };
+		01F00A541565978500CF44D9 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A4D1565978500CF44D9 /* GLModelView.m */; };
 		B29BD29E14A22A8400BB4E68 /* demon.model in Resources */ = {isa = PBXBuildFile; fileRef = B29BD29B14A22A8400BB4E68 /* demon.model */; };
 		B29BD29F14A22A8400BB4E68 /* demon.png in Resources */ = {isa = PBXBuildFile; fileRef = B29BD29D14A22A8400BB4E68 /* demon.png */; };
 		B2FC80D914B4BCD40075C520 /* chair.tga in Resources */ = {isa = PBXBuildFile; fileRef = B2FC80D814B4BCD40075C520 /* chair.tga */; };
@@ -46,24 +47,26 @@
 		012AB10B14A140910016FFF1 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		012AB10C14A140910016FFF1 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		012AB10F14A140910016FFF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/ViewController.xib; sourceTree = "<group>"; };
-		012AB11B14A141050016FFF1 /* GLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GLImage.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		012AB11C14A141050016FFF1 /* GLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GLImage.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		012AB11D14A141050016FFF1 /* GLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GLImageView.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		012AB11E14A141050016FFF1 /* GLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GLImageView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		012AB11F14A141050016FFF1 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
-		012AB12014A141050016FFF1 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
-		012AB12D14A1458C0016FFF1 /* GLModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GLModel.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		012AB12E14A1458C0016FFF1 /* GLModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GLModel.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		012AB13014A146660016FFF1 /* GLModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModelView.h; sourceTree = "<group>"; };
-		012AB13114A146660016FFF1 /* GLModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModelView.m; sourceTree = "<group>"; };
 		012AB13314A14D6C0016FFF1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		012AB13514A14D750016FFF1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		01400A55153244D900EE0FB5 /* quad.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = quad.obj; sourceTree = "<group>"; };
 		0157F579153228AA0015AFF1 /* cube.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
 		0157F57A153228AA0015AFF1 /* diamond.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = diamond.obj; sourceTree = "<group>"; };
-		B25F01DF155BF9300048E5DF /* UIColor+GL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+GL.h"; sourceTree = "<group>"; };
-		B25F01E0155BF9300048E5DF /* UIColor+GL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+GL.m"; sourceTree = "<group>"; };
-		B26075C5155C119700695A57 /* GLARCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLARCHelper.h; sourceTree = "<group>"; };
+		01F00A3D1565978500CF44D9 /* GLARCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLARCHelper.h; sourceTree = "<group>"; };
+		01F00A3E1565978500CF44D9 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
+		01F00A3F1565978500CF44D9 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
+		01F00A401565978500CF44D9 /* UIColor+GL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+GL.h"; sourceTree = "<group>"; };
+		01F00A411565978500CF44D9 /* UIColor+GL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+GL.m"; sourceTree = "<group>"; };
+		01F00A431565978500CF44D9 /* GLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImage.h; sourceTree = "<group>"; };
+		01F00A441565978500CF44D9 /* GLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImage.m; sourceTree = "<group>"; };
+		01F00A451565978500CF44D9 /* GLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImageView.h; sourceTree = "<group>"; };
+		01F00A461565978500CF44D9 /* GLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImageView.m; sourceTree = "<group>"; };
+		01F00A481565978500CF44D9 /* GLLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLight.h; sourceTree = "<group>"; };
+		01F00A491565978500CF44D9 /* GLLight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLight.m; sourceTree = "<group>"; };
+		01F00A4A1565978500CF44D9 /* GLModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModel.h; sourceTree = "<group>"; };
+		01F00A4B1565978500CF44D9 /* GLModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModel.m; sourceTree = "<group>"; };
+		01F00A4C1565978500CF44D9 /* GLModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModelView.h; sourceTree = "<group>"; };
+		01F00A4D1565978500CF44D9 /* GLModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModelView.m; sourceTree = "<group>"; };
 		B29BD29B14A22A8400BB4E68 /* demon.model */ = {isa = PBXFileReference; lastKnownFileType = file; path = demon.model; sourceTree = "<group>"; };
 		B29BD29D14A22A8400BB4E68 /* demon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demon.png; sourceTree = "<group>"; };
 		B2FC80D814B4BCD40075C520 /* chair.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = chair.tga; path = GLModelExample/Images/chair.tga; sourceTree = SOURCE_ROOT; };
@@ -89,7 +92,7 @@
 		012AB0EA14A140900016FFF1 = {
 			isa = PBXGroup;
 			children = (
-				012AB11A14A141050016FFF1 /* GLView */,
+				01F00A3B1565978500CF44D9 /* GLView */,
 				012AB0FF14A140910016FFF1 /* GLModelExample */,
 				012AB0F814A140910016FFF1 /* Frameworks */,
 				012AB0F614A140910016FFF1 /* Products */,
@@ -139,27 +142,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		012AB11A14A141050016FFF1 /* GLView */ = {
-			isa = PBXGroup;
-			children = (
-				012AB11B14A141050016FFF1 /* GLImage.h */,
-				012AB11C14A141050016FFF1 /* GLImage.m */,
-				012AB11D14A141050016FFF1 /* GLImageView.h */,
-				012AB11E14A141050016FFF1 /* GLImageView.m */,
-				012AB12D14A1458C0016FFF1 /* GLModel.h */,
-				012AB12E14A1458C0016FFF1 /* GLModel.m */,
-				012AB13014A146660016FFF1 /* GLModelView.h */,
-				012AB13114A146660016FFF1 /* GLModelView.m */,
-				012AB11F14A141050016FFF1 /* GLView.h */,
-				012AB12014A141050016FFF1 /* GLView.m */,
-				B25F01DF155BF9300048E5DF /* UIColor+GL.h */,
-				B25F01E0155BF9300048E5DF /* UIColor+GL.m */,
-				B26075C5155C119700695A57 /* GLARCHelper.h */,
-			);
-			name = GLView;
-			path = ../../GLView;
-			sourceTree = "<group>";
-		};
 		012AB12B14A145470016FFF1 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +159,53 @@
 				012AB10E14A140910016FFF1 /* ViewController.xib */,
 			);
 			name = Nibs;
+			sourceTree = "<group>";
+		};
+		01F00A3B1565978500CF44D9 /* GLView */ = {
+			isa = PBXGroup;
+			children = (
+				01F00A3C1565978500CF44D9 /* Core */,
+				01F00A421565978500CF44D9 /* Images */,
+				01F00A471565978500CF44D9 /* Models */,
+			);
+			name = GLView;
+			path = ../../GLView;
+			sourceTree = "<group>";
+		};
+		01F00A3C1565978500CF44D9 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				01F00A3D1565978500CF44D9 /* GLARCHelper.h */,
+				01F00A3E1565978500CF44D9 /* GLView.h */,
+				01F00A3F1565978500CF44D9 /* GLView.m */,
+				01F00A401565978500CF44D9 /* UIColor+GL.h */,
+				01F00A411565978500CF44D9 /* UIColor+GL.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		01F00A421565978500CF44D9 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				01F00A431565978500CF44D9 /* GLImage.h */,
+				01F00A441565978500CF44D9 /* GLImage.m */,
+				01F00A451565978500CF44D9 /* GLImageView.h */,
+				01F00A461565978500CF44D9 /* GLImageView.m */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		01F00A471565978500CF44D9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				01F00A481565978500CF44D9 /* GLLight.h */,
+				01F00A491565978500CF44D9 /* GLLight.m */,
+				01F00A4A1565978500CF44D9 /* GLModel.h */,
+				01F00A4B1565978500CF44D9 /* GLModel.m */,
+				01F00A4C1565978500CF44D9 /* GLModelView.h */,
+				01F00A4D1565978500CF44D9 /* GLModelView.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		B29BD29A14A22A8400BB4E68 /* Models */ = {
@@ -272,12 +301,13 @@
 				012AB10614A140910016FFF1 /* main.m in Sources */,
 				012AB10A14A140910016FFF1 /* AppDelegate.m in Sources */,
 				012AB10D14A140910016FFF1 /* ViewController.m in Sources */,
-				012AB12114A141050016FFF1 /* GLImage.m in Sources */,
-				012AB12214A141050016FFF1 /* GLImageView.m in Sources */,
-				012AB12314A141050016FFF1 /* GLView.m in Sources */,
-				012AB12F14A1458C0016FFF1 /* GLModel.m in Sources */,
-				012AB13214A146660016FFF1 /* GLModelView.m in Sources */,
-				B25F01E1155BF9300048E5DF /* UIColor+GL.m in Sources */,
+				01F00A4E1565978500CF44D9 /* GLView.m in Sources */,
+				01F00A4F1565978500CF44D9 /* UIColor+GL.m in Sources */,
+				01F00A501565978500CF44D9 /* GLImage.m in Sources */,
+				01F00A511565978500CF44D9 /* GLImageView.m in Sources */,
+				01F00A521565978500CF44D9 /* GLLight.m in Sources */,
+				01F00A531565978500CF44D9 /* GLModel.m in Sources */,
+				01F00A541565978500CF44D9 /* GLModelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

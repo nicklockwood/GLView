@@ -9,7 +9,7 @@ Specifically, the GLImage and GLImageView classes make it possible to load and d
 Supported iOS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 5.0 (Xcode 4.2)
+* Supported build target - iOS 5.1 (Xcode 4.3.2, Apple LLVM compiler 3.1)
 * Earliest supported deployment target - iOS 4.0 (Xcode 4.2)
 * Earliest compatible deployment target - iOS 4.0
 
@@ -42,6 +42,8 @@ The GLView library currently includes the following classes:
 - GLModel - this is a class for loading 3D mesh geometry for rendering in a GLView. It currently supports Wavefront .obj files and the bespoke model format used in the Apple OpenGL sample code. It will support additional formats in future.
 
 - GLModelView - this is a subclass of GLView, specifically designed for displaying GLModels as simply and easily as possible.
+
+- GLLight - this class represents a light source and is used for illuminating GLModel objects in the GLModelView.
 
 
 - UIColor+GL - this is a category on UIColor that makes it easier to convert UIKit color values for use with OpenGL.
@@ -220,10 +222,39 @@ A GLImage that will be used to texture the model. The model must have texture co
     @property (nonatomic, strong) UIColor *blendColor;
     
 A color to blend with the model texture. This can be used to tint the model or modify its opacity. If no texture image is specified, the model will be flat-shaded in this color.
+
+    @property (nonatomic, copy) NSArray *lights;
+    
+An array of GLLight objects used to illuminate the model. By default this array contains a single white light positioned above and to the left of the object. You can set up to eight lights, although increasing the number of lights has a negative impact on performance. Setting an empty array is equivalent to having a single ambient white light.
     
     @property (nonatomic, assign) CATransform3D transform;
     
 A 3D transform to apply to the model. This can be used to center, scale or rotate the model to fit the view frame. See the example project for how this can be used.
+
+
+GLLight properties
+---------------------
+
+    @property (nonatomic, strong) UIColor *ambientColor;
+    
+The ambient light color. This color is used to illuminate the object uniformly. Defaults to black (off).
+    
+    @property (nonatomic, strong) UIColor *diffuseColor; 
+    @property (nonatomic, strong) UIColor *specularColor;
+    
+The diffuse and specular light colors. These illuminate the object in a directional fashion, eminating from the position specified by the transform. These default to white (full brightness).
+    
+    @property (nonatomic, assign) CATransform3D transform;
+
+The transform property controls the position of the light. Currently only the position/translation part of the transform is used. Rotation and scale properties are ignored. Use CATransform3DMakeTranslation(x, y, z) to set a suitable value. The default translation is (0, 0, 1), which is typically behind the camera, or between the camera and the scene being viewed.
+
+
+GLLight methods
+---------------------
+
+    - (void)bind:(GLuint)light;
+
+This method binds the GLLight to a particular light in the scene. The light parameter is an OpenGL constant representing the light index, where GL_LIGHT0 is the first available light, and GL_LIGHT7 is typically the last available light.
 
 
 UIColor+GL methods

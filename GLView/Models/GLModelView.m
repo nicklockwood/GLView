@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -43,6 +43,7 @@
 @synthesize model;
 @synthesize texture;
 @synthesize blendColor;
+@synthesize lights;
 @synthesize transform;
 
 - (void)setUp
@@ -50,6 +51,21 @@
 	[super setUp];
     
 	self.fov = M_PI_2;
+    
+    GLLight *light = [[GLLight alloc] init];
+    light.transform = CATransform3DMakeTranslation(-0.5f, 1.0f, 0.5f);
+    self.lights = [NSArray arrayWithObject:light];
+    AH_RELEASE(light);
+}
+
+- (void)setLights:(NSArray *)_lights
+{
+    if (lights != _lights)
+    {
+        AH_RELEASE(lights);
+        lights = AH_RETAIN(_lights);
+        [self setNeedsLayout];
+    }
 }
 
 - (void)setModel:(GLModel *)_model
@@ -95,12 +111,41 @@
 	
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT + GL_DEPTH_BUFFER_BIT);
-	
-	//apply transform
-    glLoadMatrixf((GLfloat *)&transform);
     
+    //apply lights
+    if ([lights count])
+    {
+        for (int i = 0; i < GL_MAX_LIGHTS; i++)
+        {
+            if (i < [lights count])
+            {
+                [[lights objectAtIndex:i] bind:GL_LIGHT0 + i];
+            }
+            else
+            {
+                glDisable(GL_LIGHT0 + i);
+            }
+        }
+    }
+    else
+    {
+        glDisable(GL_LIGHTING);
+    }
+    
+    //apply transform
+    glLoadMatrixf((GLfloat *)&transform);
+
     [blendColor ?: [UIColor whiteColor] bindGLBlendColor];
-    texture? [texture bindTexture]: glBindTexture(GL_TEXTURE_2D, 0);
+    if (texture)
+    {
+        [texture bindTexture];
+    }
+    else
+    {
+        glDisable(GL_TEXTURE_2D);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
+    }
     [model draw];
 	
     [self presentFramebuffer];
@@ -108,6 +153,7 @@
 
 - (void)dealloc
 {
+    AH_RELEASE(lights);
     AH_RELEASE(texture);
     AH_RELEASE(blendColor);
     AH_RELEASE(model);

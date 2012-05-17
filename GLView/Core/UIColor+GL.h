@@ -1,10 +1,10 @@
 //
-//  GLImage.h
+//  UIColor+GL.h
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
-//  Created by Nick Lockwood on 10/07/2011.
+//  Created by Nick Lockwood on 10/05/2012.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
@@ -33,26 +33,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GLARCHelper.h"
+#import <OpenGLES/ES1/gl.h>
 
 
-#define DEFAULT_FILE_EXTENSION @"png"
+@interface UIColor (GL)
 
-
-@interface GLImage : NSObject
-
-@property (nonatomic, readonly) CGSize size;
-@property (nonatomic, readonly) CGFloat scale;
-
-+ (GLImage *)imageNamed:(NSString *)name;
-+ (GLImage *)imageWithContentsOfFile:(NSString *)path;
-+ (GLImage *)imageWithUIImage:(UIImage *)image;
-
-- (GLImage *)initWithContentsOfFile:(NSString *)path;
-- (GLImage *)initWithUIImage:(UIImage *)image;
-
-- (void)bindTexture;
-- (void)drawAtPoint:(CGPoint)point;
-- (void)drawInRect:(CGRect)rect;
+- (void)getGLComponents:(GLfloat *)rgba;
+- (void)bindGLClearColor;
+- (void)bindGLBlendColor;
 
 @end

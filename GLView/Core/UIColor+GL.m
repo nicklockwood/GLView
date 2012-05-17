@@ -2,7 +2,7 @@
 //  UIColor+GL.m
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
 //  Created by Nick Lockwood on 10/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -84,7 +84,7 @@
 }
 
 - (void)bindGLBlendColor
-{
+{    
     GLfloat rgba[4];
     [self getGLComponents:rgba];
     glColor4f(rgba[0], rgba[1], rgba[2], rgba[3]);

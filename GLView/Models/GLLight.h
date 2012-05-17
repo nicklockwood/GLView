@@ -1,10 +1,10 @@
 //
-//  GLModelView.h
+//  GLLight.h
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
-//  Created by Nick Lockwood on 10/07/2011.
+//  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
@@ -32,18 +32,18 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import "GLView.h"
-#import "GLModel.h"
-#import "GLImage.h"
-#import "GLARCHelper.h"
+#import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "GLARCHelper.h"
 
 
-@interface GLModelView : GLView
+@interface GLLight : NSObject
 
-@property (nonatomic, strong) GLModel *model;
-@property (nonatomic, strong) GLImage *texture;
-@property (nonatomic, strong) UIColor *blendColor;
+@property (nonatomic, strong) UIColor *ambientColor;
+@property (nonatomic, strong) UIColor *diffuseColor;
+@property (nonatomic, strong) UIColor *specularColor;
 @property (nonatomic, assign) CATransform3D transform;
+
+- (void)bind:(GLuint)light;
 
 @end

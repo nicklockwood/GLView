@@ -1,8 +1,8 @@
 //
-//  GLView.h
+//  GLModelView.h
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -32,25 +32,20 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import <UIKit/UIKit.h>
+#import "GLView.h"
+#import "GLLight.h"
+#import "GLModel.h"
+#import "GLImage.h"
 #import "GLARCHelper.h"
+#import <QuartzCore/QuartzCore.h>
 
 
-@interface GLView : UIView
+@interface GLModelView : GLView
 
-@property (nonatomic, assign) CGFloat fov;
-@property (nonatomic, assign) CGFloat near;
-@property (nonatomic, assign) CGFloat far;
-
-- (void)setUp;
-- (void)bindFramebuffer;
-- (BOOL)presentFramebuffer;
-
-@property (nonatomic, assign) NSTimeInterval elapsedTime;
-
-- (void)startAnimating;
-- (void)stopAnimating;
-- (BOOL)isAnimating;
-- (void)step:(NSTimeInterval)dt;
+@property (nonatomic, strong) GLModel *model;
+@property (nonatomic, strong) GLImage *texture;
+@property (nonatomic, strong) UIColor *blendColor;
+@property (nonatomic, copy) NSArray *lights;
+@property (nonatomic, assign) CATransform3D transform;
 
 @end

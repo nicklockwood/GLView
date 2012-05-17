@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.2
+//  Version 1.2.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -280,19 +280,19 @@ WWDC2010Attributes;
                     uniqueIndexStrings ++;
                     [indexStrings setObject:[NSNumber numberWithShort:fIndex] forKey:indexString];
                     
-                    GLushort vIndex = [[parts objectAtIndex:0] intValue] - 1;
-                    [vertexData appendBytes:tempVertexData.bytes + vIndex * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
-                    
+                    GLushort vIndex = [[parts objectAtIndex:0] intValue];
+                    [vertexData appendBytes:tempVertexData.bytes + (vIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
+
                     if ([parts count] > 1)
                     {
-                        GLushort tIndex = [[parts objectAtIndex:1] intValue] - 1;
-                        [textCoordData appendBytes:tempTextCoordData.bytes + tIndex * sizeof(GLfloat) * 2 length:sizeof(GLfloat) * 2];
+                        GLushort tIndex = [[parts objectAtIndex:1] intValue];
+                        if (tIndex) [textCoordData appendBytes:tempTextCoordData.bytes + (tIndex - 1) * sizeof(GLfloat) * 2 length:sizeof(GLfloat) * 2];
                     }
                     
                     if ([parts count] > 2)
                     {
-                        GLushort nIndex = [[parts objectAtIndex:2] intValue] - 1;
-                        [normalData appendBytes:tempNormalData.bytes + nIndex * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
+                        GLushort nIndex = [[parts objectAtIndex:2] intValue];
+                        if (nIndex) [normalData appendBytes:tempNormalData.bytes + (nIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
                     }
                 }
                 else
@@ -400,7 +400,7 @@ WWDC2010Attributes;
 - (void)draw
 {
     glEnable(GL_DEPTH_TEST);
-    
+
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(componentCount, GL_FLOAT, 0, vertices);
     
