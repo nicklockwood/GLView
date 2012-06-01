@@ -2,7 +2,7 @@
 //  GLImageView.m
 //
 //  GLView Project
-//  Version 1.2.1
+//  Version 1.2.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -41,48 +41,48 @@
 
 @interface GLImageView ()
 
-@property (nonatomic, assign) id currentFrame;
+@property (nonatomic, unsafe_unretained) id currentFrame;
 
 @end
 
 
 @implementation GLImageView
 
-@synthesize image;
-@synthesize blendColor;
-@synthesize animationImages;
-@synthesize animationDuration;
-@synthesize animationRepeatCount;
-@synthesize currentFrame;
+@synthesize image = _image;
+@synthesize blendColor = _blendColor;
+@synthesize animationImages = _animationImages;
+@synthesize animationDuration = _animationDuration;
+@synthesize animationRepeatCount = _animationRepeatCount;
+@synthesize currentFrame = _currentFrame;
 
 
-- (GLImageView *)initWithImage:(GLImage *)_image
+- (GLImageView *)initWithImage:(GLImage *)image
 {
 	if ((self = [self initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)]))
 	{
-		image = AH_RETAIN(_image);
+		self.image = image;
 	}
 	return self;
 }
 
-- (void)setImage:(GLImage *)_image
+- (void)setImage:(GLImage *)image
 {
-    if (image != _image)
+    if (_image != image)
     {
-        AH_RELEASE(image);
-        image = AH_RETAIN(_image);
+        AH_RELEASE(_image);
+        _image = AH_RETAIN(image);
         [self setNeedsLayout];
     }
 }
 
-- (void)setAnimationImages:(NSArray *)_animationImages
+- (void)setAnimationImages:(NSArray *)animationImages
 {
-	if (animationImages != _animationImages)
+	if (_animationImages != animationImages)
 	{
 		[self stopAnimating];
-		AH_RELEASE(animationImages);
-		animationImages = [_animationImages copy];
-		animationDuration = [animationImages count] / 30.0;
+		AH_RELEASE(_animationImages);
+		_animationImages = [animationImages copy];
+		self.animationDuration = [animationImages count] / 30.0;
 	}
 }
 
@@ -90,7 +90,7 @@
 
 - (void)startAnimating
 {
-	if (animationImages)
+	if (self.animationImages)
 	{
 		[super startAnimating];
 	}
@@ -99,28 +99,28 @@
 - (void)step:(NSTimeInterval)dt
 {
     //end animation?
-    if (animationRepeatCount > 0 && self.elapsedTime / animationDuration >= animationRepeatCount)
+    if (self.animationRepeatCount > 0 && self.elapsedTime / self.animationDuration >= self.animationRepeatCount)
     {
-        self.elapsedTime = animationDuration * animationRepeatCount - 0.001;
+        self.elapsedTime = self.animationDuration * self.animationRepeatCount - 0.001;
         [self stopAnimating];
     }
 	
 	//calculate frame
-	NSInteger numberOfFrames = [animationImages count];
+	NSInteger numberOfFrames = [self.animationImages count];
 	if (numberOfFrames)
 	{
-        NSInteger frameIndex = numberOfFrames * (self.elapsedTime / animationDuration);
-		id frame = [animationImages objectAtIndex:frameIndex % numberOfFrames];
-		if (frame != currentFrame)
+        NSInteger frameIndex = numberOfFrames * (self.elapsedTime / self.animationDuration);
+		id frame = [self.animationImages objectAtIndex:frameIndex % numberOfFrames];
+		if (frame != self.currentFrame)
 		{
-			currentFrame = frame;
-			if ([currentFrame isKindOfClass:[GLImage class]])
+			self.currentFrame = frame;
+			if ([self.currentFrame isKindOfClass:[GLImage class]])
 			{
-				self.image = currentFrame;
+				self.image = self.currentFrame;
 			}
-			else if ([currentFrame isKindOfClass:[NSString class]])
+			else if ([self.currentFrame isKindOfClass:[NSString class]])
 			{
-				self.image = [GLImage imageWithContentsOfFile:currentFrame];
+				self.image = [GLImage imageWithContentsOfFile:self.currentFrame];
 			}
 		}
 	}
@@ -128,7 +128,7 @@
 
 - (CGSize)sizeThatFits:(CGSize)size
 {
-    return image.size;
+    return self.image.size;
 }
 
 - (void)didMoveToSuperview
@@ -149,65 +149,65 @@
     glClear(GL_COLOR_BUFFER_BIT);
     
     //set blend color
-    [blendColor ?: [UIColor whiteColor] bindGLBlendColor];
+    [self.blendColor ?: [UIColor whiteColor] bindGLBlendColor];
 	
 	CGRect rect;
 	switch (self.contentMode)
 	{
 		case UIViewContentModeCenter:
 		{
-			rect = CGRectMake((self.bounds.size.width - image.size.width) / 2,
-							  (self.bounds.size.height - image.size.height) / 2,
-							  image.size.width, image.size.height);
+			rect = CGRectMake((self.bounds.size.width - self.image.size.width) / 2,
+							  (self.bounds.size.height - self.image.size.height) / 2,
+							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeTopLeft:
 		{
-			rect = CGRectMake(0, 0, image.size.width, image.size.height);
+			rect = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeTop:
 		{
-			rect = CGRectMake((self.bounds.size.width - image.size.width) / 2,
-							  0, image.size.width, image.size.height);
+			rect = CGRectMake((self.bounds.size.width - self.image.size.width) / 2,
+							  0, self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeRight:
 		{
-			rect = CGRectMake(self.bounds.size.width - image.size.width,
-							  (self.bounds.size.height - image.size.height) / 2,
-							  image.size.width, image.size.height);
+			rect = CGRectMake(self.bounds.size.width - self.image.size.width,
+							  (self.bounds.size.height - self.image.size.height) / 2,
+							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottomRight:
 		{
-			rect = CGRectMake(self.bounds.size.width - image.size.width,
-							  self.bounds.size.height - image.size.height,
-							  image.size.width, image.size.height);
+			rect = CGRectMake(self.bounds.size.width - self.image.size.width,
+							  self.bounds.size.height - self.image.size.height,
+							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottom:
 		{
-			rect = CGRectMake((self.bounds.size.width - image.size.width) / 2,
-							  self.bounds.size.height - image.size.height,
-							  image.size.width, image.size.height);
+			rect = CGRectMake((self.bounds.size.width - self.image.size.width) / 2,
+							  self.bounds.size.height - self.image.size.height,
+							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottomLeft:
 		{
-			rect = CGRectMake(0, self.bounds.size.height - image.size.height,
-							  image.size.width, image.size.height);
+			rect = CGRectMake(0, self.bounds.size.height - self.image.size.height,
+							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeLeft:
 		{
-			rect = CGRectMake(0, (self.bounds.size.height - image.size.height) / 2,
-							  image.size.width, image.size.height);
+			rect = CGRectMake(0, (self.bounds.size.height - self.image.size.height) / 2,
+							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeScaleAspectFill:
 		{
-			CGFloat aspect1 = image.size.width / image.size.height;
+			CGFloat aspect1 = self.image.size.width / self.image.size.height;
 			CGFloat aspect2 = self.bounds.size.width / self.bounds.size.height;
 			if (aspect1 < aspect2)
 			{
@@ -223,7 +223,7 @@
 		}
 		case UIViewContentModeScaleAspectFit:
 		{
-			CGFloat aspect1 = image.size.width / image.size.height;
+			CGFloat aspect1 = self.image.size.width / self.image.size.height;
 			CGFloat aspect2 = self.bounds.size.width / self.bounds.size.height;
 			if (aspect1 > aspect2)
 			{
@@ -243,16 +243,16 @@
 			rect = self.bounds;
 		}
 	}
-    [image drawInRect:rect];
+    [self.image drawInRect:rect];
 	
     [self presentFramebuffer];
 }
 
 - (void)dealloc
 {
-    AH_RELEASE(image);
-    AH_RELEASE(blendColor);
-	AH_RELEASE(animationImages);
+    AH_RELEASE(_image);
+    AH_RELEASE(_blendColor);
+	AH_RELEASE(_animationImages);
     AH_SUPER_DEALLOC;
 }
 

@@ -2,7 +2,7 @@
 //  UIColor+GL.h
 //
 //  GLView Project
-//  Version 1.2.1
+//  Version 1.2.2
 //
 //  Created by Nick Lockwood on 10/05/2012.
 //  Copyright 2011 Charcoal Design

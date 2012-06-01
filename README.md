@@ -3,7 +3,9 @@ Purpose
 
 GLView is a collection of classes designed to make it as easy as possible to get up and running with OpenGL functionality within an iOS app.
 
-Specifically, the GLImage and GLImageView classes make it possible to load and display PVR formatted images and video clips in your app without needing to know any OpenGL whatsoever. See more about PVR images and video below.
+The GLImage and GLImageView classes make it possible to load and display PVR formatted images and video clips in your app without needing to know any OpenGL whatsoever. See more about PVR images and video below.
+
+The GLModel and GLModelView classes allow you to load a 3D model using the popular WaveFront .obj format and display it in a view, again without needing to know anything about OpenGL.
 
 
 Supported iOS & SDK Versions
@@ -39,7 +41,7 @@ The GLView library currently includes the following classes:
 
 - GLImageView - this is a subclass of GLView, specifically designed for displaying GLImages. It behaves in a similar way to UIImageView and mostly mirrors its interface.
 
-- GLModel - this is a class for loading 3D mesh geometry for rendering in a GLView. It currently supports Wavefront .obj files and the bespoke model format used in the Apple OpenGL sample code. It will support additional formats in future.
+- GLModel - this is a class for loading 3D mesh geometry for rendering in a GLView. It currently supports only Wavefront .obj files and the bespoke "WWDC2010" model format used in the Apple GLEssentials sample code, but will support additional formats in future.
 
 - GLModelView - this is a subclass of GLView, specifically designed for displaying GLModels as simply and easily as possible.
 
@@ -112,29 +114,42 @@ The size of the image, in points. As with UIImage, on a retina display device th
 	
 	@property (nonatomic, readonly) CGFloat scale;
 
-The image scale. For @2x images on Retina display devices this will have a value of 2.0. On iOS3.x this will always return 1.0;
+The image scale. For @2x images on Retina display devices this will have a value of 2.0.
+
+    @property (nonatomic, readonly) CGSize textureSize;
+    
+The size of the underlying texture. The dimensions of the texture will always be a power of two. For images that have a scale of 1.0 (non-Retina) and have power-of-two dimensions, this will match the size property.
+
+    @property (nonatomic, readonly) CGRect clipRect;
+
+The clipping rectangle used to resize the texture to fit the image rect. This rect is measured in texture pixels, so for images that have power-of-two dimensions, the clipRect will match the textureSize.
 
 
 GLImage methods
 ------------------
 
-	+ (GLImage *)imageNamed:(NSString *)name;
+	+ (GLImage *)imageNamed:(NSString *)nameOrPath;
 	
-This method works more-or-less like the equivalent UIImage method. The image with the matching name in the application resources bundle will be loaded and returned. The image is also cached so that any subsequent `imageNamed` calls for the same file will return the exact same copy of the image. IN a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage.
+This method works more-or-less like the equivalent UIImage method. The image file specified by the nameOrPath paramater will be loaded and returned. The image is also cached so that any subsequent `imageNamed` calls for the same file will return the exact same copy of the image. IN a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage.
 
-The name can include a file extension. If it doesn't, .png is assumed. The name may also include a full or partial file reference, and, unlike UIImage's version, GLIMage's imageNamed function can load images outside of the application bundle, such as from the application documents folder. Note however that because these images are cached, it is unwise to load images in this way if they are likely to change or be deleted, as this may result in unpredictable behaviour.
+The name can include a file extension. If it doesn't, .png is assumed. The name may also include a full or partial file path, and, unlike UIImage's version, GLIMage's imageNamed function can load images outside of the application bundle, such as from the application documents folder. Note however that because these images are cached, it is unwise to load images in this way if they are likely to be replaced or deleted while the app is running, as this may result in unexpected behaviour.
 
-**NOTE:** Currently, GLImage can only load images whose dimensions are powers of two, e.g. 8x128, 32x64, 128x128, 512x256, etc. This is due to technical limitations of OpenGL textures. If you attempt to load a non-power-of-two image, GLImage will fail. If you are using PVR images, the width and height must also be equal (see notes under PVR section below). 
+**NOTE:** OpenGL textures are required to have dimensions that are a power of two, e.g. 8x128, 32x64, 128x128, 512x256, etc. As of version 1.2.2, GLImage can load images whose dimensions are not powers of two and it will automatically frame them inside the smallest valid texture size. However, it is still recommended that you try to use images that are powers of two whenever possible, as it avoids wasting video memory.
 	
-	+ (GLImage *)imageWithContentsOfFile:(NSString *)path;
-	- (GLImage *)initWithContentsOfFile:(NSString *)path;
+	+ (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath;
+	- (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath;
 
-These methods load a GLImage from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. If the file extension is omitted it is assumed to be .png. Retina display images using the @2x naming scheme behave the same way as for UIImage. Images loaded in this way are not cached or de-duplicated in any way.
+These methods load a GLImage from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. If the file extension is omitted, it is assumed to be .png. Retina display images using the @2x naming scheme behave the same way as for UIImage. Images loaded in this way are not cached or de-duplicated in any way.
 	
 	+ (GLImage *)imageWithUIImage:(UIImage *)image;
 	- (GLImage *)initWithUIImage:(UIImage *)image;
 	
-These methods create a GLImage from an existing UIImage. The original scale and orientation of the UIImage are preserved. The result GLIImage format will be a 32 bit uncompressed RGBA texture.
+These methods create a GLImage from an existing UIImage. The original scale and orientation of the UIImage are preserved. The result GLIImage format will be a 32-bit uncompressed RGBA texture.
+	
+    + (GLImage *)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
+    - (GLImage *)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
+
+These methods allow you to create a new GLImage by drawing the contents directly using Core Graphics. The first and second arguments specify the size and scale of the image, and the third argument is a block function that you use to do your drawing. The block takes a single argument which is the CGContextRef for you to draw into. See the "Drawing" tab in the GLImage Demo example app for a demonstration.
 	
 	- (void)bindTexture;
 	
@@ -164,7 +179,7 @@ An (optional) color to blend with the image before it is rendered. This can be u
 
 	@property (nonatomic, copy) NSArray *animationImages;
 	
-This is used to specify a sequence of images to be played as an animation. The array can contain either GLImages, or filenames. If filenames are supplied then the images will be streamed from disk rather than being loaded in advance. See the example app for a demonstration of how this can be used to play a large PVR video sequence with smooth 30fps performance and minimal memory consumption. 
+This is used to specify a sequence of images to be played as an animation. The array can contain either GLImages, or filenames. If filenames are supplied then the images will be streamed from disk rather than being loaded in advance. See the Video tab of the GLImage Demo example app for a demonstration of how this can be used to play a large PVR video sequence with smooth 30fps performance and minimal memory consumption. 
 	
 	@property (nonatomic, assign) NSTimeInterval animationDuration;
 
@@ -201,7 +216,7 @@ GLModel methods
     + (GLModel *)modelWithContentsOfFile:(NSString *)path;
     - (GLModel *)initWithContentsOfFile:(NSString *)path;
     
-These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple binary model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way.
+These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple's GLEssentials sample code model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way.
 	
     - (void)draw;
 

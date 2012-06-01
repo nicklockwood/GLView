@@ -163,6 +163,7 @@
 		label.text = [self nameFromFilename:[files objectAtIndex:i]];
 		label.center = CGPointMake(label.center.x, label.center.y + 25.0f * i);
 		[self.view addSubview:label];
+        [label release];
 		
 		label = [[UILabel alloc] initWithFrame:timeLabel.frame];
 		label.textAlignment = timeLabel.textAlignment;
@@ -173,6 +174,7 @@
 		label.tag = 100 + i;
 		[self knockBackLabel:label];
 		[self.view addSubview:label];
+        [label release];
 	}
 	
 	[self performSelectorInBackground:@selector(loadImages) withObject:nil];

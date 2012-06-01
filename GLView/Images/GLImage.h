@@ -2,7 +2,7 @@
 //  GLImage.h
 //
 //  GLView Project
-//  Version 1.2.1
+//  Version 1.2.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -36,20 +36,24 @@
 #import "GLARCHelper.h"
 
 
-#define DEFAULT_FILE_EXTENSION @"png"
+typedef void (^GLImageDrawingBlock)(CGContextRef context);
 
 
 @interface GLImage : NSObject
 
 @property (nonatomic, readonly) CGSize size;
 @property (nonatomic, readonly) CGFloat scale;
+@property (nonatomic, readonly) CGSize textureSize;
+@property (nonatomic, readonly) CGRect clipRect;
 
-+ (GLImage *)imageNamed:(NSString *)name;
-+ (GLImage *)imageWithContentsOfFile:(NSString *)path;
++ (GLImage *)imageNamed:(NSString *)nameOrPath;
++ (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath;
 + (GLImage *)imageWithUIImage:(UIImage *)image;
++ (GLImage *)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
 
-- (GLImage *)initWithContentsOfFile:(NSString *)path;
+- (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath;
 - (GLImage *)initWithUIImage:(UIImage *)image;
+- (GLImage *)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
 
 - (void)bindTexture;
 - (void)drawAtPoint:(CGPoint)point;

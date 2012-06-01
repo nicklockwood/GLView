@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.2.1
+//  Version 1.2.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -228,13 +228,13 @@
 	{
 		GLfloat _near = near ?: (-framebufferWidth * 0.5f);
 		GLfloat _far = far ?: (framebufferWidth * 0.5f);
-    	glOrthof(0, framebufferWidth, framebufferHeight, 0.0f, _near, _far);
+    	glOrthof(0, self.bounds.size.width, self.bounds.size.height, 0.0f, _near, _far);
 	}
 	else
 	{
 		GLfloat _near = (near > 0.0f)? near: 1.0f;
 		GLfloat _far = (far > near)? far: (_near + 50.0f);
-		GLfloat aspect = (GLfloat)framebufferWidth / (GLfloat)framebufferHeight;
+		GLfloat aspect = self.bounds.size.width / self.bounds.size.height;
 		GLfloat top = tanf(fov * 0.5f) * _near;
 		glFrustumf(aspect * -top, aspect * top, -top, top, _near, _far);
 		glTranslatef(0.0f, 0.0f, -_near);
@@ -262,7 +262,7 @@
 	if (!timer)
 	{
 		timer = [CADisplayLink displayLinkWithTarget:self selector:@selector(step)];
-		[timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+		[timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
 	}
 }
 
@@ -284,12 +284,16 @@
 	NSTimeInterval deltaTime = currentTime - lastTime;
 	elapsedTime += deltaTime;
 	lastTime = currentTime;
-	
-	//step animation
-	[self step:deltaTime];
-	
-	//update view
-	[self setNeedsLayout];
+    
+    //only draw when on-screen
+    if (self.window)
+    {
+        //step animation
+        [self step:deltaTime];
+        
+        //update view
+        [self setNeedsLayout];
+    }
 }
 
 - (void)step:(NSTimeInterval)dt

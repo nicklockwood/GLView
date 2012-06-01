@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.2.1
+//  Version 1.2.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -115,6 +115,9 @@
     //apply lights
     if ([lights count])
     {
+        //normalize normals
+        glEnable(GL_NORMALIZE);
+        
         for (int i = 0; i < GL_MAX_LIGHTS; i++)
         {
             if (i < [lights count])

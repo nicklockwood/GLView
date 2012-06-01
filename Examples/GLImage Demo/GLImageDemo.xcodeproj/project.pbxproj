@@ -17,13 +17,12 @@
 		016B4BD213CB825000A06541 /* GLViewExampleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BBE13CB825000A06541 /* GLViewExampleAppDelegate.m */; };
 		016B4BD313CB825000A06541 /* GLViewImageExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BC013CB825000A06541 /* GLViewImageExampleController.m */; };
 		016B4BD813CB825000A06541 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BC613CB825000A06541 /* main.m */; };
+		01D9708A157838F300560F63 /* GLViewDrawingExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D97088157838F300560F63 /* GLViewDrawingExampleController.m */; };
+		01D9708B157838F300560F63 /* GLViewDrawingExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */; };
 		01F00A331565974600CF44D9 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A241565974600CF44D9 /* GLView.m */; };
 		01F00A341565974600CF44D9 /* UIColor+GL.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A261565974600CF44D9 /* UIColor+GL.m */; };
 		01F00A351565974600CF44D9 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A291565974600CF44D9 /* GLImage.m */; };
 		01F00A361565974600CF44D9 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A2B1565974600CF44D9 /* GLImageView.m */; };
-		01F00A371565974600CF44D9 /* GLLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A2E1565974600CF44D9 /* GLLight.m */; };
-		01F00A381565974600CF44D9 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A301565974600CF44D9 /* GLModel.m */; };
-		01F00A391565974600CF44D9 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A321565974600CF44D9 /* GLModelView.m */; };
 		B215E95813D5CEFC005BDC39 /* GLViewVideoExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */; };
 		B215E95913D5CEFC005BDC39 /* GLViewVideoExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B215E95713D5CEFC005BDC39 /* GLViewVideoExampleController.xib */; };
 		B29BD52214A22AC300BB4E68 /* droplet001.pvr in Resources */ = {isa = PBXBuildFile; fileRef = B29BD2AA14A22AB600BB4E68 /* droplet001.pvr */; };
@@ -676,6 +675,9 @@
 		016B4BBF13CB825000A06541 /* GLViewImageExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLViewImageExampleController.h; path = GLViewExample/GLViewImageExampleController.h; sourceTree = SOURCE_ROOT; };
 		016B4BC013CB825000A06541 /* GLViewImageExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GLViewImageExampleController.m; path = GLViewExample/GLViewImageExampleController.m; sourceTree = SOURCE_ROOT; };
 		016B4BC613CB825000A06541 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		01D97087157838F300560F63 /* GLViewDrawingExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewDrawingExampleController.h; sourceTree = "<group>"; };
+		01D97088157838F300560F63 /* GLViewDrawingExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewDrawingExampleController.m; sourceTree = "<group>"; };
+		01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewDrawingExampleController.xib; sourceTree = "<group>"; };
 		01F00A221565974600CF44D9 /* GLARCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLARCHelper.h; sourceTree = "<group>"; };
 		01F00A231565974600CF44D9 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
 		01F00A241565974600CF44D9 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
@@ -685,12 +687,6 @@
 		01F00A291565974600CF44D9 /* GLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImage.m; sourceTree = "<group>"; };
 		01F00A2A1565974600CF44D9 /* GLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImageView.h; sourceTree = "<group>"; };
 		01F00A2B1565974600CF44D9 /* GLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImageView.m; sourceTree = "<group>"; };
-		01F00A2D1565974600CF44D9 /* GLLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLight.h; sourceTree = "<group>"; };
-		01F00A2E1565974600CF44D9 /* GLLight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLight.m; sourceTree = "<group>"; };
-		01F00A2F1565974600CF44D9 /* GLModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModel.h; sourceTree = "<group>"; };
-		01F00A301565974600CF44D9 /* GLModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModel.m; sourceTree = "<group>"; };
-		01F00A311565974600CF44D9 /* GLModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModelView.h; sourceTree = "<group>"; };
-		01F00A321565974600CF44D9 /* GLModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModelView.m; sourceTree = "<group>"; };
 		B215E95513D5CEFC005BDC39 /* GLViewVideoExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewVideoExampleController.h; sourceTree = "<group>"; };
 		B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewVideoExampleController.m; sourceTree = "<group>"; };
 		B215E95713D5CEFC005BDC39 /* GLViewVideoExampleController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewVideoExampleController.xib; sourceTree = "<group>"; };
@@ -1406,6 +1402,8 @@
 				B2E25EEE13D876490063D072 /* GLViewLoadingExampleController.m */,
 				B215E95513D5CEFC005BDC39 /* GLViewVideoExampleController.h */,
 				B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */,
+				01D97087157838F300560F63 /* GLViewDrawingExampleController.h */,
+				01D97088157838F300560F63 /* GLViewDrawingExampleController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1416,6 +1414,7 @@
 				016B4BB513CB825000A06541 /* GLViewImageExampleController.xib */,
 				B2E25EEF13D8764A0063D072 /* GLViewLoadingExampleController.xib */,
 				B215E95713D5CEFC005BDC39 /* GLViewVideoExampleController.xib */,
+				01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */,
 				016B4BB913CB825000A06541 /* MainWindow.xib */,
 				B29BD2A914A22AB500BB4E68 /* PVR Video */,
 				B29BD50614A22AC300BB4E68 /* Images */,
@@ -1428,7 +1427,6 @@
 			children = (
 				01F00A211565974600CF44D9 /* Core */,
 				01F00A271565974600CF44D9 /* Images */,
-				01F00A2C1565974600CF44D9 /* Models */,
 			);
 			name = GLView;
 			path = ../../GLView;
@@ -1455,19 +1453,6 @@
 				01F00A2B1565974600CF44D9 /* GLImageView.m */,
 			);
 			path = Images;
-			sourceTree = "<group>";
-		};
-		01F00A2C1565974600CF44D9 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				01F00A2D1565974600CF44D9 /* GLLight.h */,
-				01F00A2E1565974600CF44D9 /* GLLight.m */,
-				01F00A2F1565974600CF44D9 /* GLModel.h */,
-				01F00A301565974600CF44D9 /* GLModel.m */,
-				01F00A311565974600CF44D9 /* GLModelView.h */,
-				01F00A321565974600CF44D9 /* GLModelView.m */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		B29BD2A914A22AB500BB4E68 /* PVR Video */ = {
@@ -2797,6 +2782,7 @@
 				B29BD79414A22AC400BB4E68 /* logo-very-high.jpg in Resources */,
 				B29BD79514A22AC400BB4E68 /* logo.png in Resources */,
 				B29BD79614A22AC400BB4E68 /* logo@2x.png in Resources */,
+				01D9708B157838F300560F63 /* GLViewDrawingExampleController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2816,9 +2802,7 @@
 				01F00A341565974600CF44D9 /* UIColor+GL.m in Sources */,
 				01F00A351565974600CF44D9 /* GLImage.m in Sources */,
 				01F00A361565974600CF44D9 /* GLImageView.m in Sources */,
-				01F00A371565974600CF44D9 /* GLLight.m in Sources */,
-				01F00A381565974600CF44D9 /* GLModel.m in Sources */,
-				01F00A391565974600CF44D9 /* GLModelView.m in Sources */,
+				01D9708A157838F300560F63 /* GLViewDrawingExampleController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

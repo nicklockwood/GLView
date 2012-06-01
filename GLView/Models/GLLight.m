@@ -2,7 +2,7 @@
 //  GLLight.m
 //
 //  GLView Project
-//  Version 1.2.1
+//  Version 1.2.2
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -45,10 +45,10 @@
 
 @implementation GLLight
 
-@synthesize ambientColor;
-@synthesize diffuseColor;
-@synthesize specularColor;
-@synthesize transform;
+@synthesize ambientColor = _ambientColor;
+@synthesize diffuseColor = _diffuseColor;
+@synthesize specularColor = _specularColor;
+@synthesize transform = _transform;
 
 - (id)init
 {
@@ -57,7 +57,7 @@
         self.ambientColor = [UIColor blackColor];
         self.diffuseColor = [UIColor whiteColor];
         self.specularColor = [UIColor whiteColor];
-        transform = CATransform3DMakeTranslation(0.0f, 0.0f, 1.0f);
+        self.transform = CATransform3DMakeTranslation(0.0f, 0.0f, 1.0f);
     }
     return self;
 }
@@ -71,23 +71,23 @@
     
     //set colors
     GLfloat color[4];
-    [ambientColor getGLComponents:color];
+    [self.ambientColor getGLComponents:color];
     glLightfv(light, GL_AMBIENT, color);
-    [diffuseColor getGLComponents:color];
+    [self.diffuseColor getGLComponents:color];
     glLightfv(light, GL_DIFFUSE, color);
-    [specularColor getGLComponents:color];
+    [self.specularColor getGLComponents:color];
     glLightfv(light, GL_SPECULAR, color);
     
     //set position
-    GLfloat position[4] = {transform.m41, transform.m42, transform.m43, transform.m44};
+    GLfloat position[4] = {self.transform.m41, self.transform.m42, self.transform.m43, self.transform.m44};
     glLightfv(light, GL_POSITION, position);
 }
 
 - (void)dealloc
 {
-    AH_RELEASE(ambientColor);
-    AH_RELEASE(diffuseColor);
-    AH_RELEASE(specularColor);
+    AH_RELEASE(_ambientColor);
+    AH_RELEASE(_diffuseColor);
+    AH_RELEASE(_specularColor);
     AH_SUPER_DEALLOC;
 }
 

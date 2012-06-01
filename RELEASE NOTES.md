@@ -1,3 +1,12 @@
+Version 1.2.2
+
+- Fixed bug with images being rendered at half size on retina display
+- GLImage now supports non power-of-two-sized images
+- Added initWithSize:scale:drawingBlock: method to GLImage for creating images with content drawn at runtime
+- Fixed a bug in GLImageView initWithImage method
+- Fixed some leaks in GLModel loading code when not running under ARC
+- GLView animation step method is no longer called if the view is offscreen
+
 Version 1.2.1
 
 - Added GLLight object

@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.2.1
+//  Version 1.2.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -315,6 +315,7 @@ WWDC2010Attributes;
         //TODO: more
     }
     while (![lineScanner isAtEnd]);
+    AH_RELEASE(string);
     
     //release temporary storage
     AH_RELEASE(tempVertexData);
@@ -340,16 +341,16 @@ WWDC2010Attributes;
     {
         texCoords = malloc([textCoordData length]);
         memcpy(texCoords, textCoordData.bytes, [textCoordData length]);
-        AH_RELEASE(textCoordData);
     }
+    AH_RELEASE(textCoordData);
     
     //copy normals
     if ([normalData length])
     {
         normals = malloc([normalData length]);
         memcpy(normals, normalData.bytes, [normalData length]);
-        AH_RELEASE(normalData);
     }
+    AH_RELEASE(normalData);
     
     //success
     return YES;
@@ -385,11 +386,13 @@ WWDC2010Attributes;
         if (([extension isEqualToString:@"model"] && [self loadAppleWWDC2010Model:data]) ||
             ([extension isEqualToString:@"obj"] && [self loadObjModel:data]))
         {
-            return self;    
+            AH_RELEASE(data);
+            return self;
         }
         else
         {
             NSLog(@"Model data was not in a recognised format");
+            AH_RELEASE(data);
             AH_RELEASE(self);
             return nil;
         }
