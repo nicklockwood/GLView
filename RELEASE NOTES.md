@@ -1,3 +1,12 @@
+Version 1.3
+
+- Added GLImageMap class, with support for loading Cocos2D sprite sheets
+- Added image map example to GLImage Demo
+- Added ability to specify if GLImage has premultiplied alpha
+- Added ability to create GLImages and GLModels from preloaded data
+- Added ability to specify image size, scale and clipRect
+- Updated PVR image documentation for Xcode 4.3 and above
+
 Version 1.2.2
 
 - Fixed bug with images being rendered at half size on retina display

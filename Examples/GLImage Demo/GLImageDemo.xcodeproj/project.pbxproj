@@ -12,15 +12,24 @@
 		0116539513C8FD7600942540 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539413C8FD7600942540 /* CoreGraphics.framework */; };
 		0116539713C8FD7600942540 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539613C8FD7600942540 /* QuartzCore.framework */; };
 		0116539913C8FD7600942540 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0116539813C8FD7600942540 /* OpenGLES.framework */; };
+		012E3CDA157E4C0F00960744 /* lostgarden.png in Resources */ = {isa = PBXBuildFile; fileRef = 012E3CD8157E4C0F00960744 /* lostgarden.png */; };
+		012E3CDB157E4C0F00960744 /* lostgarden@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 012E3CD9157E4C0F00960744 /* lostgarden@2x.png */; };
+		012E3CDD157E4F5600960744 /* ImageMapTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 012E3CDC157E4F5600960744 /* ImageMapTableCell.xib */; };
 		016B4BCE13CB825000A06541 /* GLViewImageExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BB513CB825000A06541 /* GLViewImageExampleController.xib */; };
 		016B4BD013CB825000A06541 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BB913CB825000A06541 /* MainWindow.xib */; };
 		016B4BD213CB825000A06541 /* GLViewExampleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BBE13CB825000A06541 /* GLViewExampleAppDelegate.m */; };
 		016B4BD313CB825000A06541 /* GLViewImageExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BC013CB825000A06541 /* GLViewImageExampleController.m */; };
 		016B4BD813CB825000A06541 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 016B4BC613CB825000A06541 /* main.m */; };
+		0183CA5E157CED8400805862 /* GLImageMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 0183CA5D157CED8400805862 /* GLImageMap.m */; };
+		0183CA62157D072000805862 /* GLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0183CA61157D072000805862 /* GLUtils.m */; };
+		01B126A0157E1B3000E57BA2 /* tab.png in Resources */ = {isa = PBXBuildFile; fileRef = 01B1269E157E1B2F00E57BA2 /* tab.png */; };
+		01B126A1157E1B3000E57BA2 /* tab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 01B1269F157E1B2F00E57BA2 /* tab@2x.png */; };
+		01B126A6157E1DAF00E57BA2 /* GLViewImageMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */; };
+		01B126A7157E1DAF00E57BA2 /* GLViewImageMapController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */; };
+		01B126AB157E251200E57BA2 /* lostgarden.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01B126A9157E251200E57BA2 /* lostgarden.plist */; };
 		01D9708A157838F300560F63 /* GLViewDrawingExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D97088157838F300560F63 /* GLViewDrawingExampleController.m */; };
 		01D9708B157838F300560F63 /* GLViewDrawingExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */; };
 		01F00A331565974600CF44D9 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A241565974600CF44D9 /* GLView.m */; };
-		01F00A341565974600CF44D9 /* UIColor+GL.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A261565974600CF44D9 /* UIColor+GL.m */; };
 		01F00A351565974600CF44D9 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A291565974600CF44D9 /* GLImage.m */; };
 		01F00A361565974600CF44D9 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A2B1565974600CF44D9 /* GLImageView.m */; };
 		B215E95813D5CEFC005BDC39 /* GLViewVideoExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */; };
@@ -665,6 +674,9 @@
 		0116539413C8FD7600942540 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		0116539613C8FD7600942540 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		0116539813C8FD7600942540 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		012E3CD8157E4C0F00960744 /* lostgarden.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lostgarden.png; sourceTree = "<group>"; };
+		012E3CD9157E4C0F00960744 /* lostgarden@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lostgarden@2x.png"; sourceTree = "<group>"; };
+		012E3CDC157E4F5600960744 /* ImageMapTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageMapTableCell.xib; sourceTree = "<group>"; };
 		016B4BB613CB825000A06541 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/GLViewImageExampleController.xib; sourceTree = "<group>"; };
 		016B4BB813CB825000A06541 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		016B4BBA13CB825000A06541 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
@@ -675,14 +687,21 @@
 		016B4BBF13CB825000A06541 /* GLViewImageExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GLViewImageExampleController.h; path = GLViewExample/GLViewImageExampleController.h; sourceTree = SOURCE_ROOT; };
 		016B4BC013CB825000A06541 /* GLViewImageExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GLViewImageExampleController.m; path = GLViewExample/GLViewImageExampleController.m; sourceTree = SOURCE_ROOT; };
 		016B4BC613CB825000A06541 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0183CA5C157CED8400805862 /* GLImageMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImageMap.h; sourceTree = "<group>"; };
+		0183CA5D157CED8400805862 /* GLImageMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImageMap.m; sourceTree = "<group>"; };
+		0183CA60157D072000805862 /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
+		0183CA61157D072000805862 /* GLUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLUtils.m; sourceTree = "<group>"; };
+		01B1269E157E1B2F00E57BA2 /* tab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tab.png; sourceTree = "<group>"; };
+		01B1269F157E1B2F00E57BA2 /* tab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tab@2x.png"; sourceTree = "<group>"; };
+		01B126A3157E1DAF00E57BA2 /* GLViewImageMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewImageMapController.h; sourceTree = "<group>"; };
+		01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewImageMapController.m; sourceTree = "<group>"; };
+		01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewImageMapController.xib; sourceTree = "<group>"; };
+		01B126A9157E251200E57BA2 /* lostgarden.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = lostgarden.plist; sourceTree = "<group>"; };
 		01D97087157838F300560F63 /* GLViewDrawingExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewDrawingExampleController.h; sourceTree = "<group>"; };
 		01D97088157838F300560F63 /* GLViewDrawingExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewDrawingExampleController.m; sourceTree = "<group>"; };
 		01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewDrawingExampleController.xib; sourceTree = "<group>"; };
-		01F00A221565974600CF44D9 /* GLARCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLARCHelper.h; sourceTree = "<group>"; };
 		01F00A231565974600CF44D9 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
 		01F00A241565974600CF44D9 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
-		01F00A251565974600CF44D9 /* UIColor+GL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+GL.h"; sourceTree = "<group>"; };
-		01F00A261565974600CF44D9 /* UIColor+GL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+GL.m"; sourceTree = "<group>"; };
 		01F00A281565974600CF44D9 /* GLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImage.h; sourceTree = "<group>"; };
 		01F00A291565974600CF44D9 /* GLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImage.m; sourceTree = "<group>"; };
 		01F00A2A1565974600CF44D9 /* GLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImageView.h; sourceTree = "<group>"; };
@@ -1381,9 +1400,20 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		012E3CDE157E4F6400960744 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B29BD2A914A22AB500BB4E68 /* PVR Video */,
+				B29BD50614A22AC300BB4E68 /* Images */,
+				01B126A8157E251200E57BA2 /* ImageMaps */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		016B4BB413CB825000A06541 /* GLViewExample */ = {
 			isa = PBXGroup;
 			children = (
+				012E3CDE157E4F6400960744 /* Resources */,
 				016B4BDC13CB831700A06541 /* Classes */,
 				016B4BDD13CB833500A06541 /* Nibs */,
 				012AB12914A1452C0016FFF1 /* Supporting Files */,
@@ -1404,6 +1434,8 @@
 				B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */,
 				01D97087157838F300560F63 /* GLViewDrawingExampleController.h */,
 				01D97088157838F300560F63 /* GLViewDrawingExampleController.m */,
+				01B126A3157E1DAF00E57BA2 /* GLViewImageMapController.h */,
+				01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1415,11 +1447,21 @@
 				B2E25EEF13D8764A0063D072 /* GLViewLoadingExampleController.xib */,
 				B215E95713D5CEFC005BDC39 /* GLViewVideoExampleController.xib */,
 				01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */,
+				01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */,
+				012E3CDC157E4F5600960744 /* ImageMapTableCell.xib */,
 				016B4BB913CB825000A06541 /* MainWindow.xib */,
-				B29BD2A914A22AB500BB4E68 /* PVR Video */,
-				B29BD50614A22AC300BB4E68 /* Images */,
 			);
 			name = Nibs;
+			sourceTree = "<group>";
+		};
+		01B126A8157E251200E57BA2 /* ImageMaps */ = {
+			isa = PBXGroup;
+			children = (
+				01B126A9157E251200E57BA2 /* lostgarden.plist */,
+				012E3CD8157E4C0F00960744 /* lostgarden.png */,
+				012E3CD9157E4C0F00960744 /* lostgarden@2x.png */,
+			);
+			path = ImageMaps;
 			sourceTree = "<group>";
 		};
 		01F00A201565974600CF44D9 /* GLView */ = {
@@ -1435,11 +1477,10 @@
 		01F00A211565974600CF44D9 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				01F00A221565974600CF44D9 /* GLARCHelper.h */,
+				0183CA60157D072000805862 /* GLUtils.h */,
+				0183CA61157D072000805862 /* GLUtils.m */,
 				01F00A231565974600CF44D9 /* GLView.h */,
 				01F00A241565974600CF44D9 /* GLView.m */,
-				01F00A251565974600CF44D9 /* UIColor+GL.h */,
-				01F00A261565974600CF44D9 /* UIColor+GL.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1449,6 +1490,8 @@
 			children = (
 				01F00A281565974600CF44D9 /* GLImage.h */,
 				01F00A291565974600CF44D9 /* GLImage.m */,
+				0183CA5C157CED8400805862 /* GLImageMap.h */,
+				0183CA5D157CED8400805862 /* GLImageMap.m */,
 				01F00A2A1565974600CF44D9 /* GLImageView.h */,
 				01F00A2B1565974600CF44D9 /* GLImageView.m */,
 			);
@@ -2095,6 +2138,8 @@
 				B29BD51D14A22AC300BB4E68 /* logo-very-high.jpg */,
 				B29BD51E14A22AC300BB4E68 /* logo.png */,
 				B29BD51F14A22AC300BB4E68 /* logo@2x.png */,
+				01B1269E157E1B2F00E57BA2 /* tab.png */,
+				01B1269F157E1B2F00E57BA2 /* tab@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -2783,6 +2828,13 @@
 				B29BD79514A22AC400BB4E68 /* logo.png in Resources */,
 				B29BD79614A22AC400BB4E68 /* logo@2x.png in Resources */,
 				01D9708B157838F300560F63 /* GLViewDrawingExampleController.xib in Resources */,
+				01B126A0157E1B3000E57BA2 /* tab.png in Resources */,
+				01B126A1157E1B3000E57BA2 /* tab@2x.png in Resources */,
+				01B126A7157E1DAF00E57BA2 /* GLViewImageMapController.xib in Resources */,
+				01B126AB157E251200E57BA2 /* lostgarden.plist in Resources */,
+				012E3CDA157E4C0F00960744 /* lostgarden.png in Resources */,
+				012E3CDB157E4C0F00960744 /* lostgarden@2x.png in Resources */,
+				012E3CDD157E4F5600960744 /* ImageMapTableCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2799,10 +2851,12 @@
 				B215E95813D5CEFC005BDC39 /* GLViewVideoExampleController.m in Sources */,
 				B2E25EF013D8764A0063D072 /* GLViewLoadingExampleController.m in Sources */,
 				01F00A331565974600CF44D9 /* GLView.m in Sources */,
-				01F00A341565974600CF44D9 /* UIColor+GL.m in Sources */,
 				01F00A351565974600CF44D9 /* GLImage.m in Sources */,
 				01F00A361565974600CF44D9 /* GLImageView.m in Sources */,
 				01D9708A157838F300560F63 /* GLViewDrawingExampleController.m in Sources */,
+				0183CA5E157CED8400805862 /* GLImageMap.m in Sources */,
+				0183CA62157D072000805862 /* GLUtils.m in Sources */,
+				01B126A6157E1DAF00E57BA2 /* GLViewImageMapController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.2.2
+//  Version 1.3
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -33,18 +33,15 @@
 //
 
 #import "GLModelView.h"
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
-#import "UIColor+GL.h"
 
 
 @implementation GLModelView
 
-@synthesize model;
-@synthesize texture;
-@synthesize blendColor;
-@synthesize lights;
-@synthesize transform;
+@synthesize model = _model;
+@synthesize texture = _texture;
+@synthesize blendColor = _blendColor;
+@synthesize lights = _lights;
+@synthesize transform = _transform;
 
 - (void)setUp
 {
@@ -58,49 +55,49 @@
     AH_RELEASE(light);
 }
 
-- (void)setLights:(NSArray *)_lights
+- (void)setLights:(NSArray *)lights
 {
-    if (lights != _lights)
+    if (_lights != lights)
     {
-        AH_RELEASE(lights);
-        lights = AH_RETAIN(_lights);
+        AH_RELEASE(_lights);
+        _lights = AH_RETAIN(lights);
         [self setNeedsLayout];
     }
 }
 
-- (void)setModel:(GLModel *)_model
+- (void)setModel:(GLModel *)model
 {
-    if (model != _model)
+    if (_model != model)
     {
-        AH_RELEASE(model);
-        model = AH_RETAIN(_model);
+        AH_RELEASE(_model);
+        _model = AH_RETAIN(model);
         [self setNeedsLayout];
     }
 }
 
-- (void)setBlendColor:(UIColor *)_blendColor
+- (void)setBlendColor:(UIColor *)blendColor
 {
-    if (blendColor != _blendColor)
+    if (_blendColor != blendColor)
     {
-        AH_RELEASE(blendColor);
-        blendColor = AH_RETAIN(_blendColor);
+        AH_RELEASE(_blendColor);
+        _blendColor = AH_RETAIN(blendColor);
         [self setNeedsLayout];
     }
 }
 
-- (void)setTexture:(GLImage *)_texture
+- (void)setTexture:(GLImage *)texture
 {
-    if (texture != _texture)
+    if (_texture != texture)
     {
-        AH_RELEASE(texture);
-        texture = AH_RETAIN(_texture);
+        AH_RELEASE(_texture);
+        _texture = AH_RETAIN(texture);
         [self setNeedsLayout];
     }
 }
 
-- (void)setTransform:(CATransform3D)_transform
+- (void)setTransform:(CATransform3D)transform
 {
-    transform = _transform;
+    _transform = transform;
     [self setNeedsLayout];
 }
 
@@ -113,16 +110,16 @@
     glClear(GL_COLOR_BUFFER_BIT + GL_DEPTH_BUFFER_BIT);
     
     //apply lights
-    if ([lights count])
+    if ([self.lights count])
     {
         //normalize normals
         glEnable(GL_NORMALIZE);
         
         for (int i = 0; i < GL_MAX_LIGHTS; i++)
         {
-            if (i < [lights count])
+            if (i < [self.lights count])
             {
-                [[lights objectAtIndex:i] bind:GL_LIGHT0 + i];
+                [[self.lights objectAtIndex:i] bind:GL_LIGHT0 + i];
             }
             else
             {
@@ -136,12 +133,13 @@
     }
     
     //apply transform
-    glLoadMatrixf((GLfloat *)&transform);
-
-    [blendColor ?: [UIColor whiteColor] bindGLBlendColor];
-    if (texture)
+    glLoadMatrixf((GLfloat *)&_transform);
+    
+    //set texture
+    [self.blendColor ?: [UIColor whiteColor] bindGLBlendColor];
+    if (self.texture)
     {
-        [texture bindTexture];
+        [self.texture bindTexture];
     }
     else
     {
@@ -149,17 +147,19 @@
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
     }
-    [model draw];
+    
+    //render the model
+    [self.model draw];
 	
     [self presentFramebuffer];
 }
 
 - (void)dealloc
 {
-    AH_RELEASE(lights);
-    AH_RELEASE(texture);
-    AH_RELEASE(blendColor);
-    AH_RELEASE(model);
+    AH_RELEASE(_lights);
+    AH_RELEASE(_texture);
+    AH_RELEASE(_blendColor);
+    AH_RELEASE(_model);
     AH_SUPER_DEALLOC;
 }
 

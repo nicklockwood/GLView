@@ -2,7 +2,7 @@
 //  GLImage.h
 //
 //  GLView Project
-//  Version 1.2.2
+//  Version 1.3
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -33,27 +33,35 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GLARCHelper.h"
+#import "GLUtils.h"
 
 
 typedef void (^GLImageDrawingBlock)(CGContextRef context);
 
 
-@interface GLImage : NSObject
+@interface GLImage : NSObject <NSCopying>
 
 @property (nonatomic, readonly) CGSize size;
 @property (nonatomic, readonly) CGFloat scale;
 @property (nonatomic, readonly) CGSize textureSize;
+@property (nonatomic, readonly) GLfloat *textureCoords;
 @property (nonatomic, readonly) CGRect clipRect;
 
 + (GLImage *)imageNamed:(NSString *)nameOrPath;
 + (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath;
 + (GLImage *)imageWithUIImage:(UIImage *)image;
 + (GLImage *)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
++ (GLImage *)imageWithData:(NSData *)data scale:(CGFloat)scale;
 
 - (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath;
 - (GLImage *)initWithUIImage:(UIImage *)image;
 - (GLImage *)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
+- (GLImage *)initWithData:(NSData *)data scale:(CGFloat)scale;
+
+- (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha;
+- (GLImage *)imageWithClipRect:(CGRect)clipRect;
+- (GLImage *)imageWithScale:(CGFloat)scale;
+- (GLImage *)imageWithSize:(CGSize)size;
 
 - (void)bindTexture;
 - (void)drawAtPoint:(CGPoint)point;

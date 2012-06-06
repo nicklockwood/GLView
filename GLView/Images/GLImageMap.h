@@ -1,10 +1,10 @@
 //
-//  GLImageView.h
+//  GLImageMap.h
 //
 //  GLView Project
 //  Version 1.3
 //
-//  Created by Nick Lockwood on 10/07/2011.
+//  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
@@ -32,20 +32,21 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-#import <UIKit/UIKit.h>
-#import "GLView.h"
 #import "GLImage.h"
 #import "GLUtils.h"
 
 
-@interface GLImageView : GLView
+@interface GLImageMap : NSObject
 
-@property (nonatomic, strong) GLImage *image;
-@property (nonatomic, strong) UIColor *blendColor;
-@property (nonatomic, copy) NSArray *animationImages;
-@property (nonatomic, assign) NSTimeInterval animationDuration;
-@property (nonatomic, assign) NSInteger animationRepeatCount;
++ (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath;
++ (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data;
 
-- (GLImageView *)initWithImage:(GLImage *)image;
+- (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath;
+- (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data;
+
+- (NSInteger)imageCount;
+- (NSString *)imageNameAtIndex:(NSInteger)index;
+- (GLImage *)imageAtIndex:(NSInteger)index;
+- (GLImage *)imageNamed:(NSString *)name;
 
 @end

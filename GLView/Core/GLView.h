@@ -2,7 +2,7 @@
 //  GLView.h
 //
 //  GLView Project
-//  Version 1.2.2
+//  Version 1.3
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -33,7 +33,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GLARCHelper.h"
+#import "GLUtils.h"
 
 
 @interface GLView : UIView

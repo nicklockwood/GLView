@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.2.2
+//  Version 1.3
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -33,8 +33,6 @@
 //
 
 #import "GLModel.h"
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
 
 
 typedef struct
@@ -68,33 +66,33 @@ WWDC2010Attributes;
 
 @interface GLModel ()
 
-@property (assign, nonatomic) GLfloat *vertices;
-@property (assign, nonatomic) GLfloat *texCoords;
-@property (assign, nonatomic) GLfloat *normals;
-@property (assign, nonatomic) GLushort *elements;
-@property (assign, nonatomic) GLuint componentCount;
-@property (assign, nonatomic) GLuint vertexCount;
-@property (assign, nonatomic) GLuint elementCount;
+@property (nonatomic, assign) GLfloat *vertices;
+@property (nonatomic, assign) GLfloat *texCoords;
+@property (nonatomic, assign) GLfloat *normals;
+@property (nonatomic, assign) GLushort *elements;
+@property (nonatomic, assign) GLuint componentCount;
+@property (nonatomic, assign) GLuint vertexCount;
+@property (nonatomic, assign) GLuint elementCount;
 
 @end
 
 
 @implementation GLModel
 
-@synthesize vertices;
-@synthesize texCoords;
-@synthesize normals;
-@synthesize elements;
-@synthesize componentCount;
-@synthesize vertexCount;
-@synthesize elementCount;
+@synthesize vertices = _vertices;
+@synthesize texCoords = _texCoords;
+@synthesize normals = _normals;
+@synthesize elements = _elements;
+@synthesize componentCount = _componentCount;
+@synthesize vertexCount = _vertexCount;
+@synthesize elementCount = _elementCount;
 
 - (void)dealloc
 {
-    free(vertices);
-    free(texCoords);
-    free(normals);
-    free(elements);
+    free(_vertices);
+    free(_texCoords);
+    free(_normals);
+    free(_elements);
     AH_SUPER_DEALLOC;
 }
 
@@ -133,27 +131,27 @@ WWDC2010Attributes;
         //TODO: extend GLModel with support for other primitive types
         return NO;
     }
-    elementCount = elementAttributes->numElements;
-    elements = malloc(elementCount * sizeof(GLushort));
+    self.elementCount = elementAttributes->numElements;
+    self.elements = malloc(self.elementCount * sizeof(GLushort));
     switch (elementAttributes->datatype)
     {
         case GL_UNSIGNED_INT:
         {
-            GLuint *_elements = (GLuint *)(elementAttributes + 1);
-            for (GLuint i = 0; i < elementCount; i++)
+            GLuint *elements = (GLuint *)(elementAttributes + 1);
+            for (GLuint i = 0; i < self.elementCount; i++)
             {
-                if (_elements[i] >= 0xFFFF)
+                if (elements[i] >= 0xFFFF)
                 {
                     //index is outside the unsigned short range
                     return NO;
                 }
-                elements[i] = _elements[i];
+                self.elements[i] = elements[i];
             }
             break;
         }
         case GL_UNSIGNED_SHORT:
         {
-            memcpy(elements, elementAttributes + 1, elementAttributes->byteSize);
+            memcpy(self.elements, elementAttributes + 1, elementAttributes->byteSize);
             break;
         }
         default:
@@ -169,10 +167,10 @@ WWDC2010Attributes;
         //TODO: extend GLModel with support for other data types
         return NO;
     }
-    componentCount = 4;
-    vertexCount = vertexAttributes->numElements;
-    vertices = malloc(vertexAttributes->byteSize);
-    memcpy(vertices, vertexAttributes + 1, vertexAttributes->byteSize);
+    self.componentCount = 4;
+    self.vertexCount = vertexAttributes->numElements;
+    self.vertices = malloc(vertexAttributes->byteSize);
+    memcpy(self.vertices, vertexAttributes + 1, vertexAttributes->byteSize);
     
     //copy text coord data
     WWDC2010Attributes *texCoordAttributes = (WWDC2010Attributes *)([data bytes] + toc->byteTexcoordOffset);
@@ -183,8 +181,8 @@ WWDC2010Attributes;
     }
     if (texCoordAttributes->byteSize)
     {
-        texCoords = malloc(texCoordAttributes->byteSize);
-        memcpy(texCoords, texCoordAttributes + 1, texCoordAttributes->byteSize);
+        self.texCoords = malloc(texCoordAttributes->byteSize);
+        memcpy(self.texCoords, texCoordAttributes + 1, texCoordAttributes->byteSize);
     }
     
     //copy normal data
@@ -196,8 +194,8 @@ WWDC2010Attributes;
     }
     if (normalAttributes->byteSize)
     {
-        normals = malloc(normalAttributes->byteSize);
-        memcpy(normals, normalAttributes + 1, normalAttributes->byteSize);
+        self.normals = malloc(normalAttributes->byteSize);
+        memcpy(self.normals, normalAttributes + 1, normalAttributes->byteSize);
     }
     
     //success
@@ -324,31 +322,31 @@ WWDC2010Attributes;
     AH_RELEASE(indexStrings);
     
     //copy elements
-    elementCount = [faceIndexData length] / sizeof(GLushort);
-    elements = malloc([faceIndexData length]);
-    memcpy(elements, faceIndexData.bytes, [faceIndexData length]);
+    self.elementCount = [faceIndexData length] / sizeof(GLushort);
+    self.elements = malloc([faceIndexData length]);
+    memcpy(self.elements, faceIndexData.bytes, [faceIndexData length]);
     AH_RELEASE(faceIndexData);
     
     //copy vertices
-    componentCount = 3;
-    vertexCount = [vertexData length] / (3 * sizeof(GLfloat));
-    vertices = malloc([vertexData length]);
-    memcpy(vertices, vertexData.bytes, [vertexData length]);
+    self.componentCount = 3;
+    self.vertexCount = [vertexData length] / (3 * sizeof(GLfloat));
+    self.vertices = malloc([vertexData length]);
+    memcpy(self.vertices, vertexData.bytes, [vertexData length]);
     AH_RELEASE(vertexData);
     
     //copy texture coords
     if ([textCoordData length])
     {
-        texCoords = malloc([textCoordData length]);
-        memcpy(texCoords, textCoordData.bytes, [textCoordData length]);
+        self.texCoords = malloc([textCoordData length]);
+        memcpy(self.texCoords, textCoordData.bytes, [textCoordData length]);
     }
     AH_RELEASE(textCoordData);
     
     //copy normals
     if ([normalData length])
     {
-        normals = malloc([normalData length]);
-        memcpy(normals, normalData.bytes, [normalData length]);
+        self.normals = malloc([normalData length]);
+        memcpy(self.normals, normalData.bytes, [normalData length]);
     }
     AH_RELEASE(normalData);
     
@@ -363,36 +361,39 @@ WWDC2010Attributes;
     return AH_AUTORELEASE([[self alloc] initWithContentsOfFile:path]);
 }
 
++ (GLModel *)modelWithData:(NSData *)data
+{
+    return AH_AUTORELEASE([[self alloc] initWithData:data]);
+}
+
 - (GLModel *)initWithContentsOfFile:(NSString *)path
 {
+    //convert to absolute path
+    path = [path absolutePathWithDefaultExtensions:nil];
+        
+    //load data
+    return [self initWithData:[NSData dataWithContentsOfFile:path]];
+}
+
+- (GLModel *)initWithData:(NSData *)data
+{
+    if (!data)
+    {
+        //bail early before something bad happens
+        AH_RELEASE(self);
+        return nil;
+    }
+    
     if ((self = [self init]))
     {
-        //convert to absolute path
-        if (![path isAbsolutePath])
+        //attempt to load model
+        if ([self loadAppleWWDC2010Model:data] || [self loadObjModel:data])
         {
-            path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path];
-        }
-        
-        //load data
-        NSData *data = [[NSData alloc] initWithContentsOfFile:path];
-        if (!data)
-        {
-            //bail early before something bad happens
-            AH_RELEASE(self);
-            return nil;
-        }
-        
-        NSString *extension = [[path pathExtension] lowercaseString];
-        if (([extension isEqualToString:@"model"] && [self loadAppleWWDC2010Model:data]) ||
-            ([extension isEqualToString:@"obj"] && [self loadObjModel:data]))
-        {
-            AH_RELEASE(data);
             return self;
         }
         else
         {
             NSLog(@"Model data was not in a recognised format");
-            AH_RELEASE(data);
             AH_RELEASE(self);
             return nil;
         }
@@ -405,29 +406,29 @@ WWDC2010Attributes;
     glEnable(GL_DEPTH_TEST);
 
     glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(componentCount, GL_FLOAT, 0, vertices);
+    glVertexPointer(self.componentCount, GL_FLOAT, 0, self.vertices);
     
-    if (texCoords)
+    if (self.texCoords)
     {
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+        glTexCoordPointer(2, GL_FLOAT, 0, self.texCoords);
     }
     else
     {
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
     
-    if (normals)
+    if (self.normals)
     {
         glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(GL_FLOAT, 0, normals);
+        glNormalPointer(GL_FLOAT, 0, self.normals);
     }
     else
     {
         glDisableClientState(GL_NORMAL_ARRAY);
     }
     
-    glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_SHORT, elements);
+    glDrawElements(GL_TRIANGLES, self.elementCount, GL_UNSIGNED_SHORT, self.elements);
     
     glDisable(GL_DEPTH_TEST);
 }

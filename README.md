@@ -39,6 +39,8 @@ The GLView library currently includes the following classes:
 
 - GLImage - this is a class for loading image files as OpenGL textures. It supports all the same image formats as UIImage, as well as a number of PVR image formats.
 
+- GLImageMap - this is a class for loading image maps, also known as image atlases or spritemaps.
+
 - GLImageView - this is a subclass of GLView, specifically designed for displaying GLImages. It behaves in a similar way to UIImageView and mostly mirrors its interface.
 
 - GLModel - this is a class for loading 3D mesh geometry for rendering in a GLView. It currently supports only Wavefront .obj files and the bespoke "WWDC2010" model format used in the Apple GLEssentials sample code, but will support additional formats in future.
@@ -46,7 +48,6 @@ The GLView library currently includes the following classes:
 - GLModelView - this is a subclass of GLView, specifically designed for displaying GLModels as simply and easily as possible.
 
 - GLLight - this class represents a light source and is used for illuminating GLModel objects in the GLModelView.
-
 
 - UIColor+GL - this is a category on UIColor that makes it easier to convert UIKit color values for use with OpenGL.
 
@@ -116,13 +117,21 @@ The size of the image, in points. As with UIImage, on a retina display device th
 
 The image scale. For @2x images on Retina display devices this will have a value of 2.0.
 
+    @property (nonatomic, readonly) GLuint texture;
+    
+The underlying texture ID used by the GLImage. You can use this to bind the texture in your own drawing code if you do not want to use the `bindTexture` method.
+
     @property (nonatomic, readonly) CGSize textureSize;
     
 The size of the underlying texture. The dimensions of the texture will always be a power of two. For images that have a scale of 1.0 (non-Retina) and have power-of-two dimensions, this will match the size property.
 
+    @property (nonatomic, readonly) GLfloat *textureCoords;
+
+The texture coordinates used for clipping the image. These are handy if you need to render the image yourself using OpenGL functions instead of using the `drawAtPoint:` or `drawInRect:` methods. The textureCoords array will always contain exactly 8 GLfloat values.
+
     @property (nonatomic, readonly) CGRect clipRect;
 
-The clipping rectangle used to resize the texture to fit the image rect. This rect is measured in texture pixels, so for images that have power-of-two dimensions, the clipRect will match the textureSize.
+The clipping rectangle used to resize the texture to fit the image rect. This rect is measured in texture pixels, so for images that are not clipped, the clipRect size will match the textureSize.
 
 
 GLImage methods
@@ -150,7 +159,32 @@ These methods create a GLImage from an existing UIImage. The original scale and 
     - (GLImage *)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
 
 These methods allow you to create a new GLImage by drawing the contents directly using Core Graphics. The first and second arguments specify the size and scale of the image, and the third argument is a block function that you use to do your drawing. The block takes a single argument which is the CGContextRef for you to draw into. See the "Drawing" tab in the GLImage Demo example app for a demonstration.
-	
+
+    + (GLImage *)imageWithData:(NSData *)data scale:(CGFloat)scale;
+    - (GLImage *)initWithData:(NSData *)data scale:(CGFloat)scale;
+
+These methods allow you to create a GLImage from an NSData object. The data content should correspond to an image file in one of the formats supported by `imageWithContentsOfFile:`. The image size and format is derived automatically from the data. The scale parameter can be used to indicate the display resolution that the image is optimised for.
+
+    - (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha;
+    
+Images that have translucent parts can either use premultiplied or non-premultiplied alpha. iOS typically uses premultiplied alpha when loading images and this is the default for non-PVR images. PVR images generated using Apple's command-line tools do not have premultiplied alpha, so for PVR images it is assumed that the image does not have premultiplied alpha. Some tools however generate PVR images with premultiplied alpha, and since there is no way to detect this from the file format, these images will render incorrectly when loaded with GLImage. To correct this, use this method with a value of YES to create a version of the image that will render correctly.
+
+    - (GLImage *)imageWithOrientation:(UIImageOrientation)orientation;
+
+If your image is flipped or was rotated to fit into a larger image map, you can change the orientation at which it is displayed by updating the orientation with this method. This method doesn't change the image pixels, it only affects the way in which it is displayed by the `drawAtPoint:` and `drawInRect:` methods.
+    
+    - (GLImage *)imageWithClipRect:(CGRect)clipRect;
+    
+This method can be used to set the clipping rect for the image. This is useful if you are loading a PVR texture image where the content is smaller than the image bounds but, due to the PVR format restrictions, the image file has to be a square with power-of-two sides. Note that the clipping rect is measured in texture pixels, not in image coordinates, and does not take into account the scale factor or previous clipping. You can determine the actual texture Size from the textureSize property of the image. **Note:** Adjusting the clipRect will also adjust the image size accordingly, however you can override this by calling `imageWithSize:` afterwards.
+
+    - (GLImage *)imageWithScale:(CGFloat)scale;
+    
+This method can be used to set the image scale. Modifying the scale will automatically update the image size accordingly, but will not actually change the image pixels. In the unlikely case that you wish to set the scale without modifying the image size, you can override call `imageWithSize:` afterwards to restore the original size.
+
+    - (GLImage *)imageWithSize:(CGSize)size;
+    
+This method can be used to set the image size. This method does not actually modify the image pixels, it merely changes the default horizontal and vertical scale factor at which the image is drawn when using the `drawAtPoint:` method.
+
 	- (void)bindTexture;
 	
 This method is used to bind the underlying OpenGL texture of the GLImage prior to using it for OpenGL drawing.
@@ -162,6 +196,38 @@ This method will draw the image into the currently bound GLView or OpenGL contex
 	- (void)drawInRect:(CGRect)rect;
 
 This method will draw the image into the currently bound GLView or OpenGL context, stretching it to fit the specified CGRect.
+
+
+GLImageMap methods
+----------------------
+
+The GLImageMap class has the following methods:
+
+    + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath;
+    - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath;
+    
+These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format. As with ordinary GLImages, GLImageMap will automatically detect @2x retina images.
+
+    + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data;    
+    - (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data;
+    
+These methods are used to create a GLImage from data. The data should represent the contents of an image map file in one of the formats supported by the `imageMapWithContentsOfFile:` method. If the image argument is nil, GLImageMap will attempt to locate the texture file from the filename specified in the data, however if the image file is not located in the root of the application bundle, it may not be able to find it. In this case, you can supply a GLImage to be used as the image map image and the image file specified in the data will be ignored.
+    
+    - (NSInteger)imageCount;
+    
+This method returns the number of images in the image map.
+    
+    - (NSString *)imageNameAtIndex:(NSInteger)index;
+    
+This method returns the image name at the specified index. Note that image map images are unordered, so do not assume that the image order will match the order of images in the file that was loaded. If you wish to access image map images in a specific order, it is a good idea to name them numerically.
+    
+    - (GLImage *)imageAtIndex:(NSInteger)index;
+    
+This method returns the image map image at the specified index. Note that image map images are unordered, so do not assume that the image order will match the order of images in the file that was loaded. If you wish to access image map images in a specific order, it is a good idea to name them numerically.
+    
+    - (GLImage *)imageNamed:(NSString *)name;
+    
+This method returns the image map image with the specified name. Depending on the tool used to generate the image map data file, the names may include a file extension. If you do not include a file extension in the image name, png is assumed.
 
 
 GLImageView properties
@@ -217,7 +283,12 @@ GLModel methods
     - (GLModel *)initWithContentsOfFile:(NSString *)path;
     
 These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple's GLEssentials sample code model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way.
-	
+
+    - (GLModel *)initWithContentsOfFile:(NSString *)path;
+    - (GLModel *)initWithData:(NSData *)data;
+
+These methods initialise a model with data. The format of the data should match the contents of one of the supported file formats.
+
     - (void)draw;
 
 Renders the model in the current GLView.  In practice you may wish to configure the OpenGL state for the model before calling draw, e.g. by setting a texture image to use for the rendering. See the GLModelView `layoutSubviews` method for an example.
@@ -314,21 +385,25 @@ GLImage can load PVR images with any of the following pixel formats:
 - PVRTC4 - 4 bits-per-pixel lossy compression, with or without alpha
 - PVRTC2 - 2 bits-per-pixel lossy compression, with or without alpha
 
-Apple includes a command-line PVT texture generation application called texturetool with the Xcode developer tools. This can usually be found at:
+Apple includes a command-line PVR texture generation application called texturetool with the Xcode developer tools. This can usually be found in the following easy-to-remember location:
 
-/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool
+    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool
 
-The texturetool application is fairly limited, and can only be used to create 4bpp (bits-per-pixel) and 2bpp compressed images, which are extremely low quality and look a bit like highly compressed jpegs. These are probably not good enough for still images - especially images containing transparency (the PVR OpenGL logo in the example demonstrates this) - but may be appropriate for video frames or textures for 3D models.
+You may wish to set up an alias to this tool by typing the following into the terminal:
+
+    alias texturetool='/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool'
+
+The texturetool application is fairly limited, and can only be used to create 4bpp (bits-per-pixel) and 2bpp compressed images, which are extremely low quality and look a bit like highly compressed jpegs. These are probably not good enough for detailed still images, especially images containing transparency (the PVR OpenGL logo in the example demonstrates this), but may be appropriate for video frames or textures for 3D models.
 
 **NOTE:** In addition to needing power-of-two dimensions, PVR images must also be perfectly square, i.e. the width and height must be equal. Valid sizes are 2x2, 4x4, 8x8, 16x16, 32x32, 64x64, 128x128, 256x256, etc. Remember to crop or scale your images to a valid size before converting them.
 
 The typical texturetool settings you will want to use are one of the following:
 
-	/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o {output_file_name}.pvr {input_file_name}.png
+	texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o {output_file_name}.pvr {input_file_name}.png
 
 This generates a 4 bpp compressed PVR image.
 
-	/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-2 -f PVR -o {output_file_name}.pvr {input_file_name}.png
+	texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-2 -f PVR -o {output_file_name}.pvr {input_file_name}.png
 	
 This generates a 2 bpp compressed PVR image.
 
@@ -356,13 +431,13 @@ To use the GLImageView as a PVR video player, you'll need to convert your video 
 
 1) Open your video in QuickTime 7 (not Quicktime X). You'll need a QuickTime Pro license to do anything useful.
 
-2) Assuming the video isn't already a square with power-of-two sides, you first need to convert it to the correct aspect ratio. Select Export... and choose 'Movie to MPEG-4'. Within this interface you can select a custom width and height. Go for the nearest square power-of-two dimensions to the actual video size, and you're probably better off choosing to crop or scale the image than letterbox it. Go for the highest quality you can to avoid compression artifacts.
+2) Assuming the video isn't already a square with power-of-two sides, you first need to convert it to the correct aspect ratio. Select Export... and choose 'Movie to MPEG-4'. Within this interface you can select a custom width and height. Go for the nearest square power-of-two dimensions to the actual video size, and you're probably better off choosing to crop or scale the image than letterbox it. Go for the highest quality you can to avoid compression artefacts.
 
 3) After exporting your video as an MP4, open the new video in QuickTime 7 and go to the export option again. This time select 'Movie to Image Sequence' and export the video as a sequence of PNG files.
 
 4) Now that you have the individual frames, you'll need to convert them to PVRs. Using texturetool or TexturePacker you can batch convert the images. Here are some example command line options:
 
-	find {image_directory} -name \*.png | sed 's/\.png//g' | xargs -I % -n 1 /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o %.pvr %.png
+	find {image_directory} -name \*.png | sed 's/\.png//g' | xargs -I % -n 1 texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o %.pvr %.png
 	
 This generates the frames as 4 bpp compressed PVR images (This will take a while). You can do the same with TexturePacker as follows:
 

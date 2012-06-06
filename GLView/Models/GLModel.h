@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.2.2
+//  Version 1.3
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -34,13 +34,16 @@
 
 
 #import <Foundation/Foundation.h>
-#import "GLARCHelper.h"
+#import "GLUtils.h"
 
 
 @interface GLModel : NSObject
 
 + (GLModel *)modelWithContentsOfFile:(NSString *)path;
++ (GLModel *)modelWithData:(NSData *)data;
+
 - (GLModel *)initWithContentsOfFile:(NSString *)path;
+- (GLModel *)initWithData:(NSData *)data;
 
 - (void)draw;
 

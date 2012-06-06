@@ -2,7 +2,7 @@
 //  GLLight.m
 //
 //  GLView Project
-//  Version 1.2.2
+//  Version 1.3
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -33,14 +33,6 @@
 //
 
 #import "GLLight.h"
-#import "UIColor+GL.h"
-#import <OpenGLES/ES1/gl.h>
-#import <OpenGLES/ES1/glext.h>
-
-
-@interface GLLight ()
-
-@end
 
 
 @implementation GLLight

@@ -2,7 +2,7 @@
 //  GLLight.h
 //
 //  GLView Project
-//  Version 1.2.2
+//  Version 1.3
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -33,8 +33,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <QuartzCore/QuartzCore.h>
-#import "GLARCHelper.h"
+#import "GLUtils.h"
 
 
 @interface GLLight : NSObject
