@@ -1,3 +1,11 @@
+Version 1.3.1
+
+- Added support for trimmed sprites to GLImageMap
+- Added support for aliased images in GLImageMap
+- Image, ImageMap and model file loading now recognises ~ipad suffix for iPad-specific asset versions.
+- Added contentRect property to GLImage
+- Added vertexCoords property to GLImage
+
 Version 1.3
 
 - Added GLImageMap class, with support for loading Cocos2D sprite sheets

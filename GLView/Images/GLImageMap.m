@@ -2,7 +2,7 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.3
+//  Version 1.3.1
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -137,13 +137,28 @@
                         //get image size
                         CGSize size = CGSizeFromString([spriteDict objectForKey:@"spriteSize"]);
                         
+                        //get content rect
+                        CGRect contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+                        BOOL spriteTrimmed = [[spriteDict objectForKey:@"spriteTrimmed"] boolValue];
+                        if (spriteTrimmed)
+                        {
+                            contentRect = CGRectFromString([spriteDict objectForKey:@"spriteColorRect"]);
+                            size = CGSizeFromString([spriteDict objectForKey:@"spriteSourceSize"]);
+                        }
+                        
                         //get rotation
                         BOOL rotated = [[spriteDict objectForKey:@"textureRotated"] boolValue];
                         
                         //add subimage
-                        GLImage *subimage = [[image imageWithClipRect:clipRect] imageWithSize:size];
-                        subimage.rotated = rotated;
+                        GLImage *subimage = [[[image imageWithClipRect:clipRect] imageWithSize:size] imageWithContentRect:contentRect];
+                        subimage.rotated = rotated; //TODO: replace with more robust orientation mechanism
                         [self addImage:subimage withName:name];
+                        
+                        //aliases
+                        for (NSString *alias in [spriteDict objectForKey:@"aliases"])
+                        {
+                            [self addImage:subimage withName:alias];
+                        }
                     }
                 }
                 return self;

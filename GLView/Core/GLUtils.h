@@ -2,7 +2,7 @@
 //  GLUtils.h
 //
 //  GLView Project
-//  Version 1.3
+//  Version 1.3.1
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -73,9 +73,13 @@
 #import <OpenGLES/ES1/glext.h>
 
 
+void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
+
+
 @interface NSString (GL)
 
 - (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ... NS_REQUIRES_NIL_TERMINATION;
+- (NSString *)stringByAppendingDeviceTypeSuffix;
 - (NSString *)stringByAppendingImageScaleSuffix;
 - (NSString *)imageScaleSuffix;
 - (CGFloat)imageScaleValue;

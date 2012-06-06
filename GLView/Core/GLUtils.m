@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.3
+//  Version 1.3.1
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -33,6 +33,19 @@
 //
 
 #import "GLUtils.h"
+
+
+void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
+{
+    coords[0] = rect.origin.x;
+    coords[1] = rect.origin.y;
+    coords[2] = rect.origin.x + rect.size.width;
+    coords[3] = rect.origin.y;
+    coords[4] = rect.origin.x + rect.size.width;
+    coords[5] = rect.origin.y + rect.size.height;
+    coords[6] = rect.origin.x;
+    coords[7] = rect.origin.y + rect.size.height;
+}
 
 
 @implementation NSString (GL)
@@ -76,21 +89,34 @@
         }
     }
     
+    //check for ipad/iphone version
+    NSString *_path = [path stringByAppendingDeviceTypeSuffix];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
+    {
+        path = _path;
+    }
+    
     //return normalised path
     return path;
+}
+
+- (NSString *)stringByAppendingDeviceTypeSuffix
+{
+    NSString *extension = [self pathExtension];
+    NSString *suffix = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)? @"~ipad": @"~iphone";
+    return [[[self stringByDeletingPathExtension] stringByAppendingString:suffix] stringByAppendingPathExtension:extension];
 }
 
 - (NSString *)stringByAppendingImageScaleSuffix
 {
     //check for scaled version
-    NSString *nameOrPath = self;
     if ([UIScreen mainScreen].scale > 1.0f)
     {
-        NSString *extension = [nameOrPath pathExtension];
-        NSString *scaleSuffix = [NSString stringWithFormat:@"@%ix", (int)[UIScreen mainScreen].scale];
-        nameOrPath = [[[nameOrPath stringByDeletingPathExtension] stringByAppendingString:scaleSuffix] stringByAppendingPathExtension:extension];
+        NSString *extension = [self pathExtension];
+        NSString *suffix = [NSString stringWithFormat:@"@%ix", (int)[UIScreen mainScreen].scale];
+        return [[[self stringByDeletingPathExtension] stringByAppendingString:suffix] stringByAppendingPathExtension:extension];
     }
-    return nameOrPath;
+    return self;
 }
 
 - (NSString *)imageScaleSuffix

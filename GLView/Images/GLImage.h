@@ -2,7 +2,7 @@
 //  GLImage.h
 //
 //  GLView Project
-//  Version 1.3
+//  Version 1.3.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -44,8 +44,10 @@ typedef void (^GLImageDrawingBlock)(CGContextRef context);
 @property (nonatomic, readonly) CGSize size;
 @property (nonatomic, readonly) CGFloat scale;
 @property (nonatomic, readonly) CGSize textureSize;
-@property (nonatomic, readonly) GLfloat *textureCoords;
 @property (nonatomic, readonly) CGRect clipRect;
+@property (nonatomic, readonly) CGRect contentRect;
+@property (nonatomic, readonly) const GLfloat *textureCoords;
+@property (nonatomic, readonly) const GLfloat *vertexCoords;
 
 + (GLImage *)imageNamed:(NSString *)nameOrPath;
 + (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath;
@@ -60,6 +62,7 @@ typedef void (^GLImageDrawingBlock)(CGContextRef context);
 
 - (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha;
 - (GLImage *)imageWithClipRect:(CGRect)clipRect;
+- (GLImage *)imageWithContentRect:(CGRect)clipRect;
 - (GLImage *)imageWithScale:(CGFloat)scale;
 - (GLImage *)imageWithSize:(CGSize)size;
 

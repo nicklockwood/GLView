@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.3
+//  Version 1.3.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -84,8 +84,10 @@ PVRPixelType;
 @property (nonatomic, assign) CGFloat scale;
 @property (nonatomic, assign) GLuint texture;
 @property (nonatomic, assign) CGSize textureSize;
-@property (nonatomic, assign) GLfloat *textureCoords;
+@property (nonatomic, assign) const GLfloat *textureCoords;
+@property (nonatomic, assign) const GLfloat *vertexCoords;
 @property (nonatomic, assign) CGRect clipRect;
+@property (nonatomic, assign) CGRect contentRect;
 @property (nonatomic, getter = isRotated) BOOL rotated;
 @property (nonatomic, assign) BOOL premultipliedAlpha;
 @property (nonatomic, strong) GLImage *superimage;
@@ -100,7 +102,9 @@ PVRPixelType;
 @synthesize texture = _texture;
 @synthesize textureSize = _textureSize;
 @synthesize textureCoords = _textureCoords;
+@synthesize vertexCoords = _vertexCoords;
 @synthesize clipRect = _clipRect;
+@synthesize contentRect = _contentRect;
 @synthesize rotated = _rotated;
 @synthesize premultipliedAlpha = _premultipliedAlpha;
 @synthesize superimage = _superimage;
@@ -197,10 +201,10 @@ static NSCache *imageCache = nil;
         self.textureSize = CGSizeMake(powf(2.0f, ceilf(log2f(size.width * scale))),
                                       powf(2.0f, ceilf(log2f(size.height * scale))));
         
-        
-        //clip rect
+        //clip and content rects
         self.clipRect = CGRectMake(0.0f, 0.0f, size.width * scale, size.height * scale);
-        
+        self.contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+
         //alpha
         self.premultipliedAlpha = YES;
         
@@ -261,6 +265,7 @@ static NSCache *imageCache = nil;
                 self.size = CGSizeMake((float)width/self.scale, (float)height/self.scale);
                 self.textureSize = CGSizeMake(width, height);
                 self.clipRect = CGRectMake(0.0f, 0.0f, width, height);
+                self.contentRect = CGRectMake(0.0f, 0.0f, self.size.width, self.size.height);
                 
                 //format
                 BOOL compressed;
@@ -386,7 +391,8 @@ static NSCache *imageCache = nil;
 - (void)dealloc
 {
     if (!_superimage) glDeleteTextures(1, &_texture);
-    if (_textureCoords) free(_textureCoords);
+    if (_textureCoords) free((void *)_textureCoords);
+    if (_vertexCoords) free((void *)_vertexCoords);
     AH_RELEASE(_superimage);
     AH_SUPER_DEALLOC;
 }
@@ -405,6 +411,7 @@ static NSCache *imageCache = nil;
     copy.size = self.size;
     copy.textureSize = self.textureSize;
     copy.clipRect = self.clipRect;
+    copy.contentRect = self.contentRect;
     return copy;
 }
 
@@ -423,19 +430,29 @@ static NSCache *imageCache = nil;
     return copy;
 }
 
+- (GLImage *)imageWithContentRect:(CGRect)contentRect
+{
+    GLImage *copy = AH_AUTORELEASE([self copy]);
+    copy.contentRect = contentRect;
+    return copy;
+}
+
 - (GLImage *)imageWithScale:(CGFloat)scale
 {
     CGFloat deltaScale = scale / self.scale;
     GLImage *copy = AH_AUTORELEASE([self copy]);
     copy.scale = scale;
     copy.size = CGSizeMake(copy.size.width * deltaScale, copy.size.height * deltaScale);
+    copy.contentRect = CGRectMake(self.contentRect.origin.x * deltaScale, self.contentRect.origin.y * deltaScale, self.contentRect.size.width * deltaScale, self.contentRect.size.height * deltaScale);
     return copy;
 }
 
 - (GLImage *)imageWithSize:(CGSize)size
 {
+    CGPoint scale = CGPointMake(size.width / self.size.width, size.height / self.size.height);
     GLImage *copy = AH_AUTORELEASE([self copy]);
     copy.size = size;
+    copy.contentRect = CGRectMake(self.contentRect.origin.x * scale.x, self.contentRect.origin.y * scale.y, self.contentRect.size.width * scale.x, self.contentRect.size.height * scale.y);
     return copy;
 }
 
@@ -452,70 +469,88 @@ static NSCache *imageCache = nil;
     glBindTexture(GL_TEXTURE_2D, self.texture);
 }
 
-- (void)drawAtPoint:(CGPoint)point
-{
-    [self drawInRect:CGRectMake(point.x, point.y, self.size.width, self.size.height)];
-}
-
-- (GLfloat *)textureCoords
+- (const GLfloat *)textureCoords
 {
     if (_textureCoords == NULL)
     {
         //normalise coordinates
-        CGRect clipRect = self.clipRect;
-        clipRect.origin.x /= self.textureSize.width;
-        clipRect.origin.y /= self.textureSize.height;
-        clipRect.size.width /= self.textureSize.width;
-        clipRect.size.height /= self.textureSize.height;
+        CGRect rect = self.clipRect;
+        rect.origin.x /= self.textureSize.width;
+        rect.origin.y /= self.textureSize.height;
+        rect.size.width /= self.textureSize.width;
+        rect.size.height /= self.textureSize.height;
         
         //set non-rotated coordinates
-        _textureCoords = malloc(8 * sizeof(GLfloat));
-        _textureCoords[0] = clipRect.origin.x;
-        _textureCoords[1] = clipRect.origin.y;
-        _textureCoords[2] = clipRect.origin.x + clipRect.size.width;
-        _textureCoords[3] = clipRect.origin.y;
-        _textureCoords[4] = clipRect.origin.x + clipRect.size.width;
-        _textureCoords[5] = clipRect.origin.y + clipRect.size.height;
-        _textureCoords[6] = clipRect.origin.x;
-        _textureCoords[7] = clipRect.origin.y + clipRect.size.height;
-        
+        GLfloat *coords = malloc(8 * sizeof(GLfloat));
+        CGRectGetGLCoords(rect, coords);
+
         if (self.rotated)
         {
             //rotate coordinates 90 degrees anticlockwise
-            GLfloat u = _textureCoords[0];
-            GLfloat v = _textureCoords[1];
-            _textureCoords[0] = _textureCoords[2];
-            _textureCoords[1] = _textureCoords[3];
-            _textureCoords[2] = _textureCoords[4];
-            _textureCoords[3] = _textureCoords[5];
-            _textureCoords[4] = _textureCoords[6];
-            _textureCoords[5] = _textureCoords[7];
-            _textureCoords[6] = u;
-            _textureCoords[7] = v;
+            GLfloat u = coords[0];
+            GLfloat v = coords[1];
+            coords[0] = coords[2];
+            coords[1] = coords[3];
+            coords[2] = coords[4];
+            coords[3] = coords[5];
+            coords[4] = coords[6];
+            coords[5] = coords[7];
+            coords[6] = u;
+            coords[7] = v;
         }
+
+        _textureCoords = coords;
     }
     return _textureCoords;
 }
 
-- (void)drawInRect:(CGRect)rect
-{    
-    GLfloat vertices[] =
+- (const GLfloat *)vertexCoords
+{
+    if (_vertexCoords == NULL)
     {
-        rect.origin.x, rect.origin.y,
-        rect.origin.x + rect.size.width, rect.origin.y,
-        rect.origin.x + rect.size.width, rect.origin.y + rect.size.height,
-        rect.origin.x, rect.origin.y + rect.size.height
-    };
+        GLfloat *coords = malloc(8 * sizeof(GLfloat));
+        CGRectGetGLCoords(self.contentRect, coords);
+        _vertexCoords = coords;
+    }
+    return _vertexCoords;
+}
 
+- (void)drawWithVertexCoords:(const GLfloat *)vertexCoords
+{
     [self bindTexture];
     
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     
-    glVertexPointer(2, GL_FLOAT, 0, vertices);
+    glVertexPointer(2, GL_FLOAT, 0, vertexCoords);
     glTexCoordPointer(2, GL_FLOAT, 0, self.textureCoords);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+}
+
+- (void)drawAtPoint:(CGPoint)point
+{
+    [self drawWithVertexCoords:self.vertexCoords];
+}
+
+- (void)drawInRect:(CGRect)rect
+{
+    const GLfloat *coords = self.vertexCoords;
+    CGPoint scale = CGPointMake(rect.size.width / self.size.width, rect.size.height / self.size.height);
+    
+    //calculate vertices
+    GLfloat vertexCoords[8];
+    vertexCoords[0] = coords[0] * scale.x + rect.origin.x;
+    vertexCoords[1] = coords[1] * scale.y + rect.origin.y;
+    vertexCoords[2] = coords[2] * scale.x + rect.origin.x;
+    vertexCoords[3] = vertexCoords[1];
+    vertexCoords[4] = vertexCoords[2];
+    vertexCoords[5] = coords[5] * scale.y + rect.origin.y;
+    vertexCoords[6] = vertexCoords[0];
+    vertexCoords[7] = vertexCoords[5];
+
+    //draw
+    [self drawWithVertexCoords:vertexCoords];
 }
 
 @end

@@ -125,13 +125,21 @@ The underlying texture ID used by the GLImage. You can use this to bind the text
     
 The size of the underlying texture. The dimensions of the texture will always be a power of two. For images that have a scale of 1.0 (non-Retina) and have power-of-two dimensions, this will match the size property.
 
-    @property (nonatomic, readonly) GLfloat *textureCoords;
-
-The texture coordinates used for clipping the image. These are handy if you need to render the image yourself using OpenGL functions instead of using the `drawAtPoint:` or `drawInRect:` methods. The textureCoords array will always contain exactly 8 GLfloat values.
-
     @property (nonatomic, readonly) CGRect clipRect;
 
-The clipping rectangle used to resize the texture to fit the image rect. This rect is measured in texture pixels, so for images that are not clipped, the clipRect size will match the textureSize.
+The clipping rectangle used to crop and resize the texture to fit the image rect. This rect is measured in texture pixels, so for images that are not clipped, the clipRect size will match the textureSize.
+
+    @property (nonatomic, readonly) CGRect contentRect;
+
+The content rectangle used to specify the portion of the image which is textured. This rect is measured in image pixels. In most cases the size of this rect will match the image size and the origin will be zero, however if the image content has been trimmed from its original size, the contentRect may be smaller than the bounds specified by the image size.
+
+    @property (nonatomic, readonly) const GLfloat *textureCoords;
+
+The texture coordinates used for rendering the image. These are handy if you need to render the image yourself using OpenGL functions instead of using the `drawAtPoint:` or `drawInRect:` methods. The textureCoords array will always contain exactly 8 GLfloat values.
+
+    @property (nonatomic, readonly) const GLfloat *vertexCoords;
+
+The vertex coordinates used for rendering the image. These are handy if you need to render the image yourself using OpenGL functions instead of using the `drawAtPoint:` or `drawInRect:` methods. The vertexCoords array will always contain exactly 8 GLfloat values.
 
 
 GLImage methods
@@ -139,7 +147,7 @@ GLImage methods
 
 	+ (GLImage *)imageNamed:(NSString *)nameOrPath;
 	
-This method works more-or-less like the equivalent UIImage method. The image file specified by the nameOrPath paramater will be loaded and returned. The image is also cached so that any subsequent `imageNamed` calls for the same file will return the exact same copy of the image. IN a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage.
+This method works more-or-less like the equivalent UIImage method. The image file specified by the nameOrPath paramater will be loaded and returned. The image is also cached so that any subsequent `imageNamed` calls for the same file will return the exact same copy of the image. IN a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage, as do images that have the ~ipad or ~iphone suffix.
 
 The name can include a file extension. If it doesn't, .png is assumed. The name may also include a full or partial file path, and, unlike UIImage's version, GLIMage's imageNamed function can load images outside of the application bundle, such as from the application documents folder. Note however that because these images are cached, it is unwise to load images in this way if they are likely to be replaced or deleted while the app is running, as this may result in unexpected behaviour.
 
@@ -148,7 +156,7 @@ The name can include a file extension. If it doesn't, .png is assumed. The name 
 	+ (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath;
 	- (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath;
 
-These methods load a GLImage from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. If the file extension is omitted, it is assumed to be .png. Retina display images using the @2x naming scheme behave the same way as for UIImage. Images loaded in this way are not cached or de-duplicated in any way.
+These methods load a GLImage from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. If the file extension is omitted, it is assumed to be .png. Retina display images using the @2x naming scheme behave the same way as for UIImage, as do images that have the ~ipad or ~iphone suffix. Images loaded in this way are not cached or de-duplicated in any way.
 	
 	+ (GLImage *)imageWithUIImage:(UIImage *)image;
 	- (GLImage *)initWithUIImage:(UIImage *)image;
@@ -175,11 +183,15 @@ If your image is flipped or was rotated to fit into a larger image map, you can 
     
     - (GLImage *)imageWithClipRect:(CGRect)clipRect;
     
-This method can be used to set the clipping rect for the image. This is useful if you are loading a PVR texture image where the content is smaller than the image bounds but, due to the PVR format restrictions, the image file has to be a square with power-of-two sides. Note that the clipping rect is measured in texture pixels, not in image coordinates, and does not take into account the scale factor or previous clipping. You can determine the actual texture Size from the textureSize property of the image. **Note:** Adjusting the clipRect will also adjust the image size accordingly, however you can override this by calling `imageWithSize:` afterwards.
+This method can be used to set the clipping rect for the image. This is useful if you are loading a PVR texture image where the content is smaller than the image bounds but, due to the PVR format restrictions, the image file has to be a square with power-of-two sides. Note that the clipping rect is measured in texture pixels, not in image coordinates, and does not take into account the scale factor or previous clipping. You can determine the actual texture Size from the textureSize property of the image. **Note:** Adjusting the clipRect will also adjust the image size and contentRect accordingly, however you can override this by calling `imageWithSize:` and/or `imageWithContentRect:` afterwards.
+
+    - (GLImage *)imageWithContentRect:(CGRect)contentRect;
+    
+This method can be used to set the content rect for the image. This is useful if you want to manipulate the image's anchor point, or add padding around the textured part of the image.
 
     - (GLImage *)imageWithScale:(CGFloat)scale;
     
-This method can be used to set the image scale. Modifying the scale will automatically update the image size accordingly, but will not actually change the image pixels. In the unlikely case that you wish to set the scale without modifying the image size, you can override call `imageWithSize:` afterwards to restore the original size.
+This method can be used to set the image scale. Modifying the scale will automatically update the image size and contentRect accordingly, but will not actually change the image pixels. In the unlikely case that you wish to set the scale without modifying the image size, you can override call `imageWithSize:` afterwards to restore the original size.
 
     - (GLImage *)imageWithSize:(CGSize)size;
     
@@ -206,7 +218,7 @@ The GLImageMap class has the following methods:
     + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath;
     - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath;
     
-These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format. As with ordinary GLImages, GLImageMap will automatically detect @2x retina images.
+These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format. GLImageMap fully supports trimmed, rotated and aliased images. As with ordinary GLImages, GLImageMap will automatically detect @2x retina files and files with the ~ipad or ~iphone suffix.
 
     + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data;    
     - (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data;
@@ -282,7 +294,7 @@ GLModel methods
     + (GLModel *)modelWithContentsOfFile:(NSString *)path;
     - (GLModel *)initWithContentsOfFile:(NSString *)path;
     
-These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple's GLEssentials sample code model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way.
+These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple's GLEssentials sample code model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way. Note that is is also possible to use the @2x and ~ipad/~iphone filename suffixes to specify different models for different devices, which is useful if you wish to provide more detailed models for higher-end devices.
 
     - (GLModel *)initWithContentsOfFile:(NSString *)path;
     - (GLModel *)initWithData:(NSData *)data;

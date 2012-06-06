@@ -154,7 +154,7 @@
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{117, 117}, {101, 113}}</string>
+			<string>{{0, 284}, {101, 113}}</string>
 			<key>textureRotated</key>
 			<false/>
 		</dict>
@@ -176,9 +176,9 @@
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{117, 0}, {113, 101}}</string>
+			<string>{{117, 117}, {101, 113}}</string>
 			<key>textureRotated</key>
-			<true/>
+			<false/>
 		</dict>
 		
 		<key>Gem Orange.png</key>
@@ -198,9 +198,9 @@
 			<key>spriteTrimmed</key>
 			<true/>
 			<key>textureRect</key>
-			<string>{{0, 284}, {101, 113}}</string>
+			<string>{{117, 0}, {113, 101}}</string>
 			<key>textureRotated</key>
-			<false/>
+			<true/>
 		</dict>
 		
 		<key>Heart.png</key>
@@ -251,6 +251,8 @@
 		<dict>
 			<key>aliases</key>
 			<array>
+			
+				<string>Rock Alias.png</string>
 			
 			</array>
 			<key>spriteColorRect</key>
@@ -389,7 +391,7 @@
 		<key>size</key>
 		<string>{512, 512}</string>
 		<key>name</key>
-		<string>Untitled</string>
+		<string>GLImageMap.zwd</string>
 		<key>premultipliedAlpha</key>
 		<false/>
 		<key>target</key>
