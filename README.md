@@ -79,7 +79,7 @@ This method returns the @2x suffix if found, or @"" if not.
     
     - (CGFloat)scale;
     
-This method returns the image scale value for a file path as a floating point number, e.g. 2.0f if the file includes an @2x suffix and 1.0f if it doesn't.
+This method returns the image scale value for a file path as a floating point number, e.g. 2.0f if the file includes an -hd suffix (on iPhone) or @2x suffix and 1.0f if it doesn't.
     
     - (NSString *)stringByAppendingInterfaceIdiomSuffix;
     
@@ -116,7 +116,7 @@ This method returns YES if the string has an -hd suffix and NO if it doesn't.
 
     - (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ... NS_REQUIRES_NIL_TERMINATION;
     
-This method takes a relative or partial file path and generates an absolute path, complete with image scale and device type suffixes (if suffixed versions of the file can be found). It uses NSFileManager to check that the file exists, so it will either return a valid file path or nil, it will never return a path to a file that does not exist. You can also specify a list of file extensions to be tried if the path does not already have an extension (these will be ignored if the file already has an extension). See the Image file suffixes section below for more information.
+This method takes a relative or partial file path and generates an absolute path, complete with image scale and device type suffixes (if suffixed versions of the file can be found). It uses NSFileManager to check that the file exists, so it will either return a valid file path or nil, it will never return a path to a file that does not exist. You can also specify a list of file extensions to be tried if the path does not already have an extension (these will be ignored if the file already has an extension). See the Image file suffixes section below for more information. This method makes multiple filesystem calls, so may be relatively slow the first time it is called for each path, however it caches the result for a given input so the next time it will be faster.
 
 
 UIColor extensions 

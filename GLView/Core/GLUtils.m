@@ -97,7 +97,15 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 - (CGFloat)scale
 {
     NSString *scaleSuffix = [self scaleSuffix];
-    return [scaleSuffix length]? [[scaleSuffix substringWithRange:NSMakeRange(1, 1)] floatValue]: 1.0f;
+    if ([scaleSuffix length])
+    {
+        return [[scaleSuffix substringWithRange:NSMakeRange(1, 1)] floatValue];
+    }
+    else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [self isHD])
+    {
+        return 2.0f;
+    }
+    return 1.0f;
 }
 
 - (NSString *)stringByAppendingInterfaceIdiomSuffix
@@ -191,6 +199,13 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 
 - (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ...
 {
+    //set up cache
+    static NSCache *cache = nil;
+    if (cache == nil)
+    {
+        cache = [[NSCache alloc] init];
+    }
+    
     //convert to absolute path
     NSString *path = self;
     if (![path isAbsolutePath])
@@ -198,9 +213,9 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path];
     }
 
-    //get or add file extension
+    //add file extension if not already set
     NSString *extension = [path pathExtension];
-    if ([extension isEqualToString:@""])
+    if ([extension length] == 0)
     {
         va_list arguments;
         va_start(arguments, firstExtension);
@@ -216,6 +231,18 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
             extension = va_arg(arguments, NSString *);
         }
         va_end(arguments);
+    }
+    
+    //check cache
+    NSString *cacheKey = path;
+    BOOL cachable = [path hasPrefix:[[NSBundle mainBundle] resourcePath]];
+    if (cachable)
+    {
+        NSString *_path = [cache objectForKey:cacheKey];
+        if (_path)
+        {
+            return [_path length]? _path: nil;
+        }
     }
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
@@ -256,19 +283,29 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         }
     }
     
-    //check for ipad/iphone version
-    NSString *_path = [path stringByAppendingInterfaceIdiomSuffix];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
-    {
-        path = _path;
-    }
-    
-    //return normalised path
     if ([[NSFileManager defaultManager] fileExistsAtPath:path])
     {
-        return path;
+        //check for ipad/iphone version
+        NSString *_path = [path stringByAppendingInterfaceIdiomSuffix];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
+        {
+            path = _path;
+        }
     }
-    return nil;
+    else
+    {
+        //file doesn't exist
+        path = nil;
+    }
+    
+    //add to cache
+    if (cachable)
+    {
+        [cache setObject:path ?: @"" forKey:cacheKey];
+    }
+    
+    //return path
+    return path;
 }
 
 @end
