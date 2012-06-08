@@ -35,6 +35,8 @@ Classes
 
 The GLView library currently includes the following classes:
 
+- GLUtils - this is a collection of useful class extensions and global methods that are used by the GLView library. 
+
 - GLView - this is a general-purpose UIView subclass for displaying OpenGL graphics on screen. It doesn't display anything by default, but if you are familiar with OpenGL you can use it for raw OpenGL drawing.
 
 - GLImage - this is a class for loading image files as OpenGL textures. It supports all the same image formats as UIImage, as well as a number of PVR image formats.
@@ -49,7 +51,90 @@ The GLView library currently includes the following classes:
 
 - GLLight - this class represents a light source and is used for illuminating GLModel objects in the GLModelView.
 
-- UIColor+GL - this is a category on UIColor that makes it easier to convert UIKit color values for use with OpenGL.
+
+Global methods
+------------------
+
+    void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
+
+This method is used by the GLView library for converting GLRects into OpenGL vertices. It receives a pointer to an array of 8 GLfloats, and it populates the array with the coordinates for the 4 corners of the rect.
+
+
+NSString extensions 
+--------------------
+
+These methods extend NSString with some useful file path manipulation functionality.
+    
+    - (NSString *)stringByAppendingScaleSuffix;
+    
+This method appends an @2x suffix to the string if the device has a Retina display. The method correctly handles file extensions and device type suffixes, so the @2x will be inserted before the file extension or device type suffix if present. See the Image file suffixes section below for more information.
+    
+    - (NSString *)stringByDeletingScaleSuffix;
+    
+This method removes the @2x suffix from a file path, or does nothing if the suffix is not found.
+    
+    - (NSString *)scaleSuffix;
+    
+This method returns the @2x suffix if found, or @"" if not.
+    
+    - (CGFloat)scale;
+    
+This method returns the image scale value for a file path as a floating point number, e.g. 2.0f if the file includes an @2x suffix and 1.0f if it doesn't.
+    
+    - (NSString *)stringByAppendingInterfaceIdiomSuffix;
+    
+This method appends the user interface idiom suffix for the current device (~ipad or ~iphone) to the string. If the string includes a file extension, the suffix is correctly inserted before the file extension. See the Image file suffixes section below for more information.
+    
+    - (NSString *)stringByDeletingInterfaceIdiomSuffix;
+    
+This method removes the user interface idiom suffix from the string if present, or does nothing if a suffix is not found.
+    
+    - (NSString *)interfaceIdiomSuffix;
+    
+This method returns the user interface idiom suffix if found, or @"" if not.
+
+    - (UIUserInterfaceIdiom)interfaceIdiom;
+
+This method returns the UIUserInterfaceIdiom value specified by a file's interface idiom suffix (if found). If no suffix is found it returns the current device idiom.
+
+    - (NSString *)stringByAppendingHDSuffix;
+    
+This method appends the -hd suffix to the string if the device is an iPad or Retina display iPhone and does nothing if it isn't.
+    
+    - (NSString *)stringByDeletingHDSuffix;
+    
+This method deletes the -hd suffix from the string if found, or does nothing if the suffix is not found.
+    
+    - (NSString *)HDSuffix;
+    
+This method returns @"-hd" if the string has the -hd suffix and @"" if it doesn't.
+    
+    - (BOOL)isHD;
+
+This method returns YES if the string has an -hd suffix and NO if it doesn't.
+
+
+    - (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ... NS_REQUIRES_NIL_TERMINATION;
+    
+This method takes a relative or partial file path and generates an absolute path, complete with image scale and device type suffixes (if suffixed versions of the file can be found). It uses NSFileManager to check that the file exists, so it will either return a valid file path or nil, it will never return a path to a file that does not exist. You can also specify a list of file extensions to be tried if the path does not already have an extension (these will be ignored if the file already has an extension). See the Image file suffixes section below for more information.
+
+
+UIColor extensions 
+---------------------
+
+These methods extend UIColor to make it easier to integrate with OpenGL code.
+
+    - (void)getGLComponents:(GLfloat *)rgba;
+    
+Pass in a pointer to a C array of four GLfloats and this method will populate them with the red, green, blue and alpha components of the UIColor. Works with monochromatic and RGB UIColors, but will fail if the color contains a pattern image, or some other unsupported color format.
+    
+    - (void)bindGLClearColor;
+
+Binds the UIColor as the current OpenGL clear color.
+    
+    - (void)bindGLBlendColor;
+    
+Binds the UIColor as the current OpenGL blend color.
 
 
 GLView properties
@@ -355,20 +440,18 @@ GLLight methods
 This method binds the GLLight to a particular light in the scene. The light parameter is an OpenGL constant representing the light index, where GL_LIGHT0 is the first available light, and GL_LIGHT7 is typically the last available light.
 
 
-UIColor+GL methods
----------------------
+Image file suffixes
+--------------------
 
-    - (void)getGLComponents:(GLfloat *)rgba;
-    
-Pass in a pointer to a C array of four GLfloats and this method will populate them with the red, green, blue and alpha components of the UIColor. Works with monochromatic and RGB UIColors, but will fail if the color contains a pattern image, or some other unsupported color format.
-    
-    - (void)bindGLClearColor;
+iOS has a clever mechanism for managing multiple versions of assets by using file suffixes. The first iPad introduced the ~ipad suffix for specifying ipad-specific versions of files (e.g. foo~ipad.png). The iPhone 4 introduced the @2x suffix for managing double-resolution images for Retina displays (e.g. foo@2x.png). With the 3rd generation iPad you can combine these to have Retina-quality iPad images (e.g. foo@2x~ipad.png).
 
-Binds the UIColor as the current OpenGL clear color.
-    
-    - (void)bindGLBlendColor;
-    
-Binds the UIColor as the current OpenGL blend color.
+This is an elegant solution for apps, but is sometimes insufficient for games because, unlike apps, hybrid games often share near-identical interfaces on iPhone and iPad, with the assets and interface elements simply scaled up, and this means that the standard definition iPad and Retina resolution iPhone need to use the same images.
+
+Naming your images with the @2x suffix works for iPhone but not iPad, and naming them with the ~ipad suffix works for iPad but not iPhone, which forces you to either duplicate identical assets with different filenames, or to write your own file loading logic.
+
+The -hd suffix is a concept introduced by the Cocos2D library to the problem of wanting to use the same 2x graphics for both the iPhone Retina display and the iPad standard definition display by using the same -hd filename suffix for both.
+
+GLView supports this solution by adding some utility methods to NSString for automatically applying this suffix to file paths. All of GLView's image loading routines inherit this logic so that files using the @2x, ~ipad and -hd conventions (or any combination thereof) are automatically detected and loaded as appropriate. For example, If you load attempt to load an image called foo.png, GLImage will automatically look for foo@2x.png or foo-hd.png on a Retina iPhone, or foo~ipad.png or foo-hd.png on an iPad and will also find foo-hd@2x.png if you are using a Retina iPad.
 
 
 PVR images

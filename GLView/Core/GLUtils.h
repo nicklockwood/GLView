@@ -2,7 +2,7 @@
 //  GLUtils.h
 //
 //  GLView Project
-//  Version 1.3.1
+//  Version 1.3.2
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -32,7 +32,7 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
-//
+///Users/nick.lockwood/Dropbox/Open Source (GIT)/GLView/GLView/Images/GLImage.h
 //  ARC Helper
 //
 //  Version 1.3.1
@@ -78,11 +78,22 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
 
 @interface NSString (GL)
 
+- (NSString *)stringByAppendingScaleSuffix;
+- (NSString *)stringByDeletingScaleSuffix;
+- (NSString *)scaleSuffix;
+- (CGFloat)scale;
+
+- (NSString *)stringByAppendingInterfaceIdiomSuffix;
+- (NSString *)stringByDeletingInterfaceIdiomSuffix;
+- (NSString *)interfaceIdiomSuffix;
+- (UIUserInterfaceIdiom)interfaceIdiom;
+
+- (NSString *)stringByAppendingHDSuffix;
+- (NSString *)stringByDeletingHDSuffix;
+- (NSString *)HDSuffix;
+- (BOOL)isHD;
+
 - (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ... NS_REQUIRES_NIL_TERMINATION;
-- (NSString *)stringByAppendingDeviceTypeSuffix;
-- (NSString *)stringByAppendingImageScaleSuffix;
-- (NSString *)imageScaleSuffix;
-- (CGFloat)imageScaleValue;
 
 @end
 

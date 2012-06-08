@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.3.1
+//  Version 1.3.2
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -50,7 +50,146 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 
 @implementation NSString (GL)
 
-- (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ... NS_REQUIRES_NIL_TERMINATION
+- (NSString *)stringByAppendingScaleSuffix
+{
+    if ([UIScreen mainScreen].scale > 1.0f)
+    {
+        NSString *extension = [self pathExtension];
+        NSString *deviceSuffix = [self interfaceIdiomSuffix];
+        NSString *scaleSuffix = [NSString stringWithFormat:@"@%ix", (int)[UIScreen mainScreen].scale];
+        NSString *path = [[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix];
+        return [[path stringByAppendingFormat:@"%@%@", scaleSuffix, deviceSuffix] stringByAppendingPathExtension:extension];
+    }
+    return self;
+}
+
+- (NSString *)stringByDeletingScaleSuffix
+{
+    NSString *scaleSuffix = [self scaleSuffix];
+    if ([scaleSuffix length])
+    {
+        NSString *extension = [self pathExtension];
+        NSString *deviceSuffix = [self interfaceIdiomSuffix];
+        NSString *path = [[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix];
+        path = [path substringToIndex:[path length] - [scaleSuffix length]];
+        return [[path stringByAppendingString:deviceSuffix] stringByAppendingPathExtension:extension];
+    }
+    return self;
+}
+
+- (NSString *)scaleSuffix
+{
+    //note: this isn't very robust as it only handles single-digit integer scales
+    //for the forseeable future though, it's unlikely that we'll have to worry about that
+    NSString *path = [[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix];
+    if ([path length] >= 3)
+    {
+        NSString *scaleSuffix = [path substringFromIndex:[path length] - 3];
+        if ([[scaleSuffix substringToIndex:1] isEqualToString:@"@"] &&
+            [[scaleSuffix substringFromIndex:2] isEqualToString:@"x"])
+        {
+            return scaleSuffix;
+        }
+    }
+    return @"";
+}
+
+- (CGFloat)scale
+{
+    NSString *scaleSuffix = [self scaleSuffix];
+    return [scaleSuffix length]? [[scaleSuffix substringWithRange:NSMakeRange(1, 1)] floatValue]: 1.0f;
+}
+
+- (NSString *)stringByAppendingInterfaceIdiomSuffix
+{
+    NSString *extension = [self pathExtension];
+    NSString *suffix = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)? @"~ipad": @"~iphone";
+    return [[[self stringByDeletingPathExtension] stringByAppendingString:suffix] stringByAppendingPathExtension:extension];
+}
+
+- (NSString *)stringByDeletingInterfaceIdiomSuffix
+{
+    NSString *suffix = [self interfaceIdiomSuffix];
+    if ([suffix length])
+    {
+        NSString *extension = [self pathExtension];
+        NSString *path = [self stringByDeletingPathExtension];
+        return [[path substringToIndex:[path length] - [suffix length]] stringByAppendingPathExtension:extension];
+    }
+    return self;
+}
+
+- (NSString *)interfaceIdiomSuffix
+{
+    NSString *path = [self stringByDeletingPathExtension];
+    if ([path hasSuffix:@"~iphone"])
+    {
+        return @"~iphone";
+    }
+    else if ([path hasSuffix:@"~ipad"])
+    {
+        return @"~ipad";
+    }
+    return @"";
+}
+
+- (UIUserInterfaceIdiom)interfaceIdiom
+{
+    if ([[self interfaceIdiomSuffix] isEqualToString:@"~ipad"])
+    {
+        return UIUserInterfaceIdiomPad;
+    }
+    else if ([[self interfaceIdiomSuffix] isEqualToString:@"~iphone"])
+    {
+        return UIUserInterfaceIdiomPhone;
+    }
+    return UI_USER_INTERFACE_IDIOM();
+}
+
+- (NSString *)stringByAppendingHDSuffix
+{
+    if ([UIScreen mainScreen].scale > 1.0f || UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        NSString *extension = [self pathExtension];
+        NSString *deviceSuffix = [self interfaceIdiomSuffix];
+        NSString *scaleSuffix = [self scaleSuffix];
+        NSString *path = [[[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] stringByDeletingScaleSuffix];
+        return [[path stringByAppendingFormat:@"-hd%@%@", scaleSuffix, deviceSuffix] stringByAppendingPathExtension:extension];
+    }
+    return self;
+}
+
+- (NSString *)stringByDeletingHDSuffix
+{
+    NSString *HDSuffix = [self HDSuffix];
+    if ([HDSuffix length])
+    {
+        NSString *extension = [self pathExtension];
+        NSString *deviceSuffix = [self interfaceIdiomSuffix];
+        NSString *scaleSuffix = [self scaleSuffix];
+        NSString *path = [[[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] stringByDeletingScaleSuffix];
+        path = [path substringToIndex:[path length] - [HDSuffix length]];
+        return [[path stringByAppendingFormat:@"%@%@", scaleSuffix, deviceSuffix] stringByAppendingPathExtension:extension];
+    }
+    return self;
+}
+
+- (NSString *)HDSuffix
+{
+    NSString *path = [[[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] stringByDeletingScaleSuffix];
+    if ([path hasSuffix:@"-hd"])
+    {
+        return @"-hd";
+    }
+    return @"";
+}
+
+- (BOOL)isHD
+{
+    return [[self HDSuffix] length] > 0;
+}
+
+- (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ...
 {
     //convert to absolute path
     NSString *path = self;
@@ -58,7 +197,7 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
     {
         path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path];
     }
-    
+
     //get or add file extension
     NSString *extension = [path pathExtension];
     if ([extension isEqualToString:@""])
@@ -78,66 +217,58 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         }
         va_end(arguments);
     }
-        
-    //check for scaled version
-    if ([UIScreen mainScreen].scale > 1.0f)
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        NSString *_path = [path stringByAppendingImageScaleSuffix];
+        //check for HD version
+        NSString *_path = [path stringByAppendingHDSuffix];
         if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
         {
             path = _path;
         }
+        
+        //check for scaled version
+        if ([UIScreen mainScreen].scale > 1.0f)
+        {
+            NSString *_path = [path stringByAppendingScaleSuffix];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
+            {
+                path = _path;
+            }
+        }
+    }
+    else if ([UIScreen mainScreen].scale > 1.0f)
+    {
+        //check for HD version
+        NSString *_path = [path stringByAppendingHDSuffix];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
+        {
+            path = _path;
+        }
+        else
+        {
+            //check for scaled version
+            NSString *_path = [path stringByAppendingScaleSuffix];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
+            {
+                path = _path;
+            }
+        }
     }
     
     //check for ipad/iphone version
-    NSString *_path = [path stringByAppendingDeviceTypeSuffix];
+    NSString *_path = [path stringByAppendingInterfaceIdiomSuffix];
     if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
     {
         path = _path;
     }
     
     //return normalised path
-    return path;
-}
-
-- (NSString *)stringByAppendingDeviceTypeSuffix
-{
-    NSString *extension = [self pathExtension];
-    NSString *suffix = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)? @"~ipad": @"~iphone";
-    return [[[self stringByDeletingPathExtension] stringByAppendingString:suffix] stringByAppendingPathExtension:extension];
-}
-
-- (NSString *)stringByAppendingImageScaleSuffix
-{
-    //check for scaled version
-    if ([UIScreen mainScreen].scale > 1.0f)
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path])
     {
-        NSString *extension = [self pathExtension];
-        NSString *suffix = [NSString stringWithFormat:@"@%ix", (int)[UIScreen mainScreen].scale];
-        return [[[self stringByDeletingPathExtension] stringByAppendingString:suffix] stringByAppendingPathExtension:extension];
-    }
-    return self;
-}
-
-- (NSString *)imageScaleSuffix
-{
-    NSString *nameOrPath = [self stringByDeletingPathExtension];
-    if ([nameOrPath length] >= 3)
-    {
-        NSString *scaleSuffix = [nameOrPath substringFromIndex:[nameOrPath length] - 3];
-        if ([[scaleSuffix substringToIndex:1] isEqualToString:@"@"] &&
-            [[scaleSuffix substringFromIndex:2] isEqualToString:@"x"])
-        {
-            return scaleSuffix;
-        }
+        return path;
     }
     return nil;
-}
-
-- (CGFloat)imageScaleValue
-{
-    NSString *suffix = [self imageScaleSuffix];
-    return suffix? [[suffix substringWithRange:NSMakeRange(1, 1)] floatValue]: 1.0f;
 }
 
 @end

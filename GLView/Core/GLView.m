@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.3.1
+//  Version 1.3.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -44,7 +44,7 @@
 @property (nonatomic, assign) GLuint colorRenderbuffer;
 @property (nonatomic, assign) GLuint depthRenderbuffer;
 @property (nonatomic, assign) NSTimeInterval lastTime;
-@property (nonatomic, assign) CADisplayLink *timer;
+@property (nonatomic, unsafe_unretained) CADisplayLink *timer;
 
 - (void)createFramebuffer;
 - (void)deleteFramebuffer;

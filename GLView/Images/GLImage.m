@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.3.1
+//  Version 1.3.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -129,7 +129,7 @@ static NSCache *imageCache = nil;
         image = [imageCache objectForKey:path];
         if (!image)
         {
-            image = [self imageWithContentsOfFile:path];
+            image = [self imageWithContentsOfFile:nameOrPath];
             if (image)
             {
                 [imageCache setObject:image forKey:path];
@@ -169,8 +169,14 @@ static NSCache *imageCache = nil;
     NSString *path = [nameOrPath absolutePathWithDefaultExtensions:@"png", nil];
     
     //get scale factor
-    CGFloat scale = [path imageScaleValue];
-    
+    CGFloat scale = 1.0f;
+    NSString *original = [[[nameOrPath stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] lastPathComponent];
+    NSString *normalised = [[[path stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] lastPathComponent];
+    if (![original isEqualToString:normalised])
+    {
+        scale = [normalised scale];
+    }
+        
     //load data
     NSData *data = [NSData dataWithContentsOfFile:path];
     return [self initWithData:data scale:scale];

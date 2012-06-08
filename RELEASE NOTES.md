@@ -1,3 +1,11 @@
+Version 1.3.2
+
+- Added support for the Cocos2D -hd file suffix
+- Fixed bug in ~ipad file suffix handling
+- Added File Suffixes test project
+- Added GLUtils class documentation
+- Extended the documentation with info about file suffix handling
+
 Version 1.3.1
 
 - Added support for trimmed sprites to GLImageMap
