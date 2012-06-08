@@ -230,7 +230,7 @@
 	else
 	{
 		GLfloat near = (self.near > 0.0f)? self.near: 1.0f;
-		GLfloat far = (self.far > self.near)? far: (near + 50.0f);
+		GLfloat far = (self.far > self.near)? self.far: (near + 50.0f);
 		GLfloat aspect = self.bounds.size.width / self.bounds.size.height;
 		GLfloat top = tanf(self.fov * 0.5f) * near;
 		glFrustumf(aspect * -top, aspect * top, -top, top, near, far);
