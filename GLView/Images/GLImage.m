@@ -165,21 +165,9 @@ static NSCache *imageCache = nil;
 
 - (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath
 {
-    //normalise path
     NSString *path = [nameOrPath absolutePathWithDefaultExtensions:@"png", nil];
-    
-    //get scale factor
-    CGFloat scale = 1.0f;
-    NSString *original = [[[nameOrPath stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] lastPathComponent];
-    NSString *normalised = [[[path stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] lastPathComponent];
-    if (![original isEqualToString:normalised])
-    {
-        scale = [normalised scale];
-    }
-        
-    //load data
     NSData *data = [NSData dataWithContentsOfFile:path];
-    return [self initWithData:data scale:scale];
+    return [self initWithData:data scale:[path scale]];
 }
 
 - (GLImage *)initWithUIImage:(UIImage *)image
