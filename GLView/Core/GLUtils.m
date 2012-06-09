@@ -58,7 +58,8 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         NSString *deviceSuffix = [self interfaceIdiomSuffix];
         NSString *scaleSuffix = [NSString stringWithFormat:@"@%ix", (int)[UIScreen mainScreen].scale];
         NSString *path = [[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix];
-        return [[path stringByAppendingFormat:@"%@%@", scaleSuffix, deviceSuffix] stringByAppendingPathExtension:extension];
+        path = [path stringByAppendingFormat:@"%@%@", scaleSuffix, deviceSuffix];
+        return [extension length]? [path stringByAppendingPathExtension:extension]: path;
     }
     return self;
 }
@@ -71,8 +72,8 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         NSString *extension = [self pathExtension];
         NSString *deviceSuffix = [self interfaceIdiomSuffix];
         NSString *path = [[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix];
-        path = [path substringToIndex:[path length] - [scaleSuffix length]];
-        return [[path stringByAppendingString:deviceSuffix] stringByAppendingPathExtension:extension];
+        path = [[path substringToIndex:[path length] - [scaleSuffix length]] stringByAppendingString:deviceSuffix];
+        return [extension length]? [path stringByAppendingPathExtension:extension]: path;
     }
     return self;
 }
@@ -112,7 +113,8 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 {
     NSString *extension = [self pathExtension];
     NSString *suffix = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)? @"~ipad": @"~iphone";
-    return [[[self stringByDeletingPathExtension] stringByAppendingString:suffix] stringByAppendingPathExtension:extension];
+    NSString *path = [[self stringByDeletingPathExtension] stringByAppendingString:suffix];
+    return [extension length]? [path stringByAppendingPathExtension:extension]: path;
 }
 
 - (NSString *)stringByDeletingInterfaceIdiomSuffix
@@ -122,7 +124,8 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
     {
         NSString *extension = [self pathExtension];
         NSString *path = [self stringByDeletingPathExtension];
-        return [[path substringToIndex:[path length] - [suffix length]] stringByAppendingPathExtension:extension];
+        path = [path substringToIndex:[path length] - [suffix length]];
+        return [extension length]? [path stringByAppendingPathExtension:extension]: path;
     }
     return self;
 }
@@ -162,7 +165,8 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         NSString *deviceSuffix = [self interfaceIdiomSuffix];
         NSString *scaleSuffix = [self scaleSuffix];
         NSString *path = [[[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] stringByDeletingScaleSuffix];
-        return [[path stringByAppendingFormat:@"-hd%@%@", scaleSuffix, deviceSuffix] stringByAppendingPathExtension:extension];
+        path = [path stringByAppendingFormat:@"-hd%@%@", scaleSuffix, deviceSuffix];
+        return [extension length]? [path stringByAppendingPathExtension:extension]: path;
     }
     return self;
 }
@@ -177,7 +181,8 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         NSString *scaleSuffix = [self scaleSuffix];
         NSString *path = [[[self stringByDeletingPathExtension] stringByDeletingInterfaceIdiomSuffix] stringByDeletingScaleSuffix];
         path = [path substringToIndex:[path length] - [HDSuffix length]];
-        return [[path stringByAppendingFormat:@"%@%@", scaleSuffix, deviceSuffix] stringByAppendingPathExtension:extension];
+        path = [path stringByAppendingFormat:@"%@%@", scaleSuffix, deviceSuffix];
+        return [extension length]? [path stringByAppendingPathExtension:extension]: path;
     }
     return self;
 }
