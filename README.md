@@ -218,6 +218,10 @@ The clipping rectangle used to crop and resize the texture to fit the image rect
 
 The content rectangle used to specify the portion of the image which is textured. This rect is measured in image pixels. In most cases the size of this rect will match the image size and the origin will be zero, however if the image content has been trimmed from its original size, the contentRect may be smaller than the bounds specified by the image size.
 
+    @property (nonatomic, readonly) BOOL premultipliedAlpha;
+
+Images that have translucent parts can either use premultiplied or non-premultiplied alpha. iOS typically uses premultiplied alpha when loading images and this is the default for non-PVR images. PVR images generated using Apple's command-line tools do not have premultiplied alpha, so for PVR images it is assumed that the image does not have premultiplied alpha so this property will be NO for PVR images by default, however some tools have the option to generate PVR images with premultiplied alpha, and this is generally recommended to avoid odd black or white halos around opaque parts of the image. There is no way to detect if a PVR image was generated with premultiplied alpha, so if you know that it was, or if the image looks wrong when rendered, you can toggle this property using the `imageWithPremultipliedAlpha:` method. See the Premultiplied Alpha section below for more details.
+
     @property (nonatomic, readonly) const GLfloat *textureCoords;
 
 The texture coordinates used for rendering the image. These are handy if you need to render the image yourself using OpenGL functions instead of using the `drawAtPoint:` or `drawInRect:` methods. The textureCoords array will always contain exactly 8 GLfloat values.
@@ -260,7 +264,7 @@ These methods allow you to create a GLImage from an NSData object. The data cont
 
     - (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha;
     
-Images that have translucent parts can either use premultiplied or non-premultiplied alpha. iOS typically uses premultiplied alpha when loading images and this is the default for non-PVR images. PVR images generated using Apple's command-line tools do not have premultiplied alpha, so for PVR images it is assumed that the image does not have premultiplied alpha. Some tools however generate PVR images with premultiplied alpha, and since there is no way to detect this from the file format, these images will render incorrectly when loaded with GLImage. To correct this, use this method with a value of YES to create a version of the image that will render correctly.
+Images that have translucent parts can either use premultiplied or non-premultiplied alpha. iOS typically uses premultiplied alpha when loading images and this is the default for non-PVR images. PVR images generated using Apple's command-line tools do not have premultiplied alpha, so for PVR images it is assumed that the image does not have premultiplied alpha. Some tools however have the option to generate PVR images with premultiplied alpha, and this is generally recommended to avoid odd black or white halos around opaque parts of the image, but since there is no way to detect this from the file format, these images may render incorrectly when loaded with GLImage. To correct this, use this method with a value of YES to create a version of the image that will render correctly. See the Premultiplied Alpha section below for more details.
 
     - (GLImage *)imageWithOrientation:(UIImageOrientation)orientation;
 
@@ -542,3 +546,15 @@ This generates the frames as 4 bpp compressed PVR images (This will take a while
 This would create the frames as maximum-quality 32-bit PVR images with alpha transparency.
 
 **NOTE:** PVR image sequences are very large compared with the original MP4 movie, or even the equivalent PNG image sequence. PVR is optimised for memory usage and loading speed, not disk space, so be prepared for your app to grow dramatically if you include a lot of PVR video frames.
+
+
+Premultiplied Alpha
+---------------------
+
+Images with an alpha channel can be generated with either straight or premultiplied alpha. Typically on iOS, images use premultiplied alpha because it is more efficient for rendering. PNG images added to your Xcode project will be automatically converted to use premultiplied alpha, so GLImage assumes premultiplied alpha when loading ONG images.
+
+Oddly, the texturetool that Apples ships with Xcode for creating compressed PVR images generates straight alpha, so GLImage assumes straight alpha for PVR images.
+
+Straight alpha can result in a one-pixel black or white halo around the opaque parts of the image when rendered (you can see slight white halos in the PVR images in the GLImage demo), so it's recommended that you use premultiplied alpha with PVR images, however to generate PVR images with premultiplied alpha you'll need to use another tool such as TexturePacker or Zwoptex to generate your PVRs.
+
+There's no way to automatically detect the type of alpha when loading a PVR image, so even if you have generated your PVRs with premultiplied alpha, GLImage will still assume they are straight multiplied. To correct this call `imageWithPremultipliedAlpha:` on the image after loading it to create a copy that will treat the image as having premultiplied alpha instead (or vice versa).

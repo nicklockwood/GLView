@@ -46,6 +46,7 @@ typedef void (^GLImageDrawingBlock)(CGContextRef context);
 @property (nonatomic, readonly) CGSize textureSize;
 @property (nonatomic, readonly) CGRect clipRect;
 @property (nonatomic, readonly) CGRect contentRect;
+@property (nonatomic, readonly) BOOL premultipliedAlpha;
 @property (nonatomic, readonly) const GLfloat *textureCoords;
 @property (nonatomic, readonly) const GLfloat *vertexCoords;
 
