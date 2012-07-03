@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.3.2
+//  Version 1.3.3
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -38,6 +38,7 @@
 @interface GLView ()
 
 @property (nonatomic, strong) EAGLContext *context;
+@property (nonatomic, assign) CGSize previousSize;
 @property (nonatomic, assign) GLint framebufferWidth;
 @property (nonatomic, assign) GLint framebufferHeight;
 @property (nonatomic, assign) GLuint defaultFramebuffer;
@@ -55,6 +56,7 @@
 @implementation GLView
 
 @synthesize context = _context;
+@synthesize previousSize = _previousSize;
 @synthesize framebufferWidth = _framebufferWidth;
 @synthesize framebufferHeight = _framebufferHeight;
 @synthesize defaultFramebuffer = _defaultFramebuffer;
@@ -111,6 +113,7 @@
     //create framebuffer
     _framebufferWidth = 0.0f;
     _framebufferHeight = 0.0f;
+    _previousSize = CGSizeZero;
     [self createFramebuffer];
 	
 	//defaults
@@ -155,9 +158,16 @@
 
 - (void)layoutSubviews
 {
-    //rebuild framebuffer
-    [self deleteFramebuffer];
-    [self createFramebuffer];
+    CGSize size = self.bounds.size;
+    if (!CGSizeEqualToSize(size, self.previousSize))
+    {
+        //rebuild framebuffer
+        [self deleteFramebuffer];
+        [self createFramebuffer];
+        
+        //update size
+        self.previousSize = size;
+    }
 }
 
 - (void)createFramebuffer
@@ -181,7 +191,7 @@
     glBindRenderbuffer(GL_RENDERBUFFER, self.depthRenderbuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, self.framebufferWidth, self.framebufferHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, self.depthRenderbuffer);
-
+    
     //check success
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {

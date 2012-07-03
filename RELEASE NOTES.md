@@ -1,3 +1,8 @@
+Version 1.3.3
+
+- Fixed scaling bug in GLImageMap loading code
+- GLView no longer destroys and re-creates the context each time it is redrawn if the view hasn't changed size
+
 Version 1.3.2
 
 - Added support for the Cocos2D -hd file suffix
@@ -10,7 +15,7 @@ Version 1.3.1
 
 - Added support for trimmed sprites to GLImageMap
 - Added support for aliased images in GLImageMap
-- Image, ImageMap and model file loading now recognises ~ipad suffix for iPad-specific asset versions.
+- Image, ImageMap and model file loading now recognises ~ipad suffix for iPad-specific asset versions
 - Added contentRect property to GLImage
 - Added vertexCoords property to GLImage
 

@@ -258,7 +258,7 @@
 		012AB0EC14A140900016FFF1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = 012AB0EF14A140900016FFF1 /* Build configuration list for PBXProject "GLModelDemo" */;
 			compatibilityVersion = "Xcode 3.2";

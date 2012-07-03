@@ -2,7 +2,7 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.3.2
+//  Version 1.3.3
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -85,6 +85,8 @@
 - (GLImageMap *)initWithImage:(GLImage *)image path:(NSString *)path data:(NSData *)data
 {
     //parse data
+    CGFloat plistScale = [[path absolutePathWithDefaultExtensions:@"plist", nil] scale] ?: 1.0f;
+    CGFloat scale = image.scale / plistScale;
     NSPropertyListFormat format = 0;
     NSDictionary *dict = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:&format error:NULL];
     if (dict && [dict isKindOfClass:[NSDictionary class]])
@@ -108,10 +110,14 @@
                 //set premultiplied property
                 BOOL premultiplied = [[metadata valueForKeyPath:@"target.premultipliedAlpha"] boolValue];
                 image = [image imageWithPremultipliedAlpha:premultiplied];
+                
+                //set scale
+                scale = (image.textureSize.width / CGSizeFromString([metadata objectForKey:@"size"]).width) ?: (image.scale / plistScale);
             }
             else
             {
                 image = [GLImage imageWithContentsOfFile:path];
+                scale = image.scale / plistScale;
             }
         }
         
@@ -129,10 +135,10 @@
                         
                         //get clip rect
                         CGRect clipRect = CGRectFromString([spriteDict objectForKey:@"textureRect"]);
-                        clipRect.origin.x *= image.scale;
-                        clipRect.origin.y *= image.scale;
-                        clipRect.size.width *= image.scale;
-                        clipRect.size.height *= image.scale;
+                        clipRect.origin.x *= scale;
+                        clipRect.origin.y *= scale;
+                        clipRect.size.width *= scale;
+                        clipRect.size.height *= scale;
                         
                         //get image size
                         CGSize size = CGSizeFromString([spriteDict objectForKey:@"spriteSize"]);
@@ -177,7 +183,7 @@
     {
         NSLog(@"Unrecognised ImageMap data format");
     }
-              
+    
     //not a recognised data format
     AH_RELEASE(self);
     return nil;
