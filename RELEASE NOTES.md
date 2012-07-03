@@ -1,3 +1,11 @@
+Version 1.3.4
+
+- GLView now uses drawRect method for updates instead of displaySubviews
+- bindFramebuffer and presentRenderbuffer are now called automatically
+- Fixed alpha blending bug in bindGLClearColor method
+- Fixed alpha blending bug in GLModelView
+- Added display method
+
 Version 1.3.3
 
 - Fixed scaling bug in GLImageMap loading code

@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.3.3
+//  Version 1.3.4
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -361,7 +361,7 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 {
     GLfloat rgba[4];
     [self getGLComponents:rgba];
-    glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+    glClearColor(rgba[0] * rgba[3], rgba[1] * rgba[3], rgba[2] * rgba[3], rgba[3]);
 }
 
 - (void)bindGLBlendColor

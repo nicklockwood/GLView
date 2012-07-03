@@ -2,7 +2,7 @@
 //  GLView.h
 //
 //  GLView Project
-//  Version 1.3.3
+//  Version 1.3.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -43,8 +43,9 @@
 @property (nonatomic, assign) CGFloat far;
 
 - (void)setUp;
+- (void)display;
 - (void)bindFramebuffer;
-- (BOOL)presentFramebuffer;
+- (BOOL)presentRenderbuffer;
 
 @property (nonatomic, assign) NSTimeInterval elapsedTime;
 

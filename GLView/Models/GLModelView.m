@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.3.3
+//  Version 1.3.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -61,7 +61,7 @@
     {
         AH_RELEASE(_lights);
         _lights = AH_RETAIN(lights);
-        [self setNeedsLayout];
+        [self setNeedsDisplay];
     }
 }
 
@@ -71,7 +71,7 @@
     {
         AH_RELEASE(_model);
         _model = AH_RETAIN(model);
-        [self setNeedsLayout];
+        [self setNeedsDisplay];
     }
 }
 
@@ -81,7 +81,7 @@
     {
         AH_RELEASE(_blendColor);
         _blendColor = AH_RETAIN(blendColor);
-        [self setNeedsLayout];
+        [self setNeedsDisplay];
     }
 }
 
@@ -91,24 +91,18 @@
     {
         AH_RELEASE(_texture);
         _texture = AH_RETAIN(texture);
-        [self setNeedsLayout];
+        [self setNeedsDisplay];
     }
 }
 
 - (void)setTransform:(CATransform3D)transform
 {
     _transform = transform;
-    [self setNeedsLayout];
+    [self setNeedsDisplay];
 }
 
-- (void)layoutSubviews
+- (void)drawRect:(CGRect)rect
 {
-    [super layoutSubviews];
-    [self bindFramebuffer];
-	
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT + GL_DEPTH_BUFFER_BIT);
-    
     //apply lights
     if ([self.lights count])
     {
@@ -145,13 +139,11 @@
     {
         glDisable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
     
     //render the model
     [self.model draw];
-	
-    [self presentFramebuffer];
 }
 
 - (void)dealloc

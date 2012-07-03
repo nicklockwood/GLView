@@ -7,6 +7,8 @@ The GLImage and GLImageView classes make it possible to load and display PVR for
 
 The GLModel and GLModelView classes allow you to load a 3D model using the popular WaveFront .obj format and display it in a view, again without needing to know anything about OpenGL.
 
+The GLView library is modular. If you don't want to render 3D models you can omit the Models classes and the rest of the library will still work. If you aren't interested in loading and displaying images and just want a basic OpenGL context set up for you, you can omit the Images and Models classes.
+
 
 Supported iOS & SDK Versions
 -----------------------------
@@ -170,13 +172,21 @@ GLView has the following methods:
     
 Called by `initWithCoder: and `initWithFrame:` to initialise the view. Override this method to do setup code in your own GLView subclasses. Remember to call [super setUp] or the view won't work properly.
 
+    - (void)display;
+    
+If you are managing drawing yourself using an update loop, you can call this method to call the drawRect: method immediately instead of waiting for the next OS frame update.
+
+    - (void)drawRect:(CGRect)rect;
+    
+This method (inherited from UIView) is responsible for drawing the view contents. The default implementation does nothing, but you can override this method in a GLView subclass to perform your own OpenGL rendering logic.
+
 	- (void)bindFramebuffer;
 
-Call this method to bind the GLView before attempting any drawing using OpenGL commands. This would typically be called at the beginning of a drawing loop that executes every frame, or every time a view needs to be redrawn.
+This method is used to bind the GLView before attempting any drawing using OpenGL commands. This method is called automatically prior to the `drawRect:` method, so in most cases you won't ever need to call it yourself.
 
-	- (BOOL)presentFramebuffer;
+	- (BOOL)presentRenderbuffer;
 
-Call this method to update the view and display the result of any previous drawing commands. This would typically be called at the end of a drawing loop.
+Call this method to update the view and display the result of any previous drawing commands. This method is called automatically after the `drawRect:` method, so in most cases you won't ever need to call it yourself.
 
     - (void)startAnimating;
     
@@ -510,7 +520,7 @@ This generates a 4 bpp compressed PVR image.
 	
 This generates a 2 bpp compressed PVR image.
 
-As stated previously, these files will appear like heavily compressed JPEG images, and will not be appropriate for user interface components or images with fine detail. It is also possible to create PVR images in a variety of higher qualities, but for this you will need to use a different tool. One such app is TexturePacker (http://www.texturepacker.com/), which is not free, but provides a handy command line tool for generating additional PVR formats.
+As stated previously, these files will appear like heavily compressed JPEG images, and will probably not be appropriate for user interface components or images with fine detail. It is also possible to create PVR images in a variety of higher qualities, but for this you will need to use a different tool. One such app is TexturePacker (http://www.texturepacker.com/), which is not free, but provides a handy command line tool for generating additional PVR formats.
 
 The typical TexturePacker settings you will want to use are one of the following:
 
@@ -562,3 +572,5 @@ Oddly, the texturetool that Apples ships with Xcode for creating compressed PVR 
 Straight alpha can result in a one-pixel black or white halo around the opaque parts of the image when rendered (you can see slight white halos in the PVR images in the GLImage demo), so it's recommended that you use premultiplied alpha with PVR images, however to generate PVR images with premultiplied alpha you'll need to use another tool such as TexturePacker or Zwoptex to generate your PVRs.
 
 There's no way to automatically detect the type of alpha when loading a PVR image, so even if you have generated your PVRs with premultiplied alpha, GLImage will still assume they are straight multiplied. To correct this call `imageWithPremultipliedAlpha:` on the image after loading it to create a copy that will treat the image as having premultiplied alpha instead (or vice versa).
+
+The Cocos2D Plist file format supported by GLImageMap includes metadata indicating whether the texture file has premultiplied alpha, so no further work is needed when loading sprite sheets with GLImageMap.

@@ -2,7 +2,7 @@
 //  GLLight.m
 //
 //  GLView Project
-//  Version 1.3.3
+//  Version 1.3.4
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -46,7 +46,7 @@
 {
     if ((self = [super init]))
     {
-        self.ambientColor = [UIColor blackColor];
+        self.ambientColor = [UIColor colorWithWhite:0.2f alpha:1.0f];
         self.diffuseColor = [UIColor whiteColor];
         self.specularColor = [UIColor whiteColor];
         self.transform = CATransform3DMakeTranslation(0.0f, 0.0f, 1.0f);

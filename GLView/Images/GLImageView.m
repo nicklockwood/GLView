@@ -2,7 +2,7 @@
 //  GLImageView.m
 //
 //  GLView Project
-//  Version 1.3.3
+//  Version 1.3.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -67,7 +67,7 @@
     {
         AH_RELEASE(_image);
         _image = AH_RETAIN(image);
-        [self setNeedsLayout];
+        [self setNeedsDisplay];
     }
 }
 
@@ -136,18 +136,10 @@
 	}
 }
 
-- (void)layoutSubviews
+- (void)drawRect:(CGRect)rect
 {
-    [super layoutSubviews];
-    [self bindFramebuffer];
-    
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
     //set blend color
     [self.blendColor ?: [UIColor whiteColor] bindGLColor];
-	
-	CGRect rect;
 	switch (self.contentMode)
 	{
 		case UIViewContentModeCenter:
@@ -240,8 +232,6 @@
 		}
 	}
     [self.image drawInRect:rect];
-	
-    [self presentFramebuffer];
 }
 
 - (void)dealloc

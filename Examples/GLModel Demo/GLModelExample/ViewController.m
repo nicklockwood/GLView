@@ -101,7 +101,7 @@
             
             //set model
             modelView.texture = nil;
-            modelView.blendColor = nil;
+            modelView.blendColor = [UIColor whiteColor];
             modelView.model = [GLModel modelWithContentsOfFile:@"cube.obj"];
             
             //set default transform

@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.3.3
+//  Version 1.3.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -33,6 +33,35 @@
 //
 
 #import "GLView.h"
+
+
+@interface GLLayer : CAEAGLLayer
+
+@end
+
+
+@implementation GLLayer
+
+- (void)display
+{
+    //get view
+    GLView *view = (GLView *)self.delegate;
+    
+    //bind context and frame buffer
+    [view bindFramebuffer];
+    
+    //clear view
+    [view.backgroundColor ?: [UIColor clearColor] bindGLClearColor];
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    //do drawing
+    [view drawRect:view.bounds];
+    
+    //present
+    [view presentRenderbuffer];
+}
+
+@end
 
 
 @interface GLView ()
@@ -94,7 +123,7 @@
 
 + (Class)layerClass
 {
-    return [CAEAGLLayer class];
+    return [GLLayer class];
 }
 
 - (void)setUp
@@ -141,19 +170,19 @@
 - (void)setFov:(CGFloat)fov
 {
 	_fov = fov;
-	[self setNeedsLayout];
+	[self setNeedsDisplay];
 }
 
 - (void)setNear:(CGFloat)near
 {
 	_near = near;
-	[self setNeedsLayout];
+	[self setNeedsDisplay];
 }
 
 - (void)setFar:(CGFloat)far
 {
 	_far = far;
-	[self setNeedsLayout];
+	[self setNeedsDisplay];
 }
 
 - (void)layoutSubviews
@@ -251,12 +280,22 @@
     glLoadIdentity();
 }
 
-- (BOOL)presentFramebuffer
+- (BOOL)presentRenderbuffer
 {
     [EAGLContext setCurrentContext:self.context];
     
     glBindRenderbuffer(GL_RENDERBUFFER, self.colorRenderbuffer);
     return [self.context presentRenderbuffer:GL_RENDERBUFFER];
+}
+
+- (void)display
+{
+    [self.layer display];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    //override this
 }
 
 
@@ -299,7 +338,7 @@
         [self step:deltaTime];
         
         //update view
-        [self setNeedsLayout];
+        [self display];
     }
 }
 
