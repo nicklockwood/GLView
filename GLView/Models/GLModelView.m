@@ -136,7 +136,7 @@
     glLoadMatrixf((GLfloat *)&_transform);
     
     //set texture
-    [self.blendColor ?: [UIColor whiteColor] bindGLBlendColor];
+    [self.blendColor ?: [UIColor whiteColor] bindGLColor];
     if (self.texture)
     {
         [self.texture bindTexture];

@@ -145,7 +145,7 @@
     glClear(GL_COLOR_BUFFER_BIT);
     
     //set blend color
-    [self.blendColor ?: [UIColor whiteColor] bindGLBlendColor];
+    [self.blendColor ?: [UIColor whiteColor] bindGLColor];
 	
 	CGRect rect;
 	switch (self.contentMode)

@@ -1,6 +1,7 @@
 Version 1.3.3
 
 - Fixed scaling bug in GLImageMap loading code
+- Fixed bug where GLImage drawAtPoint method would always draw at 0,0
 - GLView no longer destroys and re-creates the context each time it is redrawn if the view hasn't changed size
 
 Version 1.3.2

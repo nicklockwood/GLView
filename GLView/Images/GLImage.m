@@ -524,7 +524,21 @@ static NSCache *imageCache = nil;
 
 - (void)drawAtPoint:(CGPoint)point
 {
-    [self drawWithVertexCoords:self.vertexCoords];
+    const GLfloat *coords = self.vertexCoords;
+    
+    //calculate vertices
+    GLfloat vertexCoords[8];
+    vertexCoords[0] = coords[0] + point.x;
+    vertexCoords[1] = coords[1] + point.y;
+    vertexCoords[2] = coords[2] + point.x;
+    vertexCoords[3] = vertexCoords[1];
+    vertexCoords[4] = vertexCoords[2];
+    vertexCoords[5] = coords[5] + point.y;
+    vertexCoords[6] = vertexCoords[0];
+    vertexCoords[7] = vertexCoords[5];
+    
+    //draw
+    [self drawWithVertexCoords:vertexCoords];
 }
 
 - (void)drawInRect:(CGRect)rect

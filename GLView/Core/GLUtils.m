@@ -368,6 +368,13 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 {    
     GLfloat rgba[4];
     [self getGLComponents:rgba];
+    glBlendColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
+- (void)bindGLColor
+{    
+    GLfloat rgba[4];
+    [self getGLComponents:rgba];
     glColor4f(rgba[0], rgba[1], rgba[2], rgba[3]);
 }
 

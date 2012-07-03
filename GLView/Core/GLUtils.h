@@ -103,5 +103,6 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
 - (void)getGLComponents:(GLfloat *)rgba;
 - (void)bindGLClearColor;
 - (void)bindGLBlendColor;
+- (void)bindGLColor;
 
 @end

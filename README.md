@@ -136,6 +136,10 @@ Binds the UIColor as the current OpenGL clear color.
     
 Binds the UIColor as the current OpenGL blend color.
 
+    - (void)bindGLColor;
+    
+Binds the UIColor as the current OpenGL color.
+
 
 GLView properties
 ----------------
