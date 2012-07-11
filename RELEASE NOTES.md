@@ -1,3 +1,8 @@
+Version 1.3.5
+
+- Added support for CALayer renderInContext: method for capturing GLView contents
+- Added snapshot method for capturing GLView contents as a UIImage
+
 Version 1.3.4
 
 - GLView now uses drawRect method for updates instead of displaySubviews

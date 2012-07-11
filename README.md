@@ -204,6 +204,10 @@ Returns YES if the view is currently animating and NO if it isn't.
 
 This method is called every 60th of a second while the view is animating. The dt parameter is the time (in seconds) since the last step (this will usually be ~1/60 seconds depending on the complexity of your rendering code and device performance). The default implementation does nothing, but you can override this method to create your own animation logic.
 
+    - (UIImage *)snapshot;
+    
+This method returns the current contents of the GLView (including any subviews) as a UImage. Note that calling this method will always cause the view contents to be immediately re-rendered by calling the drawRect: method, even if the view has recently been updated. The CALayer renderInContext: method for the layer backing the GLView has also been implemented, allowing you to capture any hierarchy of views that includes GLView instances. 
+
 
 GLImage properties
 -------------------

@@ -45,6 +45,13 @@
 - (void)viewDidAppear:(BOOL)animated
 {
 	[scrollView flashScrollIndicators];
+    
+    //take a snaphost of the first imageview
+    //and save it in the documents folder
+    UIImage *image = [imageView1 snapshot];
+    NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"image.png"];
+    NSData *data = UIImagePNGRepresentation(image);
+    [data writeToFile:path atomically:YES];
 }
 
 - (void)viewDidUnload

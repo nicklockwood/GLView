@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.3.4
+//  Version 1.3.5
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -40,6 +40,24 @@
 @end
 
 
+@interface GLView ()
+
+@property (nonatomic, strong) EAGLContext *context;
+@property (nonatomic, assign) CGSize previousSize;
+@property (nonatomic, assign) GLint framebufferWidth;
+@property (nonatomic, assign) GLint framebufferHeight;
+@property (nonatomic, assign) GLuint defaultFramebuffer;
+@property (nonatomic, assign) GLuint colorRenderbuffer;
+@property (nonatomic, assign) GLuint depthRenderbuffer;
+@property (nonatomic, assign) NSTimeInterval lastTime;
+@property (nonatomic, unsafe_unretained) CADisplayLink *timer;
+
+- (void)createFramebuffer;
+- (void)deleteFramebuffer;
+
+@end
+
+
 @implementation GLLayer
 
 - (void)display
@@ -61,23 +79,52 @@
     [view presentRenderbuffer];
 }
 
-@end
-
-
-@interface GLView ()
-
-@property (nonatomic, strong) EAGLContext *context;
-@property (nonatomic, assign) CGSize previousSize;
-@property (nonatomic, assign) GLint framebufferWidth;
-@property (nonatomic, assign) GLint framebufferHeight;
-@property (nonatomic, assign) GLuint defaultFramebuffer;
-@property (nonatomic, assign) GLuint colorRenderbuffer;
-@property (nonatomic, assign) GLuint depthRenderbuffer;
-@property (nonatomic, assign) NSTimeInterval lastTime;
-@property (nonatomic, unsafe_unretained) CADisplayLink *timer;
-
-- (void)createFramebuffer;
-- (void)deleteFramebuffer;
+- (void)renderInContext:(CGContextRef)ctx
+{
+    //get view
+    GLView *view = (GLView *)self.delegate;
+    
+    //bind context and frame buffer
+    [view bindFramebuffer];
+    
+    //clear view
+    [view.backgroundColor ?: [UIColor clearColor] bindGLClearColor];
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    //do drawing
+    [view drawRect:view.bounds];
+    
+    //read pixel data from the framebuffer
+    NSInteger width = view.framebufferWidth;
+    NSInteger height = view.framebufferHeight;
+    NSInteger dataLength = width * height * 4;
+    GLubyte *data = (GLubyte *)malloc(dataLength * sizeof(GLubyte));
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    
+    //create CGImage with the pixel data
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+    CGImageRef image = CGImageCreate(width, height, 8, 32, width * 4, colorspace, kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast, dataProvider, NULL, true, kCGRenderingIntentDefault);
+    
+    //render image in current context
+    CGContextDrawImage(ctx, CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height), image);
+    
+    //render sublayers
+    for (CALayer *layer in self.sublayers)
+    {
+        CGContextSaveGState(ctx);
+        CGContextTranslateCTM(ctx, layer.frame.origin.x, layer.frame.origin.y);
+        [layer renderInContext:ctx];
+        CGContextRestoreGState(ctx);
+    }
+    
+    //clean up
+    free(data);
+    CFRelease(dataProvider);
+    CFRelease(colorspace);
+    CGImageRelease(image);
+}
 
 @end
 
@@ -345,6 +392,24 @@
 - (void)step:(NSTimeInterval)dt
 {
 	//override this
+}
+
+
+#pragma mark Screen capture
+
+- (UIImage *)snapshot
+{
+    //create image context
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, self.layer.contentsScale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+
+    //render the image
+    [self.layer renderInContext:context];
+
+    //retrieve the image from the current context
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
 }
 
 @end

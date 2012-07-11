@@ -2,7 +2,7 @@
 //  GLUtils.h
 //
 //  GLView Project
-//  Version 1.3.4
+//  Version 1.3.5
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design

@@ -2,7 +2,7 @@
 //  GLView.h
 //
 //  GLView Project
-//  Version 1.3.4
+//  Version 1.3.5
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -53,5 +53,7 @@
 - (void)stopAnimating;
 - (BOOL)isAnimating;
 - (void)step:(NSTimeInterval)dt;
+
+- (UIImage *)snapshot;
 
 @end
