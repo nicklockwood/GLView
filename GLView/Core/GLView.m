@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.3.5
+//  Version 1.3.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -50,10 +50,8 @@
 @property (nonatomic, assign) GLuint colorRenderbuffer;
 @property (nonatomic, assign) GLuint depthRenderbuffer;
 @property (nonatomic, assign) NSTimeInterval lastTime;
-@property (nonatomic, unsafe_unretained) CADisplayLink *timer;
-
-- (void)createFramebuffer;
-- (void)deleteFramebuffer;
+@property (nonatomic, assign, getter = isAnimating) BOOL animating;
+@property (nonatomic, unsafe_unretained) NSTimer *timer;
 
 @end
 
@@ -139,6 +137,8 @@
 @synthesize colorRenderbuffer = _colorRenderbuffer;
 @synthesize depthRenderbuffer = _depthRenderbuffer;
 @synthesize lastTime = _lastTime;
+@synthesize animating = _animating;
+@synthesize frameInterval = _frameInterval;
 @synthesize elapsedTime = _elapsedTime;
 @synthesize timer = _timer;
 @synthesize fov = _fov;
@@ -194,6 +194,7 @@
 	
 	//defaults
 	_fov = 0.0f; //orthographic
+    _frameInterval = 1.0/60.0; // 60 fps
 }
 
 - (id)initWithCoder:(NSCoder*)coder
@@ -230,6 +231,19 @@
 {
 	_far = far;
 	[self setNeedsDisplay];
+}
+
+- (void)setFrameInterval:(NSTimeInterval)frameInterval
+{
+    if (_frameInterval != frameInterval)
+    {
+        _frameInterval = frameInterval;
+        if (self.animating)
+        {
+            [self.timer invalidate];
+            [self startTimer];
+        }
+    }
 }
 
 - (void)layoutSubviews
@@ -345,17 +359,43 @@
     //override this
 }
 
+- (void)didMoveToSuperview
+{
+	[super didMoveToSuperview];
+	if (!self.superview)
+	{
+        //pause
+		[self.timer invalidate];
+        self.timer = nil;
+	}
+    else if (!self.timer && self.animating)
+    {
+        //resume
+        [self startTimer];
+        [self step];
+    }
+}
+
 
 #pragma mark Animation
 
+- (void)startTimer
+{
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:self.frameInterval
+                                                  target:self
+                                                selector:@selector(step)
+                                                userInfo:nil
+                                                 repeats:YES];
+}
+
 - (void)startAnimating
 {
+    self.animating = YES;
 	self.lastTime = CACurrentMediaTime();
 	self.elapsedTime = 0.0;
 	if (!self.timer)
 	{
-		self.timer = [CADisplayLink displayLinkWithTarget:self selector:@selector(step)];
-		[self.timer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+		[self startTimer];
 	}
 }
 
@@ -363,11 +403,7 @@
 {
 	[self.timer invalidate];
 	self.timer = nil;
-}
-
-- (BOOL)isAnimating
-{
-	return self.timer != nil;
+    self.animating = NO;
 }
 
 - (void)step
@@ -378,15 +414,11 @@
 	self.elapsedTime += deltaTime;
 	self.lastTime = currentTime;
     
-    //only draw when on-screen
-    if (self.window)
-    {
-        //step animation
-        [self step:deltaTime];
-        
-        //update view
-        [self display];
-    }
+    //step animation
+    [self step:deltaTime];
+    
+    //update view
+    [self setNeedsDisplay];
 }
 
 - (void)step:(NSTimeInterval)dt

@@ -1,3 +1,11 @@
+Version 1.3.6
+
+- Added frameInterval property for controlling GLView animation frame rate
+- GLView now uses an NSTimer instead of CADisplayLink for animation, as this performs much better when multiple GLViews are animating onscreen at once
+- It is now possible to display several animated GLImageViews onscreen at once without performance problems
+- GLView animation will no longer stall when the view is moved offscreen
+- absolutePathWithDefaultExtensions: method will no longer double-apply the @2x extension in certain cases, causing the wrong image to be loaded.
+
 Version 1.3.5
 
 - Added support for CALayer renderInContext: method for capturing GLView contents

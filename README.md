@@ -158,6 +158,10 @@ The near clipping plane. This is used by OpenGL to clip geometry that is too clo
 
 The far clipping plane. This is used by OpenGL to clip geometry that is too far from the camera. A smaller value for the far plane improves the precision of the z-buffer and reduces rendering artefacts, so try to set this value as low as possible (Note: it must be larger than the near value).
 
+    @property (nonatomic, assign) NSTimeInterval frameInterval;
+
+This property controls the frame rate of the view animation. The default value is 1.0/60.0 (60 frames per second). You may wish to reduce this to 30 fps if your animation becomes choppy.
+
     @property (nonatomic, assign) NSTimeInterval elapsedTime;
 
 This property is used when animating the view. It indicates the total animation time elapsed since the startAnimating method was first called. It is not reset when stop is called, but you can reset it manually at any time as it is a read/write property.

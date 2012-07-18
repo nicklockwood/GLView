@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.3.5
+//  Version 1.3.6
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -260,7 +260,7 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         }
         
         //check for scaled version
-        if ([UIScreen mainScreen].scale > 1.0f)
+        if ([UIScreen mainScreen].scale > 1.0f && [path scale] == 1.0f)
         {
             NSString *_path = [path stringByAppendingScaleSuffix];
             if ([[NSFileManager defaultManager] fileExistsAtPath:_path])
@@ -269,7 +269,7 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
             }
         }
     }
-    else if ([UIScreen mainScreen].scale > 1.0f)
+    else if ([UIScreen mainScreen].scale > 1.0f && [path scale] == 1.0f)
     {
         //check for HD version
         NSString *_path = [path stringByAppendingHDSuffix];
