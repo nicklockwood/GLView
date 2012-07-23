@@ -22,6 +22,7 @@
 		01400A56153244D900EE0FB5 /* quad.obj in Resources */ = {isa = PBXBuildFile; fileRef = 01400A55153244D900EE0FB5 /* quad.obj */; };
 		0157F57B153228AA0015AFF1 /* cube.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0157F579153228AA0015AFF1 /* cube.obj */; };
 		0157F57C153228AA0015AFF1 /* diamond.obj in Resources */ = {isa = PBXBuildFile; fileRef = 0157F57A153228AA0015AFF1 /* diamond.obj */; };
+		01ADC13815BE07D00075F3AC /* Ship.obj in Resources */ = {isa = PBXBuildFile; fileRef = 01ADC13715BE07D00075F3AC /* Ship.obj */; };
 		01F00A4E1565978500CF44D9 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A3F1565978500CF44D9 /* GLView.m */; };
 		01F00A501565978500CF44D9 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A441565978500CF44D9 /* GLImage.m */; };
 		01F00A511565978500CF44D9 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A461565978500CF44D9 /* GLImageView.m */; };
@@ -57,6 +58,7 @@
 		01400A55153244D900EE0FB5 /* quad.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = quad.obj; sourceTree = "<group>"; };
 		0157F579153228AA0015AFF1 /* cube.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cube.obj; sourceTree = "<group>"; };
 		0157F57A153228AA0015AFF1 /* diamond.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = diamond.obj; sourceTree = "<group>"; };
+		01ADC13715BE07D00075F3AC /* Ship.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Ship.obj; sourceTree = "<group>"; };
 		01F00A3E1565978500CF44D9 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
 		01F00A3F1565978500CF44D9 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
 		01F00A431565978500CF44D9 /* GLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImage.h; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				0157F57A153228AA0015AFF1 /* diamond.obj */,
 				B29BD29B14A22A8400BB4E68 /* demon.model */,
 				B2FC80DA14B4BCF00075C520 /* chair.obj */,
+				01ADC13715BE07D00075F3AC /* Ship.obj */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				0157F57B153228AA0015AFF1 /* cube.obj in Resources */,
 				0157F57C153228AA0015AFF1 /* diamond.obj in Resources */,
 				01400A56153244D900EE0FB5 /* quad.obj in Resources */,
+				01ADC13815BE07D00075F3AC /* Ship.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -111,6 +111,26 @@
             
             break;
         }
+        case 5:
+        {
+            //set title
+            navBar.topItem.title = @"ship.obj";
+            
+            //set model
+            modelView.texture = nil;
+            modelView.blendColor = [UIColor grayColor];
+            modelView.model = [GLModel modelWithContentsOfFile:@"ship.obj"];
+            
+            //set default transform
+            CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -15.0f);
+            transform = CATransform3DRotate(transform, M_PI + 0.4f, 0.0f, 0.0f, 1.0f);
+            transform = CATransform3DRotate(transform, M_PI_4, 1.0f, 0.0f, 0.0f);
+            transform = CATransform3DRotate(transform, -0.4f, 0.0f, 1.0f, 0.0f);
+            transform = CATransform3DScale(transform, 3.0f, 3.0f, 3.0f);
+            modelView.transform = transform;
+            
+            break;
+        }
     }
 }
 
@@ -120,7 +140,7 @@
                                  delegate:self
                         cancelButtonTitle:nil
                    destructiveButtonTitle:nil
-                        otherButtonTitles:@"Demon", @"Quad", @"Chair", @"Diamond", @"Cube", nil] showInView:self.view];
+                        otherButtonTitles:@"Demon", @"Quad", @"Chair", @"Diamond", @"Cube", @"Ship", nil] showInView:self.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
