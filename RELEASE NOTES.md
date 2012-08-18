@@ -1,3 +1,7 @@
+Version 1.3.7
+
+- Fixed memory leak in GLImage when using multiple GLViews or GLImageViews
+
 Version 1.3.6
 
 - Added frameInterval property for controlling GLView animation frame rate

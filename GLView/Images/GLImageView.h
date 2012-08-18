@@ -2,7 +2,7 @@
 //  GLImageView.h
 //
 //  GLView Project
-//  Version 1.3.6
+//  Version 1.3.7
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design

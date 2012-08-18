@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.3.6
+//  Version 1.3.7
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -218,11 +218,9 @@ static NSCache *imageCache = nil;
         if (drawingBlock) drawingBlock(context);
         UIGraphicsPopContext();
         
-        //bind gl context
-        if (![EAGLContext currentContext])
-        {
-            [EAGLContext setCurrentContext:[GLView sharedContext]];
-        }
+        //bind shared gl context
+        EAGLContext *glContext = [EAGLContext currentContext];
+        [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
         
         //create texture
         glGenTextures(1, &_texture);
@@ -230,6 +228,9 @@ static NSCache *imageCache = nil;
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); 
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+        
+        //restore gl context
+        [EAGLContext setCurrentContext:glContext];
         
         //free cg context
         CGContextRelease(context);
@@ -352,7 +353,8 @@ static NSCache *imageCache = nil;
                     }
                 }
                 
-                //bind context
+                //bind shared context
+                EAGLContext *context = [EAGLContext currentContext];
                 [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
                 
                 //create texture
@@ -371,6 +373,9 @@ static NSCache *imageCache = nil;
                     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type,
                                  [data bytes] + header->headerSize);
                 }
+                
+                //restore context
+                [EAGLContext setCurrentContext:context];
             }
             return self;
         }
@@ -384,7 +389,13 @@ static NSCache *imageCache = nil;
 
 - (void)dealloc
 {
-    if (!_superimage) glDeleteTextures(1, &_texture);
+    if (!_superimage)
+    {
+        EAGLContext *context = [EAGLContext currentContext];
+        [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
+        glDeleteTextures(1, &_texture);
+        [EAGLContext setCurrentContext:context];
+    }
     if (_textureCoords) free((void *)_textureCoords);
     if (_vertexCoords) free((void *)_vertexCoords);
     AH_RELEASE(_superimage);
