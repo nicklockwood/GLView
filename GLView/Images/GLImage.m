@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.3.8
+//  Version 1.3.9
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -432,6 +432,7 @@ static NSCache *imageCache = nil;
     GLImage *copy = AH_AUTORELEASE([self copy]);
     copy.clipRect = clipRect;
     copy.size = CGSizeMake(clipRect.size.width / copy.scale, clipRect.size.height / copy.scale);
+    copy.contentRect = CGRectMake(0.0f, 0.0f, copy.size.width, copy.size.height);
     return copy;
 }
 

@@ -2,7 +2,7 @@
 //  GLImageMap.h
 //
 //  GLView Project
-//  Version 1.3.8
+//  Version 1.3.9
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
