@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.3.7
+//  Version 1.3.8
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -69,10 +69,12 @@ WWDC2010Attributes;
 @property (nonatomic, assign) GLfloat *vertices;
 @property (nonatomic, assign) GLfloat *texCoords;
 @property (nonatomic, assign) GLfloat *normals;
-@property (nonatomic, assign) GLushort *elements;
+@property (nonatomic, assign) void *elements;
 @property (nonatomic, assign) GLuint componentCount;
 @property (nonatomic, assign) GLuint vertexCount;
 @property (nonatomic, assign) GLuint elementCount;
+@property (nonatomic, assign) GLuint elementSize;
+@property (nonatomic, assign) GLenum elementType;
 
 @end
 
@@ -86,6 +88,8 @@ WWDC2010Attributes;
 @synthesize componentCount = _componentCount;
 @synthesize vertexCount = _vertexCount;
 @synthesize elementCount = _elementCount;
+@synthesize elementSize = _elementSize;
+@synthesize elementType = _elementType;
 
 - (void)dealloc
 {
@@ -131,35 +135,22 @@ WWDC2010Attributes;
         //TODO: extend GLModel with support for other primitive types
         return NO;
     }
-    self.elementCount = elementAttributes->numElements;
-    self.elements = malloc(self.elementCount * sizeof(GLushort));
-    switch (elementAttributes->datatype)
-    {
-        case GL_UNSIGNED_INT:
-        {
-            GLuint *elements = (GLuint *)(elementAttributes + 1);
-            for (GLuint i = 0; i < self.elementCount; i++)
-            {
-                if (elements[i] >= 0xFFFF)
-                {
-                    //index is outside the unsigned short range
-                    return NO;
-                }
-                self.elements[i] = elements[i];
-            }
+    self.elementSize = elementAttributes->byteSize / elementAttributes->numElements;
+    switch (self.elementSize) {
+        case sizeof(GLuint):
+            self.elementType = GL_UNSIGNED_INT;
             break;
-        }
-        case GL_UNSIGNED_SHORT:
-        {
-            memcpy(self.elements, elementAttributes + 1, elementAttributes->byteSize);
+        case sizeof(GLushort):
+            self.elementType = GL_UNSIGNED_SHORT;
             break;
-        }
-        default:
-        {
-            return NO;
-        }
+        case sizeof(GLubyte):
+            self.elementType = GL_UNSIGNED_BYTE;
+            break;
     }
-    
+    self.elementCount = elementAttributes->numElements;
+    self.elements = malloc(elementAttributes->byteSize);
+    memcpy(self.elements, elementAttributes + 1, elementAttributes->byteSize);
+        
     //copy vertex data
     WWDC2010Attributes *vertexAttributes = (WWDC2010Attributes *)([data bytes] + toc->bytePositionOffset);
     if (vertexAttributes->datatype != GL_FLOAT)
@@ -271,42 +262,42 @@ WWDC2010Attributes;
                 
                 NSArray *parts = [indexString componentsSeparatedByString:@"/"];
                 
-                GLushort fIndex = uniqueIndexStrings;
+                GLuint fIndex = uniqueIndexStrings;
                 NSNumber *index = [indexStrings objectForKey:indexStrings];
                 if (index == nil)
                 {
                     uniqueIndexStrings ++;
                     [indexStrings setObject:[NSNumber numberWithShort:fIndex] forKey:indexString];
                     
-                    GLushort vIndex = [[parts objectAtIndex:0] intValue];
+                    GLuint vIndex = [[parts objectAtIndex:0] intValue];
                     [vertexData appendBytes:tempVertexData.bytes + (vIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
 
                     if ([parts count] > 1)
                     {
-                        GLushort tIndex = [[parts objectAtIndex:1] intValue];
+                        GLuint tIndex = [[parts objectAtIndex:1] intValue];
                         if (tIndex) [textCoordData appendBytes:tempTextCoordData.bytes + (tIndex - 1) * sizeof(GLfloat) * 2 length:sizeof(GLfloat) * 2];
                     }
                     
                     if ([parts count] > 2)
                     {
-                        GLushort nIndex = [[parts objectAtIndex:2] intValue];
+                        GLuint nIndex = [[parts objectAtIndex:2] intValue];
                         if (nIndex) [normalData appendBytes:tempNormalData.bytes + (nIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
                     }
                 }
                 else
                 {
-                    fIndex = [index shortValue];
+                    fIndex = [index unsignedLongValue];
                 }
                 
                 if (count > 3)
                 {
                     //face has more than 3 sides
                     //so insert extra triangle coords
-                    [faceIndexData appendBytes:faceIndexData.bytes + faceIndexData.length - sizeof(GLushort) * 3 length:sizeof(GLushort)];
-                    [faceIndexData appendBytes:faceIndexData.bytes + faceIndexData.length - sizeof(GLushort) * 2 length:sizeof(GLushort)];
+                    [faceIndexData appendBytes:faceIndexData.bytes + faceIndexData.length - sizeof(GLuint) * 3 length:sizeof(GLuint)];
+                    [faceIndexData appendBytes:faceIndexData.bytes + faceIndexData.length - sizeof(GLuint) * 2 length:sizeof(GLuint)];
                 }
                 
-                [faceIndexData appendBytes:&fIndex length:sizeof(GLushort)];
+                [faceIndexData appendBytes:&fIndex length:sizeof(GLuint)];
             }
             
         }
@@ -322,9 +313,35 @@ WWDC2010Attributes;
     AH_RELEASE(indexStrings);
     
     //copy elements
-    self.elementCount = [faceIndexData length] / sizeof(GLushort);
-    self.elements = malloc([faceIndexData length]);
-    memcpy(self.elements, faceIndexData.bytes, [faceIndexData length]);
+    self.elementCount = [faceIndexData length] / sizeof(GLuint);
+    GLuint *faceIndices = (GLuint *)faceIndexData.bytes;
+    if (self.elementCount > USHRT_MAX)
+    {
+        self.elementType = GL_UNSIGNED_INT;
+        self.elementSize = sizeof(GLuint);
+        self.elements = malloc([faceIndexData length]);
+        memcpy(self.elements, faceIndices, [faceIndexData length]);
+    }
+    else if (self.elementCount > UCHAR_MAX)
+    {
+        self.elementType = GL_UNSIGNED_SHORT;
+        self.elementSize = sizeof(GLushort);
+        self.elements = malloc([faceIndexData length] / 2);
+        for (GLuint i = 0; i < _elementCount; i++)
+        {
+            ((GLushort *)_elements)[i] = faceIndices[i];
+        }
+    }
+    else
+    {
+        self.elementType = GL_UNSIGNED_BYTE;
+        self.elementSize = sizeof(GLubyte);
+        self.elements = malloc([faceIndexData length] / 4);
+        for (GLuint i = 0; i < _elementCount; i++)
+        {
+            ((GLubyte *)_elements)[i] = faceIndices[i];
+        }
+    }
     AH_RELEASE(faceIndexData);
     
     //copy vertices
@@ -428,7 +445,7 @@ WWDC2010Attributes;
         glDisableClientState(GL_NORMAL_ARRAY);
     }
     
-    glDrawElements(GL_TRIANGLES, self.elementCount, GL_UNSIGNED_SHORT, self.elements);
+    glDrawElements(GL_TRIANGLES, self.elementCount, self.elementType, self.elements);
     
     glDisable(GL_DEPTH_TEST);
 }

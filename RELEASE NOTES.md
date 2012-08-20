@@ -1,3 +1,7 @@
+Version 1.3.8
+
+- Added support for models containing more than 65,559 triangles
+
 Version 1.3.7
 
 - Fixed memory leak in GLImage when using multiple GLViews or GLImageViews
