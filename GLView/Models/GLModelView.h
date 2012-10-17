@@ -2,15 +2,14 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.3.9
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
-//  Get the latest version from either of these locations:
+//  Get the latest version from here:
 //
-//  http://charcoaldesign.co.uk/source/cocoa#glview
 //  https://github.com/nicklockwood/GLView
 //
 //  This software is provided 'as-is', without any express or implied

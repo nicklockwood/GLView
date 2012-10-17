@@ -2,15 +2,14 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.3.9
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
-//  Get the latest version from either of these locations:
+//  Get the latest version from here:
 //
-//  http://charcoaldesign.co.uk/source/cocoa#glview
 //  https://github.com/nicklockwood/GLView
 //
 //  This software is provided 'as-is', without any express or implied
@@ -122,7 +121,7 @@ static NSCache *imageCache = nil;
 
 + (GLImage *)imageNamed:(NSString *)nameOrPath
 {
-    NSString *path = [nameOrPath absolutePathWithDefaultExtensions:@"png", nil];
+    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"png"];
     GLImage *image = nil;
     if (path)
     {
@@ -145,29 +144,46 @@ static NSCache *imageCache = nil;
 
 + (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath
 {
-    return AH_AUTORELEASE([[self alloc] initWithContentsOfFile:nameOrPath]);
+    return [[[self alloc] initWithContentsOfFile:nameOrPath] autorelease];
 }
 
 + (GLImage *)imageWithUIImage:(UIImage *)image
 {
-    return AH_AUTORELEASE([[self alloc] initWithUIImage:image]);
+    return [[[self alloc] initWithUIImage:image] autorelease];
 }
 
 + (GLImage *)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock
 {
-    return AH_AUTORELEASE([[self alloc] initWithSize:size scale:scale drawingBlock:drawingBlock]);
+    return [[[self alloc] initWithSize:size scale:scale drawingBlock:drawingBlock] autorelease];
 }
 
 + (GLImage *)imageWithData:(NSData *)data scale:(CGFloat)scale
 {
-    return AH_AUTORELEASE([[self alloc] initWithData:data scale:scale]);
+    return [[[self alloc] initWithData:data scale:scale] autorelease];
 }
 
 - (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath
 {
-    NSString *path = [nameOrPath absolutePathWithDefaultExtensions:@"png", nil];
+    //get normalised path
+    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"png"];
+    
+    //calculate scale from path
+    CGFloat imageScale = 1.0f;
+    SEL pathScaleSelector = NSSelectorFromString(@"scaleFromSuffix");
+    if ([path respondsToSelector:pathScaleSelector])
+    {
+        imageScale = [[path valueForKey:@"scaleFromSuffix"] floatValue];
+    }
+    else
+    {
+        NSString *name = [path stringByDeletingPathExtension];
+        if ([name hasSuffix:@"~ipad"]) name = [name substringToIndex:[name length] - 5];
+        if ([name hasSuffix:@"@2x"]) imageScale = 2.0f;
+    }
+    
+    //load image
     NSData *data = [NSData dataWithContentsOfFile:path];
-    return [self initWithData:data scale:[path scale]];
+    return [self initWithData:data scale:imageScale];
 }
 
 - (GLImage *)initWithUIImage:(UIImage *)image
@@ -181,7 +197,7 @@ static NSCache *imageCache = nil;
     }
     
     //no image supplied
-    AH_RELEASE(self);
+    [self release];
     return nil;
 }
 
@@ -241,6 +257,23 @@ static NSCache *imageCache = nil;
 
 - (GLImage *)initWithData:(NSData *)data scale:(CGFloat)scale
 {
+    //check if data is zipped
+    UInt8 *bytes = (UInt8 *)[data bytes];
+    if ([data length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b)
+    {
+        //attempt to unzip
+        if ([data respondsToSelector:NSSelectorFromString(@"gunzippedData")])
+        {
+            data = [data valueForKey:@"gunzippedData"];
+        }
+        else
+        {
+            NSLog(@"The GZIP library is require to load gzipped image files");
+            [self release];
+            return nil;
+        }
+    }
+    
     //attempt to load as PVR first
     if ([data length] >= sizeof(PVRTextureHeader))
     {
@@ -306,7 +339,7 @@ static NSCache *imageCache = nil;
                     case OGL_RGB_555:
                     {
                         NSLog(@"RGB 555 PVR format is not currently supported");
-                        AH_RELEASE(self);
+                        [self release];
                         return nil;
                     }
                     case OGL_RGB_888:
@@ -320,13 +353,13 @@ static NSCache *imageCache = nil;
                     case OGL_I_8:
                     {
                         NSLog(@"I8 PVR format is not currently supported");
-                        AH_RELEASE(self);
+                        [self release];
                         return nil;
                     }
                     case OGL_AI_88:
                     {
                         NSLog(@"AI88 PVR format is not currently supported");
-                        AH_RELEASE(self);
+                        [self release];
                         return nil;
                     }
                     case OGL_PVRTC2:
@@ -348,7 +381,7 @@ static NSCache *imageCache = nil;
                     default:
                     {
                         NSLog(@"Unrecognised PVR image format: %i", header->pixelFormatFlags & 0xff);
-                        AH_RELEASE(self);
+                        [self release];
                         return nil;
                     }
                 }
@@ -398,8 +431,8 @@ static NSCache *imageCache = nil;
     }
     if (_textureCoords) free((void *)_textureCoords);
     if (_vertexCoords) free((void *)_vertexCoords);
-    AH_RELEASE(_superimage);
-    AH_SUPER_DEALLOC;
+    [_superimage release];
+    [super ah_dealloc];
 }
 
 
@@ -422,14 +455,14 @@ static NSCache *imageCache = nil;
 
 - (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha
 {
-    GLImage *copy = AH_AUTORELEASE([self copy]);
+    GLImage *copy = [[self copy] autorelease];
     copy.premultipliedAlpha = premultipliedAlpha;
     return copy;
 }
 
 - (GLImage *)imageWithClipRect:(CGRect)clipRect
 {
-    GLImage *copy = AH_AUTORELEASE([self copy]);
+    GLImage *copy = [[self copy] autorelease];
     copy.clipRect = clipRect;
     copy.size = CGSizeMake(clipRect.size.width / copy.scale, clipRect.size.height / copy.scale);
     copy.contentRect = CGRectMake(0.0f, 0.0f, copy.size.width, copy.size.height);
@@ -438,7 +471,7 @@ static NSCache *imageCache = nil;
 
 - (GLImage *)imageWithContentRect:(CGRect)contentRect
 {
-    GLImage *copy = AH_AUTORELEASE([self copy]);
+    GLImage *copy = [[self copy] autorelease];
     copy.contentRect = contentRect;
     return copy;
 }
@@ -446,7 +479,7 @@ static NSCache *imageCache = nil;
 - (GLImage *)imageWithScale:(CGFloat)scale
 {
     CGFloat deltaScale = scale / self.scale;
-    GLImage *copy = AH_AUTORELEASE([self copy]);
+    GLImage *copy = [[self copy] autorelease];
     copy.scale = scale;
     copy.size = CGSizeMake(copy.size.width * deltaScale, copy.size.height * deltaScale);
     copy.contentRect = CGRectMake(self.contentRect.origin.x * deltaScale, self.contentRect.origin.y * deltaScale, self.contentRect.size.width * deltaScale, self.contentRect.size.height * deltaScale);
@@ -456,7 +489,7 @@ static NSCache *imageCache = nil;
 - (GLImage *)imageWithSize:(CGSize)size
 {
     CGPoint scale = CGPointMake(size.width / self.size.width, size.height / self.size.height);
-    GLImage *copy = AH_AUTORELEASE([self copy]);
+    GLImage *copy = [[self copy] autorelease];
     copy.size = size;
     copy.contentRect = CGRectMake(self.contentRect.origin.x * scale.x, self.contentRect.origin.y * scale.y, self.contentRect.size.width * scale.x, self.contentRect.size.height * scale.y);
     return copy;

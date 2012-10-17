@@ -29,6 +29,7 @@
 		01F00A521565978500CF44D9 /* GLLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A491565978500CF44D9 /* GLLight.m */; };
 		01F00A531565978500CF44D9 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A4B1565978500CF44D9 /* GLModel.m */; };
 		01F00A541565978500CF44D9 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A4D1565978500CF44D9 /* GLModelView.m */; };
+		01F9F12E162E32D700877219 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 01F9F12D162E32D700877219 /* Default-568h@2x.png */; };
 		B29BD29E14A22A8400BB4E68 /* demon.model in Resources */ = {isa = PBXBuildFile; fileRef = B29BD29B14A22A8400BB4E68 /* demon.model */; };
 		B29BD29F14A22A8400BB4E68 /* demon.png in Resources */ = {isa = PBXBuildFile; fileRef = B29BD29D14A22A8400BB4E68 /* demon.png */; };
 		B2FC80D914B4BCD40075C520 /* chair.tga in Resources */ = {isa = PBXBuildFile; fileRef = B2FC80D814B4BCD40075C520 /* chair.tga */; };
@@ -71,6 +72,7 @@
 		01F00A4B1565978500CF44D9 /* GLModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModel.m; sourceTree = "<group>"; };
 		01F00A4C1565978500CF44D9 /* GLModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModelView.h; sourceTree = "<group>"; };
 		01F00A4D1565978500CF44D9 /* GLModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModelView.m; sourceTree = "<group>"; };
+		01F9F12D162E32D700877219 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		B29BD29B14A22A8400BB4E68 /* demon.model */ = {isa = PBXFileReference; lastKnownFileType = file; path = demon.model; sourceTree = "<group>"; };
 		B29BD29D14A22A8400BB4E68 /* demon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demon.png; sourceTree = "<group>"; };
 		B2FC80D814B4BCD40075C520 /* chair.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = chair.tga; path = GLModelExample/Images/chair.tga; sourceTree = SOURCE_ROOT; };
@@ -138,6 +140,7 @@
 		012AB10014A140910016FFF1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				01F9F12D162E32D700877219 /* Default-568h@2x.png */,
 				012AB10114A140910016FFF1 /* GLModelDemo-Info.plist */,
 				012AB10214A140910016FFF1 /* InfoPlist.strings */,
 				012AB10514A140910016FFF1 /* main.m */,
@@ -295,6 +298,7 @@
 				0157F57C153228AA0015AFF1 /* diamond.obj in Resources */,
 				01400A56153244D900EE0FB5 /* quad.obj in Resources */,
 				01ADC13815BE07D00075F3AC /* Ship.obj in Resources */,
+				01F9F12E162E32D700877219 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

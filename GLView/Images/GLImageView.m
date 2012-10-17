@@ -2,15 +2,14 @@
 //  GLImageView.m
 //
 //  GLView Project
-//  Version 1.3.9
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
-//  Get the latest version from either of these locations:
+//  Get the latest version from here:
 //
-//  http://charcoaldesign.co.uk/source/cocoa#glview
 //  https://github.com/nicklockwood/GLView
 //
 //  This software is provided 'as-is', without any express or implied
@@ -65,8 +64,8 @@
 {
     if (_image != image)
     {
-        AH_RELEASE(_image);
-        _image = AH_RETAIN(image);
+        [_image release];
+        _image = [image ah_retain];
         [self setNeedsDisplay];
     }
 }
@@ -76,7 +75,7 @@
 	if (_animationImages != animationImages)
 	{
 		[self stopAnimating];
-		AH_RELEASE(_animationImages);
+		[_animationImages release];
 		_animationImages = [animationImages copy];
 		self.animationDuration = [animationImages count] / 30.0;
 	}
@@ -227,10 +226,10 @@
 
 - (void)dealloc
 {
-    AH_RELEASE(_image);
-    AH_RELEASE(_blendColor);
-	AH_RELEASE(_animationImages);
-    AH_SUPER_DEALLOC;
+    [_image release];
+    [_blendColor release];
+    [_animationImages release];
+    [super ah_dealloc];
 }
 
 @end

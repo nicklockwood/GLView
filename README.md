@@ -13,9 +13,9 @@ The GLView library is modular. If you don't want to render 3D models you can omi
 Supported iOS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 5.1 (Xcode 4.3.2, Apple LLVM compiler 3.1)
-* Earliest supported deployment target - iOS 4.0 (Xcode 4.2)
-* Earliest compatible deployment target - iOS 4.0
+* Supported build target - iOS 6.0 (Xcode 4.5.1, Apple LLVM compiler 4.1)
+* Earliest supported deployment target - iOS 5.0
+* Earliest compatible deployment target - iOS 4.3
 
 NOTE: 'Supported' means that the library has been tested with this version. 'Compatible' means that the library should work on this iOS version (i.e. it doesn't rely on any unavailable SDK features) but is no longer being tested for compatibility and may require tweaking or bug fixes to run correctly.
 
@@ -29,7 +29,7 @@ GLView makes use of the ARC Helper library to automatically work with both ARC a
 Installation
 ---------------
 
-To use GLView, just drag the class files into your project and add the QuartzCore framework.
+To use GLView, just drag the class files into your project and add the QuartzCore and OpenGLES frameworks. If you are using the optional GZIP library then you will also need to add the libz.dylib.
 
 
 Classes
@@ -60,65 +60,6 @@ Global methods
     void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
 
 This method is used by the GLView library for converting GLRects into OpenGL vertices. It receives a pointer to an array of 8 GLfloats, and it populates the array with the coordinates for the 4 corners of the rect.
-
-
-NSString extensions 
---------------------
-
-These methods extend NSString with some useful file path manipulation functionality.
-    
-    - (NSString *)stringByAppendingScaleSuffix;
-    
-This method appends an @2x suffix to the string if the device has a Retina display. The method correctly handles file extensions and device type suffixes, so the @2x will be inserted before the file extension or device type suffix if present. See the Image file suffixes section below for more information.
-    
-    - (NSString *)stringByDeletingScaleSuffix;
-    
-This method removes the @2x suffix from a file path, or does nothing if the suffix is not found.
-    
-    - (NSString *)scaleSuffix;
-    
-This method returns the @2x suffix if found, or @"" if not.
-    
-    - (CGFloat)scale;
-    
-This method returns the image scale value for a file path as a floating point number, e.g. 2.0f if the file includes an -hd suffix (on iPhone) or @2x suffix and 1.0f if it doesn't.
-    
-    - (NSString *)stringByAppendingInterfaceIdiomSuffix;
-    
-This method appends the user interface idiom suffix for the current device (~ipad or ~iphone) to the string. If the string includes a file extension, the suffix is correctly inserted before the file extension. See the Image file suffixes section below for more information.
-    
-    - (NSString *)stringByDeletingInterfaceIdiomSuffix;
-    
-This method removes the user interface idiom suffix from the string if present, or does nothing if a suffix is not found.
-    
-    - (NSString *)interfaceIdiomSuffix;
-    
-This method returns the user interface idiom suffix if found, or @"" if not.
-
-    - (UIUserInterfaceIdiom)interfaceIdiom;
-
-This method returns the UIUserInterfaceIdiom value specified by a file's interface idiom suffix (if found). If no suffix is found it returns the current device idiom.
-
-    - (NSString *)stringByAppendingHDSuffix;
-    
-This method appends the -hd suffix to the string if the device is an iPad or Retina display iPhone and does nothing if it isn't.
-    
-    - (NSString *)stringByDeletingHDSuffix;
-    
-This method deletes the -hd suffix from the string if found, or does nothing if the suffix is not found.
-    
-    - (NSString *)HDSuffix;
-    
-This method returns @"-hd" if the string has the -hd suffix and @"" if it doesn't.
-    
-    - (BOOL)isHD;
-
-This method returns YES if the string has an -hd suffix and NO if it doesn't.
-
-
-    - (NSString *)absolutePathWithDefaultExtensions:(NSString *)firstExtension, ... NS_REQUIRES_NIL_TERMINATION;
-    
-This method takes a relative or partial file path and generates an absolute path, complete with image scale and device type suffixes (if suffixed versions of the file can be found). It uses NSFileManager to check that the file exists, so it will either return a valid file path or nil, it will never return a path to a file that does not exist. You can also specify a list of file extensions to be tried if the path does not already have an extension (these will be ignored if the file already has an extension). See the Image file suffixes section below for more information. This method makes multiple filesystem calls, so may be relatively slow the first time it is called for each path, however it caches the result for a given input so the next time it will be faster.
 
 
 UIColor extensions 
@@ -258,7 +199,7 @@ GLImage methods
 
 	+ (GLImage *)imageNamed:(NSString *)nameOrPath;
 	
-This method works more-or-less like the equivalent UIImage method. The image file specified by the nameOrPath paramater will be loaded and returned. The image is also cached so that any subsequent `imageNamed` calls for the same file will return the exact same copy of the image. IN a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage, as do images that have the ~ipad or ~iphone suffix.
+This method works more-or-less like the equivalent UIImage method. The image file specified by the nameOrPath paramater will be loaded and returned. The image is also cached so that any subsequent `imageNamed` calls for the same file will return the exact same copy of the image. IN a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage, as do images that have the ~ipad suffix.
 
 The name can include a file extension. If it doesn't, .png is assumed. The name may also include a full or partial file path, and, unlike UIImage's version, GLIMage's imageNamed function can load images outside of the application bundle, such as from the application documents folder. Note however that because these images are cached, it is unwise to load images in this way if they are likely to be replaced or deleted while the app is running, as this may result in unexpected behaviour.
 
@@ -267,7 +208,7 @@ The name can include a file extension. If it doesn't, .png is assumed. The name 
 	+ (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath;
 	- (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath;
 
-These methods load a GLImage from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. If the file extension is omitted, it is assumed to be .png. Retina display images using the @2x naming scheme behave the same way as for UIImage, as do images that have the ~ipad or ~iphone suffix. Images loaded in this way are not cached or de-duplicated in any way.
+These methods load a GLImage from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. If the file extension is omitted, it is assumed to be .png. Retina display images using the @2x naming scheme behave the same way as for UIImage, as do images that have the ~ipad suffix. Images loaded in this way are not cached or de-duplicated in any way.
 	
 	+ (GLImage *)imageWithUIImage:(UIImage *)image;
 	- (GLImage *)initWithUIImage:(UIImage *)image;
@@ -329,7 +270,7 @@ The GLImageMap class has the following methods:
     + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath;
     - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath;
     
-These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format. GLImageMap fully supports trimmed, rotated and aliased images. As with ordinary GLImages, GLImageMap will automatically detect @2x retina files and files with the ~ipad or ~iphone suffix.
+These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format. GLImageMap fully supports trimmed, rotated and aliased images. As with ordinary GLImages, GLImageMap will automatically detect @2x retina files and files with the ~ipad suffix.
 
     + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data;    
     - (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data;
@@ -402,10 +343,16 @@ This method returns YES if the `animationImages` sequence is currently playing.
 GLModel methods
 --------------------
 
+    + (GLModel *)modelNamed:(NSString *)nameOrPath;
+    
+This method loads the model file specified by the nameOrPath paramater and returns a GLModel. The model is cached so that any subsequent `modelNamed` calls for the same file will return the exact same copy of the model. In a low memory situation, this cache will be cleared.
+
+The name can include a file extension. If it doesn't, .obj is assumed. The name may also include a full or partial file path. Like the GLImage imageNamed: function, modelNamed: can load models outside of the application bundle, such as from the application documents folder. However, because these models are cached, it is unwise to load models in this way if they are likely to be replaced or deleted while the app is running, as this may result in unexpected behaviour.
+
     + (GLModel *)modelWithContentsOfFile:(NSString *)path;
     - (GLModel *)initWithContentsOfFile:(NSString *)path;
     
-These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple's GLEssentials sample code model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way. Note that is is also possible to use the @2x and ~ipad/~iphone filename suffixes to specify different models for different devices, which is useful if you wish to provide more detailed models for higher-end devices.
+These methods load a GLModel from a file. The path parameter can be a full or partial path. For partial paths it is assumed that the path is relative to the application resource folder. The format is inferred from the file extension; Currently only .obj (Wavefront) and .model (Apple's GLEssentials sample code model format) files are accepted. Models loaded in this way are not cached or de-duplicated in any way. Note that is is also possible to use the @2x and ~ipad filename suffixes to specify different models for different devices, which is useful if you wish to provide more detailed models for higher-end devices.
 
     - (GLModel *)initWithContentsOfFile:(NSString *)path;
     - (GLModel *)initWithData:(NSData *)data;
@@ -471,13 +418,15 @@ Image file suffixes
 
 iOS has a clever mechanism for managing multiple versions of assets by using file suffixes. The first iPad introduced the ~ipad suffix for specifying ipad-specific versions of files (e.g. foo~ipad.png). The iPhone 4 introduced the @2x suffix for managing double-resolution images for Retina displays (e.g. foo@2x.png). With the 3rd generation iPad you can combine these to have Retina-quality iPad images (e.g. foo@2x~ipad.png).
 
+GLImage supports the @2x and ~ipad suffixes automatically, so if you attempt to load an image called foo.png, GLImage will automatically look for foo@2x.png on a Retina iPhone and foo~ipad.png on an iPad, etc. These suffixes also work when loading ImageMap plists and 3D model files, so you can provider higher-res versions for Retina displays.
+
 This is an elegant solution for apps, but is sometimes insufficient for games because, unlike apps, hybrid games often share near-identical interfaces on iPhone and iPad, with the assets and interface elements simply scaled up, and this means that the standard definition iPad and Retina resolution iPhone need to use the same images.
 
 Naming your images with the @2x suffix works for iPhone but not iPad, and naming them with the ~ipad suffix works for iPad but not iPhone, which forces you to either duplicate identical assets with different filenames, or to write your own file loading logic.
 
-The -hd suffix is a concept introduced by the Cocos2D library to the problem of wanting to use the same 2x graphics for both the iPhone Retina display and the iPad standard definition display by using the same -hd filename suffix for both.
+The -hd suffix is a concept introduced by the Cocos2D library to solve the problem of wanting to use the same @2x graphics for both the iPhone Retina display and the iPad standard definition display by using the same -hd filename suffix for both.
 
-GLView supports this solution by adding some utility methods to NSString for automatically applying this suffix to file paths. All of GLView's image loading routines inherit this logic so that files using the @2x, ~ipad and -hd conventions (or any combination thereof) are automatically detected and loaded as appropriate. For example, If you load attempt to load an image called foo.png, GLImage will automatically look for foo@2x.png or foo-hd.png on a Retina iPhone, or foo~ipad.png or foo-hd.png on an iPad and will also find foo-hd@2x.png if you are using a Retina iPad.
+The GLView library has no built-in support for the -hd suffix, however if you include the StandardPaths library (https://github.com/nicklockwood/StandardPaths) in your project, GLView will use this library to automatically add support for the -hd suffix to GLImage, GLImageMap and GLModel, as well as other suffixes supported by the StandardPaths library, such as -568h for iPhone 5-specific assets.
 
 
 PVR images
@@ -558,16 +507,30 @@ To use the GLImageView as a PVR video player, you'll need to convert your video 
 
 4) Now that you have the individual frames, you'll need to convert them to PVRs. Using texturetool or TexturePacker you can batch convert the images. Here are some example command line options:
 
-	find {image_directory} -name \*.png | sed 's/\.png//g' | xargs -I % -n 1 texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o %.pvr %.png
+	find {image_directory} -name \*.png | sed 's/\.png//g' | xargs -I % -n 1 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o %.pvr %.png
 	
-This generates the frames as 4 bpp compressed PVR images (This will take a while). You can do the same with TexturePacker as follows:
+This generates the frames as 4 bpp compressed PVR images (this will take a very long time, you may want to get a coffee). You can do the same with TexturePacker as follows:
 
 	find {image_directory} -name \*.png | sed 's/\.png//g' | \
     xargs -I % -n 1 TexturePacker %.png --disable-rotation --no-trim --dither-fs-alpha --opt RGBA4444 %.png --sheet %.pvr
 
 This would create the frames as maximum-quality 32-bit PVR images with alpha transparency.
 
-**NOTE:** PVR image sequences are very large compared with the original MP4 movie, or even the equivalent PNG image sequence. PVR is optimised for memory usage and loading speed, not disk space, so be prepared for your app to grow dramatically if you include a lot of PVR video frames.
+
+Gzipping PVR Images
+----------------------------
+
+PVR image sequences are very large compared with the original MP4 movie, or even the equivalent PNG image sequence. PVR is optimised for memory usage and loading speed, not disk space, so be prepared for your app to grow dramatically if you include a lot of PVR video frames. To reduce the size of your PVR images on disk you can gzip them, which will reduce their size by about 75%. To gzip a pvr image, you can use the following command line tool:
+
+    gzip {image_file}
+    
+To individually gzip a folder of PVR images, you can use the following command:
+
+    find {image_directory} -name \*.pvr | sed 's/\.pvr//g' | xargs -I % -n 1  gzip %.pvr
+
+You can load the zipped images by including the GZIP library in your project (https://github.com/nicklockwood/Gzip). The GLImage class will automatically detect the presence of the GZIP library and unzip the images when loading them.
+
+The GLModel class also supports gzip, so if you have very large model files you may want to try gzipping them to reduce your app size.
 
 
 Premultiplied Alpha

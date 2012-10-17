@@ -1,3 +1,10 @@
+Version 1.4
+
+- Added automatic support for loading gzipped images, image maps and model data, provided that the GZIP library is included in the project (https://github.com/nicklockwood/Gzip).
+- Removed automatic support for the Cocos2D -hd file suffix. If you require this functionality, add the StandardPaths library (https://github.com/nicklockwood/StandardPaths) to your project. StandardPaths also adds automatic support for the -568h@2x suffix used for iPhone 5-specific assets.
+- Removed the GLView NSString extensions for manipulating file suffixes to avoid conflicts with the StandardPaths library.
+- Updated ARCHelper library
+
 Version 1.3.9
 
 - Fixed bug in GLImage imageWithClipRect: method.

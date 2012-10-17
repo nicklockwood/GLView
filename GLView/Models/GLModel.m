@@ -2,15 +2,14 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.3.9
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
-//  Get the latest version from either of these locations:
+//  Get the latest version from here:
 //
-//  http://charcoaldesign.co.uk/source/cocoa#glview
 //  https://github.com/nicklockwood/GLView
 //
 //  This software is provided 'as-is', without any express or implied
@@ -97,9 +96,11 @@ WWDC2010Attributes;
     free(_texCoords);
     free(_normals);
     free(_elements);
-    AH_SUPER_DEALLOC;
+    [super ah_dealloc];
 }
 
+
+#pragma mark -
 #pragma mark Private
 
 - (BOOL)loadAppleWWDC2010Model:(NSData *)data
@@ -194,7 +195,7 @@ WWDC2010Attributes;
 }
 
 - (BOOL)loadObjModel:(NSData *)data
-{
+{    
     //convert to string
     NSString *string = [[NSString alloc] initWithBytesNoCopy:(void *)data.bytes length:data.length encoding:NSASCIIStringEncoding freeWhenDone:NO];
     
@@ -304,13 +305,13 @@ WWDC2010Attributes;
         //TODO: more
     }
     while (![lineScanner isAtEnd]);
-    AH_RELEASE(string);
+    [string release];
     
     //release temporary storage
-    AH_RELEASE(tempVertexData);
-    AH_RELEASE(tempTextCoordData);
-    AH_RELEASE(tempNormalData);
-    AH_RELEASE(indexStrings);
+    [tempVertexData release];
+    [tempTextCoordData release];
+    [tempNormalData release];
+    [indexStrings release];
     
     //copy elements
     self.elementCount = [faceIndexData length] / sizeof(GLuint);
@@ -342,14 +343,14 @@ WWDC2010Attributes;
             ((GLubyte *)_elements)[i] = faceIndices[i];
         }
     }
-    AH_RELEASE(faceIndexData);
+    [faceIndexData release];
     
     //copy vertices
     self.componentCount = 3;
     self.vertexCount = [vertexData length] / (3 * sizeof(GLfloat));
     self.vertices = malloc([vertexData length]);
     memcpy(self.vertices, vertexData.bytes, [vertexData length]);
-    AH_RELEASE(vertexData);
+    [vertexData release];
     
     //copy texture coords
     if ([textCoordData length])
@@ -357,7 +358,7 @@ WWDC2010Attributes;
         self.texCoords = malloc([textCoordData length]);
         memcpy(self.texCoords, textCoordData.bytes, [textCoordData length]);
     }
-    AH_RELEASE(textCoordData);
+    [textCoordData release];
     
     //copy normals
     if ([normalData length])
@@ -365,29 +366,61 @@ WWDC2010Attributes;
         self.normals = malloc([normalData length]);
         memcpy(self.normals, normalData.bytes, [normalData length]);
     }
-    AH_RELEASE(normalData);
+    [normalData release];
     
     //success
     return YES;
 }
 
-#pragma mark Public
 
-+ (GLModel *)modelWithContentsOfFile:(NSString *)path
+#pragma mark -
+#pragma mark Caching
+
+static NSCache *modelCache = nil;
+
++ (void)initialize
 {
-    return AH_AUTORELEASE([[self alloc] initWithContentsOfFile:path]);
+    modelCache = [[NSCache alloc] init];
+}
+
++ (GLModel *)modelNamed:(NSString *)nameOrPath
+{
+    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"obj"];
+    GLModel *model = nil;
+    if (path)
+    {
+        model = [modelCache objectForKey:path];
+        if (!model)
+        {
+            model = [self modelWithContentsOfFile:nameOrPath];
+            if (model)
+            {
+                [modelCache setObject:model forKey:path];
+            }
+        }
+    }
+    return model;
+}
+
+
+#pragma mark -
+#pragma mark Loading
+
++ (GLModel *)modelWithContentsOfFile:(NSString *)nameOrPath
+{
+    return [[[self alloc] initWithContentsOfFile:nameOrPath] autorelease];
 }
 
 + (GLModel *)modelWithData:(NSData *)data
 {
-    return AH_AUTORELEASE([[self alloc] initWithData:data]);
+    return [[[self alloc] initWithData:data] autorelease];
 }
 
-- (GLModel *)initWithContentsOfFile:(NSString *)path
+- (GLModel *)initWithContentsOfFile:(NSString *)nameOrPath
 {
-    //convert to absolute path
-    path = [path absolutePathWithDefaultExtensions:nil];
-        
+    //normalise path
+    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"obj"];
+    
     //load data
     return [self initWithData:[NSData dataWithContentsOfFile:path]];
 }
@@ -397,8 +430,25 @@ WWDC2010Attributes;
     if (!data)
     {
         //bail early before something bad happens
-        AH_RELEASE(self);
+        [self release];
         return nil;
+    }
+    
+    //check if data is zipped
+    UInt8 *bytes = (UInt8 *)[data bytes];
+    if ([data length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b)
+    {
+        //attempt to unzip
+        if ([data respondsToSelector:NSSelectorFromString(@"gunzippedData")])
+        {
+            data = [data valueForKey:@"gunzippedData"];
+        }
+        else
+        {
+            NSLog(@"The GZIP library is require to load gzipped model files");
+            [self release];
+            return nil;
+        }
     }
     
     if ((self = [self init]))
@@ -411,12 +461,16 @@ WWDC2010Attributes;
         else
         {
             NSLog(@"Model data was not in a recognised format");
-            AH_RELEASE(self);
+            [self release];
             return nil;
         }
     }
     return self;
 }
+
+
+#pragma mark -
+#pragma mark Drawing
 
 - (void)draw
 {

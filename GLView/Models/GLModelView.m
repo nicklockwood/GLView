@@ -2,15 +2,14 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.3.9
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
-//  Get the latest version from either of these locations:
+//  Get the latest version from here:
 //
-//  http://charcoaldesign.co.uk/source/cocoa#glview
 //  https://github.com/nicklockwood/GLView
 //
 //  This software is provided 'as-is', without any express or implied
@@ -52,15 +51,15 @@
     GLLight *light = [[GLLight alloc] init];
     light.transform = CATransform3DMakeTranslation(-0.5f, 1.0f, 0.5f);
     self.lights = [NSArray arrayWithObject:light];
-    AH_RELEASE(light);
+    [light release];
 }
 
 - (void)setLights:(NSArray *)lights
 {
     if (_lights != lights)
     {
-        AH_RELEASE(_lights);
-        _lights = AH_RETAIN(lights);
+        [_lights release];
+        _lights = [lights ah_retain];
         [self setNeedsDisplay];
     }
 }
@@ -69,8 +68,8 @@
 {
     if (_model != model)
     {
-        AH_RELEASE(_model);
-        _model = AH_RETAIN(model);
+        [_model release];
+        _model = [model ah_retain];
         [self setNeedsDisplay];
     }
 }
@@ -79,8 +78,8 @@
 {
     if (_blendColor != blendColor)
     {
-        AH_RELEASE(_blendColor);
-        _blendColor = AH_RETAIN(blendColor);
+        [_blendColor release];
+        _blendColor = [blendColor ah_retain];
         [self setNeedsDisplay];
     }
 }
@@ -89,8 +88,8 @@
 {
     if (_texture != texture)
     {
-        AH_RELEASE(_texture);
-        _texture = AH_RETAIN(texture);
+        [_texture release];
+        _texture = [texture ah_retain];
         [self setNeedsDisplay];
     }
 }
@@ -148,11 +147,11 @@
 
 - (void)dealloc
 {
-    AH_RELEASE(_lights);
-    AH_RELEASE(_texture);
-    AH_RELEASE(_blendColor);
-    AH_RELEASE(_model);
-    AH_SUPER_DEALLOC;
+    [_lights release];
+    [_texture release];
+    [_blendColor release];
+    [_model release];
+    [super ah_dealloc];
 }
 
 @end

@@ -2,15 +2,14 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.3.9
+//  Version 1.4
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
 //
 //  Distributed under the permissive zlib License
-//  Get the latest version from either of these locations:
+//  Get the latest version from here:
 //
-//  http://charcoaldesign.co.uk/source/cocoa#glview
 //  https://github.com/nicklockwood/GLView
 //
 //  This software is provided 'as-is', without any express or implied
@@ -58,12 +57,12 @@
 
 + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath
 {
-    return AH_AUTORELEASE([[self alloc] initWithContentsOfFile:nameOrPath]);
+    return [[[self alloc] initWithContentsOfFile:nameOrPath] autorelease];
 }
 
 + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data
 {
-    return AH_AUTORELEASE([[self alloc] initWithImage:image data:data]);
+    return [[[self alloc] initWithImage:image data:data] autorelease];
 }
 
 - (GLImageMap *)init
@@ -78,15 +77,45 @@
 - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath
 {
     //load image map
-    NSString *dataPath = [nameOrPath absolutePathWithDefaultExtensions:@"plist", nil];
+    NSString *dataPath = [nameOrPath normalizedPathWithDefaultExtension:@"plist"];
     return [self initWithImage:nil path:nameOrPath data:[NSData dataWithContentsOfFile:dataPath]];
 }
 
 - (GLImageMap *)initWithImage:(GLImage *)image path:(NSString *)path data:(NSData *)data
 {
-    //parse data
-    CGFloat plistScale = [[path absolutePathWithDefaultExtensions:@"plist", nil] scale] ?: 1.0f;
+    //calculate scale from path
+    CGFloat plistScale = 1.0f;
+    NSString *plistPath = [path normalizedPathWithDefaultExtension:@"plist"];
+    SEL pathScaleSelector = NSSelectorFromString(@"scaleFromSuffix");
+    if ([plistPath respondsToSelector:pathScaleSelector])
+    {
+        plistScale = [[plistPath valueForKey:@"scaleFromSuffix"] floatValue];
+    }
+    else
+    {
+        NSString *name = [plistPath stringByDeletingPathExtension];
+        if ([name hasSuffix:@"~ipad"]) name = [name substringToIndex:[name length] - 5];
+        if ([name hasSuffix:@"@2x"]) plistScale = 2.0f;
+    }
     CGFloat scale = image.scale / plistScale;
+    
+    //check if data is zipped
+    UInt8 *bytes = (UInt8 *)[data bytes];
+    if ([data length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b)
+    {
+        //attempt to unzip
+        if ([data respondsToSelector:NSSelectorFromString(@"gunzippedData")])
+        {
+            data = [data valueForKey:@"gunzippedData"];
+        }
+        else
+        {
+            NSLog(@"The GZIP library is require to load gzipped ImageMap files");
+            [self release];
+            return nil;
+        }
+    }
+    
     NSPropertyListFormat format = 0;
     NSDictionary *dict = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:&format error:NULL];
     if (dict && [dict isKindOfClass:[NSDictionary class]])
@@ -185,7 +214,7 @@
     }
     
     //not a recognised data format
-    AH_RELEASE(self);
+    [self release];
     return nil;
 }
 
@@ -201,8 +230,8 @@
 
 - (void)dealloc
 {
-    AH_RELEASE(_imagesByName);
-    AH_SUPER_DEALLOC;
+    [_imagesByName release];
+    [super ah_dealloc];
 }
 
 - (NSInteger)imageCount

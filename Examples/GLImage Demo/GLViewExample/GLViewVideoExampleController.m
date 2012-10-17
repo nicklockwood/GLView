@@ -24,7 +24,7 @@
 	NSMutableArray *frames = [NSMutableArray arrayWithCapacity:NUMBER_OF_FRAMES];
 	for (int i = 0; i < NUMBER_OF_FRAMES; i++)
 	{
-		[frames addObject:[NSString stringWithFormat:@"droplet%03i.pvr", i + 1]]; 
+		[frames addObject:[NSString stringWithFormat:@"droplet%03i.pvr.gz", i + 1]]; 
 	}
 	
 	//add frames to image view
