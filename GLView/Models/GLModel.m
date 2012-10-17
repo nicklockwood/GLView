@@ -63,6 +63,20 @@ typedef struct
 WWDC2010Attributes;
 
 
+@interface NSString (Private)
+
+- (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension;
+
+@end
+
+
+@interface NSData (Private)
+
+- (NSData *)GL_unzippedData;
+
+@end
+
+
 @interface GLModel ()
 
 @property (nonatomic, assign) GLfloat *vertices;
@@ -385,7 +399,7 @@ static NSCache *modelCache = nil;
 
 + (GLModel *)modelNamed:(NSString *)nameOrPath
 {
-    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"obj"];
+    NSString *path = [nameOrPath GL_normalizedPathWithDefaultExtension:@"obj"];
     GLModel *model = nil;
     if (path)
     {
@@ -419,7 +433,7 @@ static NSCache *modelCache = nil;
 - (GLModel *)initWithContentsOfFile:(NSString *)nameOrPath
 {
     //normalise path
-    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"obj"];
+    NSString *path = [nameOrPath GL_normalizedPathWithDefaultExtension:@"obj"];
     
     //load data
     return [self initWithData:[NSData dataWithContentsOfFile:path]];
@@ -427,30 +441,16 @@ static NSCache *modelCache = nil;
 
 - (GLModel *)initWithData:(NSData *)data
 {
+    //attempt to unzip data
+    data = [data GL_unzippedData];
+    
     if (!data)
     {
         //bail early before something bad happens
         [self release];
         return nil;
     }
-    
-    //check if data is zipped
-    UInt8 *bytes = (UInt8 *)[data bytes];
-    if ([data length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b)
-    {
-        //attempt to unzip
-        if ([data respondsToSelector:NSSelectorFromString(@"gunzippedData")])
-        {
-            data = [data valueForKey:@"gunzippedData"];
-        }
-        else
-        {
-            NSLog(@"The GZIP library is require to load gzipped model files");
-            [self release];
-            return nil;
-        }
-    }
-    
+
     if ((self = [self init]))
     {
         //attempt to load model

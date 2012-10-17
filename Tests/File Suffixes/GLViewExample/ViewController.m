@@ -18,8 +18,11 @@
 {
     [super viewDidLoad];
     
+    //test with no file extension (should default to png)
     self.imageView1.image = [GLImage imageNamed:@"image1"];
-    self.imageView2.image = [GLImage imageNamed:@"image2"];
+    
+    //test with .gz extension (not actually gzipped, just checking path logic)
+    self.imageView2.image = [GLImage imageNamed:@"image2.png.gz"];
 }
 
 @end

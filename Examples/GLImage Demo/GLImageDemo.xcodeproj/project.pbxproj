@@ -662,11 +662,8 @@
 		01F9F105162D710B00877219 /* droplet602.pvr.gz in Resources */ = {isa = PBXBuildFile; fileRef = 01F9EEA9162D710900877219 /* droplet602.pvr.gz */; };
 		01F9F106162D710B00877219 /* droplet603.pvr.gz in Resources */ = {isa = PBXBuildFile; fileRef = 01F9EEAA162D710900877219 /* droplet603.pvr.gz */; };
 		01F9F107162D710B00877219 /* droplet604.pvr.gz in Resources */ = {isa = PBXBuildFile; fileRef = 01F9EEAB162D710900877219 /* droplet604.pvr.gz */; };
-		01F9F10F162D713300877219 /* GLLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F9F10A162D713300877219 /* GLLight.m */; };
-		01F9F110162D713300877219 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F9F10C162D713300877219 /* GLModel.m */; };
-		01F9F111162D713300877219 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F9F10E162D713300877219 /* GLModelView.m */; };
 		01F9F113162D717B00877219 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 01F9F112162D717B00877219 /* libz.dylib */; };
-		01F9F128162E19B600877219 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 01F9F127162E19B600877219 /* Default-568h@2x.png */; };
+		01F9F142162EA3F300877219 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 01F9F141162EA3F300877219 /* Default-568h@2x.png */; };
 		B215E95813D5CEFC005BDC39 /* GLViewVideoExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */; };
 		B215E95913D5CEFC005BDC39 /* GLViewVideoExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B215E95713D5CEFC005BDC39 /* GLViewVideoExampleController.xib */; };
 		B2E25EF013D8764A0063D072 /* GLViewLoadingExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E25EEE13D876490063D072 /* GLViewLoadingExampleController.m */; };
@@ -1343,14 +1340,8 @@
 		01F9EEA9162D710900877219 /* droplet602.pvr.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = droplet602.pvr.gz; sourceTree = "<group>"; };
 		01F9EEAA162D710900877219 /* droplet603.pvr.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = droplet603.pvr.gz; sourceTree = "<group>"; };
 		01F9EEAB162D710900877219 /* droplet604.pvr.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = droplet604.pvr.gz; sourceTree = "<group>"; };
-		01F9F109162D713300877219 /* GLLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLight.h; sourceTree = "<group>"; };
-		01F9F10A162D713300877219 /* GLLight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLight.m; sourceTree = "<group>"; };
-		01F9F10B162D713300877219 /* GLModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModel.h; sourceTree = "<group>"; };
-		01F9F10C162D713300877219 /* GLModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModel.m; sourceTree = "<group>"; };
-		01F9F10D162D713300877219 /* GLModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModelView.h; sourceTree = "<group>"; };
-		01F9F10E162D713300877219 /* GLModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModelView.m; sourceTree = "<group>"; };
 		01F9F112162D717B00877219 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		01F9F127162E19B600877219 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
+		01F9F141162EA3F300877219 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		B215E95513D5CEFC005BDC39 /* GLViewVideoExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewVideoExampleController.h; sourceTree = "<group>"; };
 		B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewVideoExampleController.m; sourceTree = "<group>"; };
 		B215E95713D5CEFC005BDC39 /* GLViewVideoExampleController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewVideoExampleController.xib; sourceTree = "<group>"; };
@@ -1411,7 +1402,7 @@
 		012AB12914A1452C0016FFF1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				01F9F127162E19B600877219 /* Default-568h@2x.png */,
+				01F9F141162EA3F300877219 /* Default-568h@2x.png */,
 				016B4BB713CB825000A06541 /* InfoPlist.strings */,
 				016B4BBB13CB825000A06541 /* GLImageDemo-Info.plist */,
 				016B4BBC13CB825000A06541 /* GLImageExample-Prefix.pch */,
@@ -1479,7 +1470,6 @@
 			children = (
 				01F00A211565974600CF44D9 /* Core */,
 				01F00A271565974600CF44D9 /* Images */,
-				01F9F108162D713300877219 /* Models */,
 			);
 			name = GLView;
 			path = ../../GLView;
@@ -2174,19 +2164,6 @@
 			path = Video/PVR;
 			sourceTree = SOURCE_ROOT;
 		};
-		01F9F108162D713300877219 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				01F9F109162D713300877219 /* GLLight.h */,
-				01F9F10A162D713300877219 /* GLLight.m */,
-				01F9F10B162D713300877219 /* GLModel.h */,
-				01F9F10C162D713300877219 /* GLModel.m */,
-				01F9F10D162D713300877219 /* GLModelView.h */,
-				01F9F10E162D713300877219 /* GLModelView.m */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2878,7 +2855,7 @@
 				01F9F105162D710B00877219 /* droplet602.pvr.gz in Resources */,
 				01F9F106162D710B00877219 /* droplet603.pvr.gz in Resources */,
 				01F9F107162D710B00877219 /* droplet604.pvr.gz in Resources */,
-				01F9F128162E19B600877219 /* Default-568h@2x.png in Resources */,
+				01F9F142162EA3F300877219 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2902,9 +2879,6 @@
 				0183CA62157D072000805862 /* GLUtils.m in Sources */,
 				01B126A6157E1DAF00E57BA2 /* GLViewImageMapController.m in Sources */,
 				01F9EC0F162D70E000877219 /* NSData+GZIP.m in Sources */,
-				01F9F10F162D713300877219 /* GLLight.m in Sources */,
-				01F9F110162D713300877219 /* GLModel.m in Sources */,
-				01F9F111162D713300877219 /* GLModelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

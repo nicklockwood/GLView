@@ -70,6 +70,21 @@ typedef enum
 PVRPixelType;
 
 
+@interface NSString (Private)
+
+- (BOOL)GL_hasRetinaFileSuffix;
+- (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension;
+
+@end
+
+
+@interface NSData (Private)
+
+- (NSData *)GL_unzippedData;
+
+@end
+
+
 @interface GLView (Private)
 
 + (EAGLContext *)sharedContext;
@@ -121,7 +136,7 @@ static NSCache *imageCache = nil;
 
 + (GLImage *)imageNamed:(NSString *)nameOrPath
 {
-    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"png"];
+    NSString *path = [nameOrPath GL_normalizedPathWithDefaultExtension:@"png"];
     GLImage *image = nil;
     if (path)
     {
@@ -165,25 +180,11 @@ static NSCache *imageCache = nil;
 - (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath
 {
     //get normalised path
-    NSString *path = [nameOrPath normalizedPathWithDefaultExtension:@"png"];
-    
-    //calculate scale from path
-    CGFloat imageScale = 1.0f;
-    SEL pathScaleSelector = NSSelectorFromString(@"scaleFromSuffix");
-    if ([path respondsToSelector:pathScaleSelector])
-    {
-        imageScale = [[path valueForKey:@"scaleFromSuffix"] floatValue];
-    }
-    else
-    {
-        NSString *name = [path stringByDeletingPathExtension];
-        if ([name hasSuffix:@"~ipad"]) name = [name substringToIndex:[name length] - 5];
-        if ([name hasSuffix:@"@2x"]) imageScale = 2.0f;
-    }
-    
+    NSString *path = [nameOrPath GL_normalizedPathWithDefaultExtension:@"png"];
+
     //load image
     NSData *data = [NSData dataWithContentsOfFile:path];
-    return [self initWithData:data scale:imageScale];
+    return [self initWithData:data scale:[path GL_hasRetinaFileSuffix]? 2.0f: 1.0f];
 }
 
 - (GLImage *)initWithUIImage:(UIImage *)image
@@ -257,22 +258,8 @@ static NSCache *imageCache = nil;
 
 - (GLImage *)initWithData:(NSData *)data scale:(CGFloat)scale
 {
-    //check if data is zipped
-    UInt8 *bytes = (UInt8 *)[data bytes];
-    if ([data length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b)
-    {
-        //attempt to unzip
-        if ([data respondsToSelector:NSSelectorFromString(@"gunzippedData")])
-        {
-            data = [data valueForKey:@"gunzippedData"];
-        }
-        else
-        {
-            NSLog(@"The GZIP library is require to load gzipped image files");
-            [self release];
-            return nil;
-        }
-    }
+    //attempt to unzip data
+    data = [data GL_unzippedData];
     
     //attempt to load as PVR first
     if ([data length] >= sizeof(PVRTextureHeader))

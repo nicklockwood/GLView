@@ -34,6 +34,22 @@
 #import "GLImageMap.h"
 
 
+@interface NSString (Private)
+
+- (NSString *)GL_stringByDeletingPathExtension;
+- (BOOL)GL_hasRetinaFileSuffix;
+- (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension;
+
+@end
+
+
+@interface NSData (Private)
+
+- (NSData *)GL_unzippedData;
+
+@end
+
+
 @interface GLImage (Private)
 
 @property (nonatomic, getter = isRotated) BOOL rotated;
@@ -77,44 +93,19 @@
 - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath
 {
     //load image map
-    NSString *dataPath = [nameOrPath normalizedPathWithDefaultExtension:@"plist"];
+    NSString *dataPath = [nameOrPath GL_normalizedPathWithDefaultExtension:@"plist"];
     return [self initWithImage:nil path:nameOrPath data:[NSData dataWithContentsOfFile:dataPath]];
 }
 
 - (GLImageMap *)initWithImage:(GLImage *)image path:(NSString *)path data:(NSData *)data
 {
     //calculate scale from path
-    CGFloat plistScale = 1.0f;
-    NSString *plistPath = [path normalizedPathWithDefaultExtension:@"plist"];
-    SEL pathScaleSelector = NSSelectorFromString(@"scaleFromSuffix");
-    if ([plistPath respondsToSelector:pathScaleSelector])
-    {
-        plistScale = [[plistPath valueForKey:@"scaleFromSuffix"] floatValue];
-    }
-    else
-    {
-        NSString *name = [plistPath stringByDeletingPathExtension];
-        if ([name hasSuffix:@"~ipad"]) name = [name substringToIndex:[name length] - 5];
-        if ([name hasSuffix:@"@2x"]) plistScale = 2.0f;
-    }
+    NSString *plistPath = [path GL_normalizedPathWithDefaultExtension:@"plist"];
+    CGFloat plistScale = [plistPath GL_hasRetinaFileSuffix]? 2.0f: 1.0f;
     CGFloat scale = image.scale / plistScale;
     
-    //check if data is zipped
-    UInt8 *bytes = (UInt8 *)[data bytes];
-    if ([data length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b)
-    {
-        //attempt to unzip
-        if ([data respondsToSelector:NSSelectorFromString(@"gunzippedData")])
-        {
-            data = [data valueForKey:@"gunzippedData"];
-        }
-        else
-        {
-            NSLog(@"The GZIP library is require to load gzipped ImageMap files");
-            [self release];
-            return nil;
-        }
-    }
+    //attempt to unzip data
+    data = [data GL_unzippedData];
     
     NSPropertyListFormat format = 0;
     NSDictionary *dict = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:&format error:NULL];
@@ -123,7 +114,7 @@
         if (!image)
         {
             //generate default image path
-            path = [path stringByDeletingPathExtension];
+            path = [path GL_stringByDeletingPathExtension];
             
             //get metadata
             NSDictionary *metadata = [dict objectForKey:@"metadata"];

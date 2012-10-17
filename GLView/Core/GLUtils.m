@@ -35,6 +35,10 @@
 #import <objc/message.h>
 
 
+#pragma mark-
+#pragma mark Public utils
+
+
 void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 {
     coords[0] = rect.origin.x;
@@ -46,62 +50,6 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
     coords[6] = rect.origin.x;
     coords[7] = rect.origin.y + rect.size.height;
 }
-
-
-@implementation NSString (GL)
-
-- (NSString *)normalizedPathWithDefaultExtension:(NSString *)extension
-{
-    //extension
-    NSString *path = self;
-    if (![[self pathExtension] length])
-    {
-        path = [path stringByAppendingPathExtension:extension];
-    }
-    else
-    {
-        extension = [path pathExtension];
-    }
-    
-    //use StandardPaths if available
-    SEL normalizedPathSelector = NSSelectorFromString(@"normalizedPathForFile:");
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager respondsToSelector:normalizedPathSelector])
-    {
-        return objc_msgSend(fileManager, normalizedPathSelector, path);
-    }
-
-    //convert to absolute path
-    if (![self isAbsolutePath])
-    {
-        path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path];
-    }
-    
-    //check for @2x version
-    if ([UIScreen mainScreen].scale == 2.0f)
-    {
-        NSString *retinaPath = [[[path stringByDeletingPathExtension] stringByAppendingString:@"@2x"] stringByAppendingPathExtension:extension];
-        if ([fileManager fileExistsAtPath:retinaPath])
-        {
-            path = retinaPath;
-        }
-    }
-    
-    //check for ~ipad version
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        NSString *iPadPath = [[[path stringByDeletingPathExtension] stringByAppendingString:@"~ipad"] stringByAppendingPathExtension:extension];
-        if ([fileManager fileExistsAtPath:iPadPath])
-        {
-            path = iPadPath;
-        }
-    }
-    
-    //default path
-    return [fileManager fileExistsAtPath:path]? path: nil;
-}
-
-@end
 
 
 @implementation UIColor (GL)
@@ -164,6 +112,144 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
     GLfloat rgba[4];
     [self getGLComponents:rgba];
     glColor4f(rgba[0], rgba[1], rgba[2], rgba[3]);
+}
+
+@end
+
+
+#pragma mark -
+#pragma mark Private utils
+
+
+@implementation NSData (GL)
+
+- (BOOL)GL_isGzippedData
+{
+    UInt8 *bytes = (UInt8 *)[self bytes];
+    return ([self length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b);
+}
+
+- (NSData *)GL_unzippedData
+{
+    if ([self GL_isGzippedData])
+    {
+        //attempt to unzip using GZIP library
+        if ([self respondsToSelector:NSSelectorFromString(@"gunzippedData")])
+        {
+            return [self valueForKey:@"gunzippedData"];
+        }
+        else
+        {
+            NSLog(@"The GZIP library is require to load gzipped files");
+            return nil;
+        }
+    }
+    return self;
+}
+
+@end
+
+
+@implementation NSString (GL)
+
+- (NSString *)GL_pathExtension
+{
+    NSString *extension = [self pathExtension];
+    if ([extension isEqualToString:@"gz"])
+    {
+        extension = [[self stringByDeletingPathExtension] pathExtension];
+        if ([extension length]) return [extension stringByAppendingPathExtension:@"gz"];
+        return @"gz";
+    }
+    return extension;
+}
+
+
+- (NSString *)GL_stringByDeletingPathExtension
+{
+    NSString *extension = [self pathExtension];
+    NSString *path = [self stringByDeletingPathExtension];
+    if ([extension isEqualToString:@"gz"])
+    {
+        path = [path stringByDeletingPathExtension];
+    }
+    return path;
+}
+
+- (BOOL)GL_hasRetinaFileSuffix
+{
+    SEL pathScaleSelector = NSSelectorFromString(@"scaleFromSuffix");
+    if ([self respondsToSelector:pathScaleSelector])
+    {
+        return [[self valueForKey:@"scaleFromSuffix"] floatValue] == 2.0f;
+    }
+    else
+    {
+        NSString *name = [self GL_stringByDeletingPathExtension];
+        if ([name hasSuffix:@"~ipad"]) name = [name substringToIndex:[name length] - 5];
+        if ([name hasSuffix:@"~iphone"]) name = [name substringToIndex:[name length] - 7];
+        if ([name hasSuffix:@"@2x"]) return YES;
+    }
+    return NO;
+}
+
+- (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension
+{
+    //extension
+    NSString *path = self;
+    if (![[self pathExtension] length])
+    {
+        path = [path stringByAppendingPathExtension:extension];
+    }
+    else
+    {
+        extension = [path GL_pathExtension];
+    }
+    
+    //use StandardPaths if available
+    SEL normalizedPathSelector = NSSelectorFromString(@"normalizedPathForFile:");
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager respondsToSelector:normalizedPathSelector])
+    {
+        return objc_msgSend(fileManager, normalizedPathSelector, path);
+    }
+    
+    //convert to absolute path
+    if (![self isAbsolutePath])
+    {
+        path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path];
+    }
+    
+    //check for @2x version
+    if ([UIScreen mainScreen].scale == 2.0f)
+    {
+        NSString *retinaPath = [[[path GL_stringByDeletingPathExtension] stringByAppendingString:@"@2x"] stringByAppendingPathExtension:extension];
+        if ([fileManager fileExistsAtPath:retinaPath])
+        {
+            path = retinaPath;
+        }
+    }
+    
+    //check for ~ipad or ~iphone version
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        NSString *iPadPath = [[[path GL_stringByDeletingPathExtension] stringByAppendingString:@"~ipad"] stringByAppendingPathExtension:extension];
+        if ([fileManager fileExistsAtPath:iPadPath])
+        {
+            path = iPadPath;
+        }
+    }
+    else
+    {
+        NSString *iPhonePath = [[[path GL_stringByDeletingPathExtension] stringByAppendingString:@"~iphone"] stringByAppendingPathExtension:extension];
+        if ([fileManager fileExistsAtPath:iPhonePath])
+        {
+            path = iPhonePath;
+        }
+    }
+    
+    //default path
+    return [fileManager fileExistsAtPath:path]? path: nil;
 }
 
 @end

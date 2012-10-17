@@ -70,13 +70,6 @@
 void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
 
 
-@interface NSString (GL)
-
-- (NSString *)normalizedPathWithDefaultExtension:(NSString *)extension;
-
-@end
-
-
 @interface UIColor (GL)
 
 - (void)getGLComponents:(GLfloat *)rgba;
