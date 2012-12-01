@@ -11,10 +11,10 @@
 
 @interface GLViewLoadingExampleController : UIViewController
 
-@property (nonatomic, retain) IBOutlet UIButton *refreshButton;
-@property (nonatomic, retain) IBOutlet UILabel *ttlLabel;
-@property (nonatomic, retain) IBOutlet UILabel *filenameLabel;
-@property (nonatomic, retain) IBOutlet UILabel *timeLabel;
+@property (nonatomic, strong) IBOutlet UIButton *refreshButton;
+@property (nonatomic, strong) IBOutlet UILabel *ttlLabel;
+@property (nonatomic, strong) IBOutlet UILabel *filenameLabel;
+@property (nonatomic, strong) IBOutlet UILabel *timeLabel;
 
 - (IBAction)refresh;
 

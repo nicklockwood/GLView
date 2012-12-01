@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -94,23 +94,12 @@ WWDC2010Attributes;
 
 @implementation GLModel
 
-@synthesize vertices = _vertices;
-@synthesize texCoords = _texCoords;
-@synthesize normals = _normals;
-@synthesize elements = _elements;
-@synthesize componentCount = _componentCount;
-@synthesize vertexCount = _vertexCount;
-@synthesize elementCount = _elementCount;
-@synthesize elementSize = _elementSize;
-@synthesize elementType = _elementType;
-
 - (void)dealloc
 {
     free(_vertices);
     free(_texCoords);
     free(_normals);
     free(_elements);
-    [super ah_dealloc];
 }
 
 
@@ -319,13 +308,8 @@ WWDC2010Attributes;
         //TODO: more
     }
     while (![lineScanner isAtEnd]);
-    [string release];
     
     //release temporary storage
-    [tempVertexData release];
-    [tempTextCoordData release];
-    [tempNormalData release];
-    [indexStrings release];
     
     //copy elements
     self.elementCount = [faceIndexData length] / sizeof(GLuint);
@@ -357,14 +341,12 @@ WWDC2010Attributes;
             ((GLubyte *)_elements)[i] = faceIndices[i];
         }
     }
-    [faceIndexData release];
     
     //copy vertices
     self.componentCount = 3;
     self.vertexCount = [vertexData length] / (3 * sizeof(GLfloat));
     self.vertices = malloc([vertexData length]);
     memcpy(self.vertices, vertexData.bytes, [vertexData length]);
-    [vertexData release];
     
     //copy texture coords
     if ([textCoordData length])
@@ -372,7 +354,6 @@ WWDC2010Attributes;
         self.texCoords = malloc([textCoordData length]);
         memcpy(self.texCoords, textCoordData.bytes, [textCoordData length]);
     }
-    [textCoordData release];
     
     //copy normals
     if ([normalData length])
@@ -380,7 +361,6 @@ WWDC2010Attributes;
         self.normals = malloc([normalData length]);
         memcpy(self.normals, normalData.bytes, [normalData length]);
     }
-    [normalData release];
     
     //success
     return YES;
@@ -422,12 +402,12 @@ static NSCache *modelCache = nil;
 
 + (GLModel *)modelWithContentsOfFile:(NSString *)nameOrPath
 {
-    return [[[self alloc] initWithContentsOfFile:nameOrPath] autorelease];
+    return [[self alloc] initWithContentsOfFile:nameOrPath];
 }
 
 + (GLModel *)modelWithData:(NSData *)data
 {
-    return [[[self alloc] initWithData:data] autorelease];
+    return [[self alloc] initWithData:data];
 }
 
 - (GLModel *)initWithContentsOfFile:(NSString *)nameOrPath
@@ -447,7 +427,6 @@ static NSCache *modelCache = nil;
     if (!data)
     {
         //bail early before something bad happens
-        [self release];
         return nil;
     }
 
@@ -461,7 +440,6 @@ static NSCache *modelCache = nil;
         else
         {
             NSLog(@"Model data was not in a recognised format");
-            [self release];
             return nil;
         }
     }

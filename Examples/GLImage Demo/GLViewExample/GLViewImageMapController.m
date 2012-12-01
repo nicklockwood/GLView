@@ -56,10 +56,5 @@
     return cell;
 }
 
-- (void)dealloc
-{
-    [_imageMap release];
-    [super dealloc];
-}
 
 @end

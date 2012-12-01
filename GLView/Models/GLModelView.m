@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -36,12 +36,6 @@
 
 @implementation GLModelView
 
-@synthesize model = _model;
-@synthesize texture = _texture;
-@synthesize blendColor = _blendColor;
-@synthesize lights = _lights;
-@synthesize transform = _transform;
-
 - (void)setUp
 {
 	[super setUp];
@@ -51,15 +45,13 @@
     GLLight *light = [[GLLight alloc] init];
     light.transform = CATransform3DMakeTranslation(-0.5f, 1.0f, 0.5f);
     self.lights = [NSArray arrayWithObject:light];
-    [light release];
 }
 
 - (void)setLights:(NSArray *)lights
 {
     if (_lights != lights)
     {
-        [_lights release];
-        _lights = [lights ah_retain];
+        _lights = lights;
         [self setNeedsDisplay];
     }
 }
@@ -68,8 +60,7 @@
 {
     if (_model != model)
     {
-        [_model release];
-        _model = [model ah_retain];
+        _model = model;
         [self setNeedsDisplay];
     }
 }
@@ -78,8 +69,7 @@
 {
     if (_blendColor != blendColor)
     {
-        [_blendColor release];
-        _blendColor = [blendColor ah_retain];
+        _blendColor = blendColor;
         [self setNeedsDisplay];
     }
 }
@@ -88,16 +78,9 @@
 {
     if (_texture != texture)
     {
-        [_texture release];
-        _texture = [texture ah_retain];
+        _texture = texture;
         [self setNeedsDisplay];
     }
-}
-
-- (void)setTransform:(CATransform3D)transform
-{
-    _transform = transform;
-    [self setNeedsDisplay];
 }
 
 - (void)drawRect:(CGRect)rect
@@ -125,9 +108,6 @@
         glDisable(GL_LIGHTING);
     }
     
-    //apply transform
-    glLoadMatrixf((GLfloat *)&_transform);
-    
     //set texture
     [self.blendColor ?: [UIColor whiteColor] bindGLColor];
     if (self.texture)
@@ -143,15 +123,6 @@
     
     //render the model
     [self.model draw];
-}
-
-- (void)dealloc
-{
-    [_lights release];
-    [_texture release];
-    [_blendColor release];
-    [_model release];
-    [super ah_dealloc];
 }
 
 @end

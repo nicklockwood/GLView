@@ -2,7 +2,7 @@
 //  GLImageView.m
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -43,14 +43,6 @@
 
 @implementation GLImageView
 
-@synthesize image = _image;
-@synthesize blendColor = _blendColor;
-@synthesize animationImages = _animationImages;
-@synthesize animationDuration = _animationDuration;
-@synthesize animationRepeatCount = _animationRepeatCount;
-@synthesize currentFrame = _currentFrame;
-
-
 - (GLImageView *)initWithImage:(GLImage *)image
 {
 	if ((self = [self initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)]))
@@ -64,8 +56,7 @@
 {
     if (_image != image)
     {
-        [_image release];
-        _image = [image ah_retain];
+        _image = image;
         [self setNeedsDisplay];
     }
 }
@@ -75,7 +66,6 @@
 	if (_animationImages != animationImages)
 	{
 		[self stopAnimating];
-		[_animationImages release];
 		_animationImages = [animationImages copy];
 		self.animationDuration = [animationImages count] / 30.0;
 	}
@@ -128,58 +118,65 @@
 
 - (void)drawRect:(CGRect)rect
 {
-    //set blend color
     [self.blendColor ?: [UIColor whiteColor] bindGLColor];
 	switch (self.contentMode)
 	{
 		case UIViewContentModeCenter:
 		{
-			rect = CGRectMake((self.bounds.size.width - self.image.size.width) / 2,
-							  (self.bounds.size.height - self.image.size.height) / 2,
+			rect = CGRectMake(-self.image.size.width / 2.0f, -self.image.size.height / 2.0f,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeTopLeft:
 		{
-			rect = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
+			rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.height / 2.0f, 
+                              self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeTop:
 		{
-			rect = CGRectMake((self.bounds.size.width - self.image.size.width) / 2,
-							  0, self.image.size.width, self.image.size.height);
+			rect = CGRectMake(-self.image.size.width / 2.0f, -self.bounds.size.height / 2.0f,
+							  self.image.size.width, self.image.size.height);
+			break;
+		}
+        case UIViewContentModeTopRight:
+		{
+			rect = CGRectMake(self.bounds.size.width / 2.0f - self.image.size.width,
+                              -self.bounds.size.height / 2.0f,
+							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeRight:
 		{
-			rect = CGRectMake(self.bounds.size.width - self.image.size.width,
-							  (self.bounds.size.height - self.image.size.height) / 2,
+			rect = CGRectMake(self.bounds.size.width / 2.0f - self.image.size.width,
+							  -self.image.size.height / 2.0f,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottomRight:
 		{
-			rect = CGRectMake(self.bounds.size.width - self.image.size.width,
-							  self.bounds.size.height - self.image.size.height,
+			rect = CGRectMake(self.bounds.size.width / 2.0f - self.image.size.width,
+							  self.bounds.size.height / 2.0f - self.image.size.height,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottom:
 		{
-			rect = CGRectMake((self.bounds.size.width - self.image.size.width) / 2,
-							  self.bounds.size.height - self.image.size.height,
+			rect = CGRectMake(-self.image.size.width / 2.0f,
+							  self.bounds.size.height / 2.0f - self.image.size.height,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottomLeft:
 		{
-			rect = CGRectMake(0, self.bounds.size.height - self.image.size.height,
+			rect = CGRectMake(-self.bounds.size.width / 2.0f,
+                              self.bounds.size.height / 2.0f - self.image.size.height,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeLeft:
 		{
-			rect = CGRectMake(0, (self.bounds.size.height - self.image.size.height) / 2,
+			rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.image.size.height / 2.0f,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
@@ -189,13 +186,13 @@
 			CGFloat aspect2 = self.bounds.size.width / self.bounds.size.height;
 			if (aspect1 < aspect2)
 			{
-				rect = CGRectMake(0, (self.bounds.size.height - self.bounds.size.width / aspect1) / 2,
+				rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.width / aspect1 / 2.0f,
 								  self.bounds.size.width, self.bounds.size.width / aspect1);
 			}
 			else
 			{
-				rect = CGRectMake((self.bounds.size.width - self.bounds.size.height * aspect1) / 2,
-								  0, self.bounds.size.height * aspect1, self.bounds.size.height);
+				rect = CGRectMake(-self.bounds.size.height * aspect1 / 2.0f, -self.bounds.size.height / 2.0f,
+                                  self.bounds.size.height * aspect1, self.bounds.size.height);
 			}
 			break;
 		}
@@ -205,31 +202,24 @@
 			CGFloat aspect2 = self.bounds.size.width / self.bounds.size.height;
 			if (aspect1 > aspect2)
 			{
-				rect = CGRectMake(0, (self.bounds.size.height - self.bounds.size.width / aspect1) / 2,
+				rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.width / aspect1 / 2.0f,
 								  self.bounds.size.width, self.bounds.size.width / aspect1);
 			}
 			else
 			{
-				rect = CGRectMake((self.bounds.size.width - self.bounds.size.height * aspect1) / 2,
-								  0, self.bounds.size.height * aspect1, self.bounds.size.height);
+				rect = CGRectMake(-self.bounds.size.height * aspect1 / 2.0f, -self.bounds.size.width / 2.0f,
+                                  self.bounds.size.height * aspect1, self.bounds.size.height);
 			}
 			break;
 		}
 		case UIViewContentModeScaleToFill:
 		default:
 		{
-			rect = self.bounds;
+			rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.height / 2.0f,
+                              self.bounds.size.width, self.bounds.size.height);
 		}
 	}
     [self.image drawInRect:rect];
-}
-
-- (void)dealloc
-{
-    [_image release];
-    [_blendColor release];
-    [_animationImages release];
-    [super ah_dealloc];
 }
 
 @end

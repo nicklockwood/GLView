@@ -481,17 +481,23 @@ As stated previously, these files will appear like heavily compressed JPEG image
 
 The typical TexturePacker settings you will want to use are one of the following:
 
-	TexturePacker --disable-rotation --no-trim --opt RGBA8888 {input_file_name}.png --sheet {output_file_name}.pvr
+	TexturePacker --disable-rotation --padding 0 --no-trim --opt PVRTC4 {input_file_name}.png --sheet {output_file_name}.pvr
+	
+This generates a 4 bpp compressed PVR image.
+
+	TexturePacker --disable-rotation --padding 0 --no-trim --opt RGBA8888 {input_file_name}.png --sheet {output_file_name}.pvr
 	
 This creates a 32-bit maximum-quality PVR image with alpha transparency.
 
-	TexturePacker --disable-rotation --no-trim --dither-fs-alpha --opt RGBA4444 {input_file_name}.png --sheet {output_file_name}.pvr
+	TexturePacker --disable-rotation --padding 0 --no-trim --dither-fs-alpha --opt RGBA4444 {input_file_name}.png --sheet {output_file_name}.pvr
 	
 This creates a 16-bit dithered PVR image with alpha transparency.
 
-	TexturePacker --disable-rotation --no-trim --dither-fs --opt RGB565 {input_file_name}.png --sheet {output_file_name}.pvr
+	TexturePacker --disable-rotation --padding 0 --no-trim --dither-fs --opt RGB565 {input_file_name}.png --sheet {output_file_name}.pvr
 	
 This creates an opaque 16-bit dithered PVR image without alpha transparency.
+
+You may wish to add --premultiply-alpha to these commands to improve the quality  (read the Premultiplied Alpha instructions below for more information).
 
 
 Generating PVR video clips
@@ -512,7 +518,7 @@ To use the GLImageView as a PVR video player, you'll need to convert your video 
 This generates the frames as 4 bpp compressed PVR images (this will take a very long time, you may want to get a coffee). You can do the same with TexturePacker as follows:
 
 	find {image_directory} -name \*.png | sed 's/\.png//g' | \
-    xargs -I % -n 1 TexturePacker %.png --disable-rotation --no-trim --dither-fs-alpha --opt RGBA4444 %.png --sheet %.pvr
+    xargs -I % -n 1 TexturePacker %.png --disable-rotation --no-trim --dither-fs-alpha --opt PVRTC4 %.png --sheet %.pvr
 
 This would create the frames as maximum-quality 32-bit PVR images with alpha transparency.
 
@@ -536,7 +542,7 @@ The GLModel class also supports gzip, so if you have very large model files you 
 Premultiplied Alpha
 ---------------------
 
-Images with an alpha channel can be generated with either straight or premultiplied alpha. Typically on iOS, images use premultiplied alpha because it is more efficient for rendering. PNG images added to your Xcode project will be automatically converted to use premultiplied alpha, so GLImage assumes premultiplied alpha when loading ONG images.
+Images with an alpha channel can be generated with either straight or premultiplied alpha. Typically on iOS, images use premultiplied alpha because it is more efficient for rendering. PNG images added to your Xcode project will be automatically converted to use premultiplied alpha, so GLImage assumes premultiplied alpha when loading PNG images.
 
 Oddly, the texturetool that Apples ships with Xcode for creating compressed PVR images generates straight alpha, so GLImage assumes straight alpha for PVR images.
 

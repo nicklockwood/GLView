@@ -22,8 +22,12 @@
 		0183CA62157D072000805862 /* GLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0183CA61157D072000805862 /* GLUtils.m */; };
 		01B126A6157E1DAF00E57BA2 /* GLViewImageMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */; };
 		01B126A7157E1DAF00E57BA2 /* GLViewImageMapController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */; };
-		01D9708A157838F300560F63 /* GLViewDrawingExampleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D97088157838F300560F63 /* GLViewDrawingExampleController.m */; };
-		01D9708B157838F300560F63 /* GLViewDrawingExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */; };
+		01D3DC88166A224500C9AED8 /* GLLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D3DC83166A224500C9AED8 /* GLLight.m */; };
+		01D3DC89166A224500C9AED8 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D3DC85166A224500C9AED8 /* GLModel.m */; };
+		01D3DC8A166A224500C9AED8 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D3DC87166A224500C9AED8 /* GLModelView.m */; };
+		01D3DC8F166A4BCF00C9AED8 /* GLViewMipmapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D3DC8D166A4BCF00C9AED8 /* GLViewMipmapController.m */; };
+		01D3DC90166A4BCF00C9AED8 /* GLViewMipmapController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01D3DC8E166A4BCF00C9AED8 /* GLViewMipmapController.xib */; };
+		01D3DC92166A4E8E00C9AED8 /* mipmapped-image.pvr in Resources */ = {isa = PBXBuildFile; fileRef = 01D3DC91166A4E8E00C9AED8 /* mipmapped-image.pvr */; };
 		01F00A331565974600CF44D9 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A241565974600CF44D9 /* GLView.m */; };
 		01F00A351565974600CF44D9 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A291565974600CF44D9 /* GLImage.m */; };
 		01F00A361565974600CF44D9 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A2B1565974600CF44D9 /* GLImageView.m */; };
@@ -695,9 +699,16 @@
 		01B126A3157E1DAF00E57BA2 /* GLViewImageMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewImageMapController.h; sourceTree = "<group>"; };
 		01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewImageMapController.m; sourceTree = "<group>"; };
 		01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewImageMapController.xib; sourceTree = "<group>"; };
-		01D97087157838F300560F63 /* GLViewDrawingExampleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewDrawingExampleController.h; sourceTree = "<group>"; };
-		01D97088157838F300560F63 /* GLViewDrawingExampleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewDrawingExampleController.m; sourceTree = "<group>"; };
-		01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewDrawingExampleController.xib; sourceTree = "<group>"; };
+		01D3DC82166A224500C9AED8 /* GLLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLight.h; sourceTree = "<group>"; };
+		01D3DC83166A224500C9AED8 /* GLLight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLight.m; sourceTree = "<group>"; };
+		01D3DC84166A224500C9AED8 /* GLModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModel.h; sourceTree = "<group>"; };
+		01D3DC85166A224500C9AED8 /* GLModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModel.m; sourceTree = "<group>"; };
+		01D3DC86166A224500C9AED8 /* GLModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModelView.h; sourceTree = "<group>"; };
+		01D3DC87166A224500C9AED8 /* GLModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModelView.m; sourceTree = "<group>"; };
+		01D3DC8C166A4BCF00C9AED8 /* GLViewMipmapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewMipmapController.h; sourceTree = "<group>"; };
+		01D3DC8D166A4BCF00C9AED8 /* GLViewMipmapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewMipmapController.m; sourceTree = "<group>"; };
+		01D3DC8E166A4BCF00C9AED8 /* GLViewMipmapController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewMipmapController.xib; sourceTree = "<group>"; };
+		01D3DC91166A4E8E00C9AED8 /* mipmapped-image.pvr */ = {isa = PBXFileReference; lastKnownFileType = file; path = "mipmapped-image.pvr"; sourceTree = "<group>"; };
 		01F00A231565974600CF44D9 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
 		01F00A241565974600CF44D9 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
 		01F00A281565974600CF44D9 /* GLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImage.h; sourceTree = "<group>"; };
@@ -1443,10 +1454,10 @@
 				B2E25EEE13D876490063D072 /* GLViewLoadingExampleController.m */,
 				B215E95513D5CEFC005BDC39 /* GLViewVideoExampleController.h */,
 				B215E95613D5CEFC005BDC39 /* GLViewVideoExampleController.m */,
-				01D97087157838F300560F63 /* GLViewDrawingExampleController.h */,
-				01D97088157838F300560F63 /* GLViewDrawingExampleController.m */,
 				01B126A3157E1DAF00E57BA2 /* GLViewImageMapController.h */,
 				01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */,
+				01D3DC8C166A4BCF00C9AED8 /* GLViewMipmapController.h */,
+				01D3DC8D166A4BCF00C9AED8 /* GLViewMipmapController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1457,12 +1468,25 @@
 				016B4BB513CB825000A06541 /* GLViewImageExampleController.xib */,
 				B2E25EEF13D8764A0063D072 /* GLViewLoadingExampleController.xib */,
 				B215E95713D5CEFC005BDC39 /* GLViewVideoExampleController.xib */,
-				01D97089157838F300560F63 /* GLViewDrawingExampleController.xib */,
 				01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */,
+				01D3DC8E166A4BCF00C9AED8 /* GLViewMipmapController.xib */,
 				012E3CDC157E4F5600960744 /* ImageMapTableCell.xib */,
 				016B4BB913CB825000A06541 /* MainWindow.xib */,
 			);
 			name = Nibs;
+			sourceTree = "<group>";
+		};
+		01D3DC81166A224500C9AED8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				01D3DC82166A224500C9AED8 /* GLLight.h */,
+				01D3DC83166A224500C9AED8 /* GLLight.m */,
+				01D3DC84166A224500C9AED8 /* GLModel.h */,
+				01D3DC85166A224500C9AED8 /* GLModel.m */,
+				01D3DC86166A224500C9AED8 /* GLModelView.h */,
+				01D3DC87166A224500C9AED8 /* GLModelView.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		01F00A201565974600CF44D9 /* GLView */ = {
@@ -1470,6 +1494,7 @@
 			children = (
 				01F00A211565974600CF44D9 /* Core */,
 				01F00A271565974600CF44D9 /* Images */,
+				01D3DC81166A224500C9AED8 /* Models */,
 			);
 			name = GLView;
 			path = ../../GLView;
@@ -1546,6 +1571,7 @@
 				01F9EC2C162D710100877219 /* logo-very-high.jpg */,
 				01F9EC2D162D710100877219 /* logo.png */,
 				01F9EC2E162D710100877219 /* logo@2x.png */,
+				01D3DC91166A4E8E00C9AED8 /* mipmapped-image.pvr */,
 				01F9EC2F162D710100877219 /* tab.png */,
 				01F9EC30162D710100877219 /* tab@2x.png */,
 			);
@@ -2191,6 +2217,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "Charcoal Design";
 			};
 			buildConfigurationList = 0116538613C8FD7600942540 /* Build configuration list for PBXProject "GLImageDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2218,7 +2245,6 @@
 				016B4BD013CB825000A06541 /* MainWindow.xib in Resources */,
 				B215E95913D5CEFC005BDC39 /* GLViewVideoExampleController.xib in Resources */,
 				B2E25EF113D8764A0063D072 /* GLViewLoadingExampleController.xib in Resources */,
-				01D9708B157838F300560F63 /* GLViewDrawingExampleController.xib in Resources */,
 				01B126A7157E1DAF00E57BA2 /* GLViewImageMapController.xib in Resources */,
 				012E3CDD157E4F5600960744 /* ImageMapTableCell.xib in Resources */,
 				01F9EC31162D710100877219 /* lostgarden.plist in Resources */,
@@ -2856,6 +2882,8 @@
 				01F9F106162D710B00877219 /* droplet603.pvr.gz in Resources */,
 				01F9F107162D710B00877219 /* droplet604.pvr.gz in Resources */,
 				01F9F142162EA3F300877219 /* Default-568h@2x.png in Resources */,
+				01D3DC90166A4BCF00C9AED8 /* GLViewMipmapController.xib in Resources */,
+				01D3DC92166A4E8E00C9AED8 /* mipmapped-image.pvr in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2874,11 +2902,14 @@
 				01F00A331565974600CF44D9 /* GLView.m in Sources */,
 				01F00A351565974600CF44D9 /* GLImage.m in Sources */,
 				01F00A361565974600CF44D9 /* GLImageView.m in Sources */,
-				01D9708A157838F300560F63 /* GLViewDrawingExampleController.m in Sources */,
 				0183CA5E157CED8400805862 /* GLImageMap.m in Sources */,
 				0183CA62157D072000805862 /* GLUtils.m in Sources */,
 				01B126A6157E1DAF00E57BA2 /* GLViewImageMapController.m in Sources */,
 				01F9EC0F162D70E000877219 /* NSData+GZIP.m in Sources */,
+				01D3DC88166A224500C9AED8 /* GLLight.m in Sources */,
+				01D3DC89166A224500C9AED8 /* GLModel.m in Sources */,
+				01D3DC8A166A224500C9AED8 /* GLModelView.m in Sources */,
+				01D3DC8F166A4BCF00C9AED8 /* GLViewMipmapController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2948,6 +2979,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2964,6 +2996,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

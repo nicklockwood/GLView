@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -44,6 +44,5 @@
 @property (nonatomic, strong) GLImage *texture;
 @property (nonatomic, strong) UIColor *blendColor;
 @property (nonatomic, copy) NSArray *lights;
-@property (nonatomic, assign) CATransform3D transform;
 
 @end

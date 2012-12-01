@@ -2,7 +2,7 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -69,16 +69,14 @@
 
 @implementation GLImageMap
 
-@synthesize imagesByName = _imagesByName;
-
 + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath
 {
-    return [[[self alloc] initWithContentsOfFile:nameOrPath] autorelease];
+    return [[self alloc] initWithContentsOfFile:nameOrPath];
 }
 
 + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data
 {
-    return [[[self alloc] initWithImage:image data:data] autorelease];
+    return [[self alloc] initWithImage:image data:data];
 }
 
 - (GLImageMap *)init
@@ -205,7 +203,6 @@
     }
     
     //not a recognised data format
-    [self release];
     return nil;
 }
 
@@ -217,12 +214,6 @@
 - (void)addImage:(GLImage *)image withName:(NSString *)name
 {
     [self.imagesByName setObject:image forKey:name];
-}
-
-- (void)dealloc
-{
-    [_imagesByName release];
-    [super ah_dealloc];
 }
 
 - (NSInteger)imageCount

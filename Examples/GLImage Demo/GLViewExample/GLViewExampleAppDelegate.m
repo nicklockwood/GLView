@@ -10,20 +10,10 @@
 
 @implementation GLViewExampleAppDelegate
 
-@synthesize window;
-@synthesize viewController;
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    window.rootViewController = viewController;
+    _window.rootViewController = _viewController;
     return YES;
-}
-
-- (void)dealloc
-{
-    [window release];
-    [viewController release];
-    [super dealloc];
 }
 
 @end

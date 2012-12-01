@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -57,7 +57,7 @@
 
 @implementation GLLayer
 
-- (void)display
+- (void)render
 {
     //get view
     GLView *view = (GLView *)self.delegate;
@@ -69,8 +69,28 @@
     [view.backgroundColor ?: [UIColor clearColor] bindGLClearColor];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    //apply transform
+    CATransform3D transform = view.contentTransform;
+    glLoadMatrixf((GLfloat *)&transform);
+    
     //do drawing
-    [view drawRect:view.bounds];
+    if (view.fov <= 0.0f)
+    {
+        [view drawRect:view.bounds];
+    }
+    else
+    {
+        [view drawRect:CGRectMake(-1.0f, -1.0f, 2.0f, 2.0f)];
+    }
+}
+
+- (void)display
+{
+    //get view
+    GLView *view = (GLView *)self.delegate;
+    
+    //render
+    [self render];
     
     //present
     [view presentRenderbuffer];
@@ -81,15 +101,8 @@
     //get view
     GLView *view = (GLView *)self.delegate;
     
-    //bind context and frame buffer
-    [view bindFramebuffer];
-    
-    //clear view
-    [view.backgroundColor ?: [UIColor clearColor] bindGLClearColor];
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    //do drawing
-    [view drawRect:view.bounds];
+    //render
+    [self render];
     
     //read pixel data from the framebuffer
     NSInteger width = view.framebufferWidth;
@@ -128,22 +141,6 @@
 
 @implementation GLView
 
-@synthesize context = _context;
-@synthesize previousSize = _previousSize;
-@synthesize framebufferWidth = _framebufferWidth;
-@synthesize framebufferHeight = _framebufferHeight;
-@synthesize defaultFramebuffer = _defaultFramebuffer;
-@synthesize colorRenderbuffer = _colorRenderbuffer;
-@synthesize depthRenderbuffer = _depthRenderbuffer;
-@synthesize lastTime = _lastTime;
-@synthesize animating = _animating;
-@synthesize frameInterval = _frameInterval;
-@synthesize elapsedTime = _elapsedTime;
-@synthesize timer = _timer;
-@synthesize fov = _fov;
-@synthesize near = _near;
-@synthesize far = _far;
-
 - (void)dealloc
 {
     [self deleteFramebuffer];
@@ -151,8 +148,6 @@
     {
         [EAGLContext setCurrentContext:nil];
     }
-    [_context release];
-    [super ah_dealloc];
 }
 
 + (EAGLContext *)sharedContext
@@ -194,6 +189,7 @@
 	//defaults
 	_fov = 0.0f; //orthographic
     _frameInterval = 1.0/60.0; // 60 fps
+    _contentTransform = CATransform3DIdentity;
 }
 
 - (id)initWithCoder:(NSCoder*)coder
@@ -230,6 +226,12 @@
 {
 	_far = far;
 	[self setNeedsDisplay];
+}
+
+- (void)setContentTransform:(CATransform3D)transform
+{
+    _contentTransform = transform;
+    [self setNeedsDisplay];
 }
 
 - (void)setFrameInterval:(NSTimeInterval)frameInterval
@@ -324,7 +326,8 @@
 	{
 		GLfloat near = self.near ?: (-self.framebufferWidth * 0.5f);
 		GLfloat far = self.far ?: (self.framebufferWidth * 0.5f);
-    	glOrthof(0, self.bounds.size.width, self.bounds.size.height, 0.0f, near, far);
+    	glOrthof(-self.bounds.size.width / 2.0f, self.bounds.size.width / 2.0,
+                 self.bounds.size.height / 2.0f, -self.bounds.size.height / 2.0f, near, far);
 	}
 	else
 	{

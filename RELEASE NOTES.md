@@ -1,3 +1,12 @@
+Version 1.5 beta
+
+- GLView now requires ARC. See README for details
+- GLImage can now load mipmapped PVR images
+- GLImage now supports luminance and luminance-alpha foramt PVRs
+- GLImage now assumes PVR images are using premultiplied alpha by default
+- Renamed GLModelView transform property to contentTransform
+- Custom drawing using GLView's drawRect method will now be relative to the center of the view by default
+
 Version 1.4
 
 - Added automatic support for loading gzipped images, image maps and model data, provided that the GZIP library is included in the project (https://github.com/nicklockwood/Gzip).

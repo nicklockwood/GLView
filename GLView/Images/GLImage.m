@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -37,21 +37,39 @@
 
 typedef struct
 {
-    GLuint headerSize;
-    GLuint height;
-    GLuint width;
-    GLuint mipmapCount;
-    GLuint pixelFormatFlags;
-    GLuint textureDataSize;
-    GLuint bitCount; 
-    GLuint redBitMask;
-    GLuint greenBitMask;
-    GLuint blueBitMask;
-    GLuint alphaBitMask;
-    GLuint magicNumber;
-    GLuint surfaceCount;
+    uint32_t headerLength;
+    uint32_t height;
+    uint32_t width;
+    uint32_t numMipmaps;
+    uint32_t flags;
+    uint32_t dataLength;
+    uint32_t bpp;
+    uint32_t bitmaskRed;
+    uint32_t bitmaskGreen;
+    uint32_t bitmaskBlue;
+    uint32_t bitmaskAlpha;
+    uint32_t pvrTag;
+    uint32_t numSurfs;
 }
-PVRTextureHeader;
+PVRTextureHeaderV2;
+
+
+typedef struct
+{
+    uint32_t version;
+    uint32_t flags;
+    uint64_t pixelFormat;
+    uint32_t colourSpace;
+    uint32_t channelType;
+    uint32_t height;
+    uint32_t width;
+    uint32_t depth;
+    uint32_t numSurfaces;
+    uint32_t numFaces;
+    uint32_t numMipmaps;
+    uint32_t metaDataSize;
+}
+PVRTextureHeaderV3;
 
 
 typedef enum
@@ -111,19 +129,6 @@ PVRPixelType;
 
 @implementation GLImage
 
-@synthesize size = _size;
-@synthesize scale = _scale;
-@synthesize texture = _texture;
-@synthesize textureSize = _textureSize;
-@synthesize textureCoords = _textureCoords;
-@synthesize vertexCoords = _vertexCoords;
-@synthesize clipRect = _clipRect;
-@synthesize contentRect = _contentRect;
-@synthesize rotated = _rotated;
-@synthesize premultipliedAlpha = _premultipliedAlpha;
-@synthesize superimage = _superimage;
-
-
 #pragma mark -
 #pragma mark Caching
 
@@ -159,22 +164,22 @@ static NSCache *imageCache = nil;
 
 + (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath
 {
-    return [[[self alloc] initWithContentsOfFile:nameOrPath] autorelease];
+    return [[self alloc] initWithContentsOfFile:nameOrPath];
 }
 
 + (GLImage *)imageWithUIImage:(UIImage *)image
 {
-    return [[[self alloc] initWithUIImage:image] autorelease];
+    return [[self alloc] initWithUIImage:image];
 }
 
 + (GLImage *)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock
 {
-    return [[[self alloc] initWithSize:size scale:scale drawingBlock:drawingBlock] autorelease];
+    return [[self alloc] initWithSize:size scale:scale drawingBlock:drawingBlock];
 }
 
 + (GLImage *)imageWithData:(NSData *)data scale:(CGFloat)scale
 {
-    return [[[self alloc] initWithData:data scale:scale] autorelease];
+    return [[self alloc] initWithData:data scale:scale];
 }
 
 - (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath
@@ -198,8 +203,7 @@ static NSCache *imageCache = nil;
     }
     
     //no image supplied
-    [self release];
-    return nil;
+    return ((self = nil));
 }
 
 - (GLImage *)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock
@@ -261,18 +265,25 @@ static NSCache *imageCache = nil;
     //attempt to unzip data
     data = [data GL_unzippedData];
     
-    //attempt to load as PVR first
-    if ([data length] >= sizeof(PVRTextureHeader))
+    //attempt to parse as PVR version 2
+    if ([data length] >= sizeof(PVRTextureHeaderV2))
     {
         //parse header
-        PVRTextureHeader *header = (PVRTextureHeader *)[data bytes];
+        PVRTextureHeaderV2 *header = (PVRTextureHeaderV2 *)[data bytes];
         
-        //check magic number
-        if (CFSwapInt32HostToBig(header->magicNumber) == 'PVR!')
+        //check tag
+        if (CFSwapInt32HostToBig(header->pvrTag) == 'PVR!')
         {
             //initalize
             if ((self = [super init]))
             {
+                //unsupported features
+                if (header->numSurfs > 1)
+                {
+                    NSLog(@"GLImage does not currently support multiple PVR texture surfaces");
+                    return ((self = nil));
+                }
+                
                 //dimensions
                 GLint width = header->width;
                 GLint height = header->height;
@@ -282,19 +293,20 @@ static NSCache *imageCache = nil;
                 self.clipRect = CGRectMake(0.0f, 0.0f, width, height);
                 self.contentRect = CGRectMake(0.0f, 0.0f, self.size.width, self.size.height);
                 
+                //alpha
+                self.premultipliedAlpha = YES;
+                
                 //format
                 BOOL compressed;
-                NSInteger bitsPerPixel;
                 GLuint type;
                 GLuint format;
                 self.premultipliedAlpha = NO;
-                BOOL hasAlpha = header->alphaBitMask;
-                switch (header->pixelFormatFlags & 0xff)
+                BOOL hasAlpha = header->bitmaskAlpha;
+                switch (header->flags & 0xff)
                 {
                     case OGL_RGBA_4444:
                     {
                         compressed = NO;
-                        bitsPerPixel = 16;
                         format = GL_RGBA;
                         type = GL_UNSIGNED_SHORT_4_4_4_4;
                         break;
@@ -302,7 +314,6 @@ static NSCache *imageCache = nil;
                     case OGL_RGBA_5551:
                     {
                         compressed = NO;
-                        bitsPerPixel = 16;
                         format = GL_RGBA;
                         type = GL_UNSIGNED_SHORT_5_5_5_1;
                         break;
@@ -310,7 +321,6 @@ static NSCache *imageCache = nil;
                     case OGL_RGBA_8888:
                     {
                         compressed = NO;
-                        bitsPerPixel = 32;
                         format = GL_RGBA;
                         type = GL_UNSIGNED_BYTE;
                         break;
@@ -318,41 +328,39 @@ static NSCache *imageCache = nil;
                     case OGL_RGB_565:
                     {
                         compressed = NO;
-                        bitsPerPixel = 16;
                         format = GL_RGB;
                         type = GL_UNSIGNED_SHORT_5_6_5;
                         break;
                     }
                     case OGL_RGB_555:
                     {
-                        NSLog(@"RGB 555 PVR format is not currently supported");
-                        [self release];
-                        return nil;
+                        NSLog(@"GLImage does not currently support the RGB 555 PVR format");
+                        return ((self = nil));
                     }
                     case OGL_RGB_888:
                     {
                         compressed = NO;
-                        bitsPerPixel = 24;
                         format = GL_RGB;
                         type = GL_UNSIGNED_BYTE;
                         break;
                     }
                     case OGL_I_8:
                     {
-                        NSLog(@"I8 PVR format is not currently supported");
-                        [self release];
-                        return nil;
+                        compressed = NO;
+                        format = GL_LUMINANCE;
+                        type = GL_UNSIGNED_BYTE;
+                        break;
                     }
                     case OGL_AI_88:
                     {
-                        NSLog(@"AI88 PVR format is not currently supported");
-                        [self release];
-                        return nil;
+                        compressed = NO;
+                        format = GL_LUMINANCE_ALPHA;
+                        type = GL_UNSIGNED_BYTE;
+                        break;
                     }
                     case OGL_PVRTC2:
                     {
                         compressed = YES;
-                        bitsPerPixel = 2;
                         format = hasAlpha? GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG: GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
                         type = 0;
                         break;
@@ -360,16 +368,14 @@ static NSCache *imageCache = nil;
                     case OGL_PVRTC4:
                     {
                         compressed = YES;
-                        bitsPerPixel = 4;
                         format = hasAlpha? GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG: GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
                         type = 0;
                         break;
                     }
                     default:
                     {
-                        NSLog(@"Unrecognised PVR image format: %i", header->pixelFormatFlags & 0xff);
-                        [self release];
-                        return nil;
+                        NSLog(@"GLImage does not recognised PVR image format: %i", header->flags & 0xff);
+                        return ((self = nil));
                     }
                 }
                 
@@ -380,24 +386,47 @@ static NSCache *imageCache = nil;
                 //create texture
                 glGenTextures(1, &_texture);
                 glBindTexture(GL_TEXTURE_2D, self.texture);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-                if (compressed)
+                GLint filter = (header->numMipmaps)? GL_LINEAR_MIPMAP_LINEAR: GL_LINEAR;
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+                GLsizei offset = header->headerLength;
+                for (int i = 0; i < (header->numMipmaps + 1); i++)
                 {
-                    glCompressedTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
-                                           MAX(32, width * height * bitsPerPixel / 8),
-                                           [data bytes] + header->headerSize);
-                }
-                else
-                {
-                    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type,
-                                 [data bytes] + header->headerSize);
+                    GLsizei mipmapWidth = width >> i;
+                    GLsizei mipmapHeight = height >> i;
+                    GLsizei pixelBytes = mipmapWidth * mipmapHeight * header->bpp / 8;
+                    if (compressed)
+                    {
+                        pixelBytes = MAX(32, pixelBytes);
+                        glCompressedTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight, 0,
+                                               pixelBytes, [data bytes] + offset);
+                    }
+                    else
+                    {
+                        glTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight,
+                                     0, format, type, [data bytes] + offset);
+                    }
+                    offset += pixelBytes;
                 }
                 
                 //restore context
                 [EAGLContext setCurrentContext:context];
             }
             return self;
+        }
+    }
+    
+    //attempt to parse as PVR version 3
+    if ([data length] >= sizeof(PVRTextureHeaderV3))
+    {
+        //parse header
+        PVRTextureHeaderV3 *header = (PVRTextureHeaderV3 *)[data bytes];
+        
+        //check tag
+        if (header->version == 0x03525650 || header->version == 0x50565203)
+        {
+            NSLog(@"GLImage does not currently support the PVR texture version 3 format");
+            return ((self = nil));
         }
     }
 
@@ -418,8 +447,6 @@ static NSCache *imageCache = nil;
     }
     if (_textureCoords) free((void *)_textureCoords);
     if (_vertexCoords) free((void *)_vertexCoords);
-    [_superimage release];
-    [super ah_dealloc];
 }
 
 
@@ -442,14 +469,14 @@ static NSCache *imageCache = nil;
 
 - (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha
 {
-    GLImage *copy = [[self copy] autorelease];
+    GLImage *copy = [self copy];
     copy.premultipliedAlpha = premultipliedAlpha;
     return copy;
 }
 
 - (GLImage *)imageWithClipRect:(CGRect)clipRect
 {
-    GLImage *copy = [[self copy] autorelease];
+    GLImage *copy = [self copy];
     copy.clipRect = clipRect;
     copy.size = CGSizeMake(clipRect.size.width / copy.scale, clipRect.size.height / copy.scale);
     copy.contentRect = CGRectMake(0.0f, 0.0f, copy.size.width, copy.size.height);
@@ -458,7 +485,7 @@ static NSCache *imageCache = nil;
 
 - (GLImage *)imageWithContentRect:(CGRect)contentRect
 {
-    GLImage *copy = [[self copy] autorelease];
+    GLImage *copy = [self copy];
     copy.contentRect = contentRect;
     return copy;
 }
@@ -466,7 +493,7 @@ static NSCache *imageCache = nil;
 - (GLImage *)imageWithScale:(CGFloat)scale
 {
     CGFloat deltaScale = scale / self.scale;
-    GLImage *copy = [[self copy] autorelease];
+    GLImage *copy = [self copy];
     copy.scale = scale;
     copy.size = CGSizeMake(copy.size.width * deltaScale, copy.size.height * deltaScale);
     copy.contentRect = CGRectMake(self.contentRect.origin.x * deltaScale, self.contentRect.origin.y * deltaScale, self.contentRect.size.width * deltaScale, self.contentRect.size.height * deltaScale);
@@ -476,7 +503,7 @@ static NSCache *imageCache = nil;
 - (GLImage *)imageWithSize:(CGSize)size
 {
     CGPoint scale = CGPointMake(size.width / self.size.width, size.height / self.size.height);
-    GLImage *copy = [[self copy] autorelease];
+    GLImage *copy = [self copy];
     copy.size = size;
     copy.contentRect = CGRectMake(self.contentRect.origin.x * scale.x, self.contentRect.origin.y * scale.y, self.contentRect.size.width * scale.x, self.contentRect.size.height * scale.y);
     return copy;

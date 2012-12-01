@@ -14,8 +14,6 @@
 
 @implementation GLViewVideoExampleController
 
-@synthesize videoView;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -28,20 +26,20 @@
 	}
 	
 	//add frames to image view
-    videoView.animationImages = frames;
+    _videoView.animationImages = frames;
 	
 	//auto-play
-	[videoView startAnimating];
+	[_videoView startAnimating];
 }
 
 - (IBAction)play
 {
-	[videoView startAnimating];
+	[_videoView startAnimating];
 }
 
 - (IBAction)stop
 {
-	[videoView stopAnimating];
+	[_videoView stopAnimating];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -49,10 +47,5 @@
     return YES;
 }
 
-- (void)dealloc
-{
-    [videoView release];
-    [super dealloc];
-}
 
 @end

@@ -2,7 +2,7 @@
 //  GLLight.m
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -36,11 +36,6 @@
 
 @implementation GLLight
 
-@synthesize ambientColor = _ambientColor;
-@synthesize diffuseColor = _diffuseColor;
-@synthesize specularColor = _specularColor;
-@synthesize transform = _transform;
-
 - (id)init
 {
     if ((self = [super init]))
@@ -72,14 +67,6 @@
     //set position
     GLfloat position[4] = {self.transform.m41, self.transform.m42, self.transform.m43, self.transform.m44};
     glLightfv(light, GL_POSITION, position);
-}
-
-- (void)dealloc
-{
-    [_ambientColor release];
-    [_diffuseColor release];
-    [_specularColor release];
-    [super ah_dealloc];
 }
 
 @end

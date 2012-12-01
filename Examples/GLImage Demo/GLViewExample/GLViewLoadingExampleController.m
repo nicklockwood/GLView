@@ -20,32 +20,18 @@
 
 @implementation GLViewLoadingExampleController
 
-@synthesize refreshButton;
-@synthesize ttlLabel;
-@synthesize filenameLabel;
-@synthesize timeLabel;
-
-- (void)dealloc
-{
-	[refreshButton release];
-	[ttlLabel release];
-	[filenameLabel release];
-	[timeLabel release];
-    [super dealloc];
-}
-
 - (NSTimeInterval)loadImageNamed:(NSString *)name
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSTimeInterval startTime = CACurrentMediaTime();
-	for (int i = 0; i < NUMBER_TO_LOAD; i++)
-	{
-		[GLImage imageWithContentsOfFile:name];
-	}
-	NSTimeInterval endTime = CACurrentMediaTime();
-	[pool drain];
-	
-	return endTime - startTime;
+	@autoreleasepool
+    {
+        NSTimeInterval startTime = CACurrentMediaTime();
+        for (int i = 0; i < NUMBER_TO_LOAD; i++)
+        {
+            [GLImage imageWithContentsOfFile:name];
+        }
+        NSTimeInterval endTime = CACurrentMediaTime();
+        return endTime - startTime;
+    }
 }
 
 - (NSArray *)files
@@ -74,14 +60,14 @@
 
 - (void)disableRefreshButton
 {
-	refreshButton.enabled = NO;
-	refreshButton.alpha = 0.25f;
+	_refreshButton.enabled = NO;
+	_refreshButton.alpha = 0.25f;
 }
 
 - (void)enableRefreshButton
 {
-	refreshButton.enabled = YES;
-	refreshButton.alpha = 1.0f;
+	_refreshButton.enabled = YES;
+	_refreshButton.alpha = 1.0f;
 }
 
 - (void)knockBackLabel:(UILabel *)label
@@ -147,34 +133,32 @@
 {
     [super viewDidLoad];
     
-	ttlLabel.text = [NSString stringWithFormat:@"Time to load %i images", NUMBER_TO_LOAD];
+	_ttlLabel.text = [NSString stringWithFormat:@"Time to load %i images", NUMBER_TO_LOAD];
 	
 	//files
 	NSArray *files = [self files];
-	filenameLabel.text = [self nameFromFilename:[files objectAtIndex:0]];
-	timeLabel.tag = 100;
-	timeLabel.text = @"Loading...";
-	[self knockBackLabel:timeLabel];
+	_filenameLabel.text = [self nameFromFilename:[files objectAtIndex:0]];
+	_timeLabel.tag = 100;
+	_timeLabel.text = @"Loading...";
+	[self knockBackLabel:_timeLabel];
 	for (int i = 1; i < [files count]; i++)
 	{
-		UILabel *label = [[UILabel alloc] initWithFrame:filenameLabel.frame];
-		label.font = filenameLabel.font;
-		label.textColor = filenameLabel.textColor;
+		UILabel *label = [[UILabel alloc] initWithFrame:_filenameLabel.frame];
+		label.font = _filenameLabel.font;
+		label.textColor = _filenameLabel.textColor;
 		label.text = [self nameFromFilename:[files objectAtIndex:i]];
 		label.center = CGPointMake(label.center.x, label.center.y + 25.0f * i);
 		[self.view addSubview:label];
-        [label release];
 		
-		label = [[UILabel alloc] initWithFrame:timeLabel.frame];
-		label.textAlignment = timeLabel.textAlignment;
-		label.font = timeLabel.font;
-		label.textColor = timeLabel.textColor;
+		label = [[UILabel alloc] initWithFrame:_timeLabel.frame];
+		label.textAlignment = _timeLabel.textAlignment;
+		label.font = _timeLabel.font;
+		label.textColor = _timeLabel.textColor;
 		label.text = @"Loading...";
 		label.center = CGPointMake(label.center.x, label.center.y + 25.0f * i);
 		label.tag = 100 + i;
 		[self knockBackLabel:label];
 		[self.view addSubview:label];
-        [label release];
 	}
 	
 	[self performSelectorInBackground:@selector(loadImages) withObject:nil];

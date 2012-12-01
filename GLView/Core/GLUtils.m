@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.4
+//  Version 1.5 beta
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -33,6 +33,12 @@
 
 #import "GLUtils.h"
 #import <objc/message.h>
+
+
+#import <Availability.h>
+#if !__has_feature(objc_arc)
+#error This library requires automatic reference counting
+#endif
 
 
 #pragma mark-
