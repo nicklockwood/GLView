@@ -22,7 +22,7 @@
     
     //load image and set default scale
     _mipmapImageView.image = [GLImage imageWithContentsOfFile:@"mipmapped-image.pvr"];
-    _mipmapImageView.contentTransform = CATransform3DMakeScale(0.1f, 0.1f, 0.1f);
+    _mipmapImageView.imageTransform = CATransform3DMakeScale(0.1f, 0.1f, 0.1f);
     
     //pinch gesture
     UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinch:)];
@@ -32,9 +32,9 @@
 
 - (void)pinch:(UIPinchGestureRecognizer *)pinch
 {
-    CATransform3D transform = _mipmapImageView.contentTransform;
+    CATransform3D transform = _mipmapImageView.imageTransform;
     transform = CATransform3DScale(transform, pinch.scale, pinch.scale, pinch.scale);
-    _mipmapImageView.contentTransform = transform;
+    _mipmapImageView.imageTransform = transform;
     pinch.scale = 1.0f;
 }
 

@@ -43,6 +43,7 @@
 @property (nonatomic, strong) GLModel *model;
 @property (nonatomic, strong) GLImage *texture;
 @property (nonatomic, strong) UIColor *blendColor;
+@property (nonatomic, assign) CATransform3D modelTransform;
 @property (nonatomic, copy) NSArray *lights;
 
 @end

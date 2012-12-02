@@ -40,7 +40,6 @@
 @property (nonatomic, assign) CGFloat fov;
 @property (nonatomic, assign) CGFloat near;
 @property (nonatomic, assign) CGFloat far;
-@property (nonatomic, assign) CATransform3D contentTransform;
 
 - (void)setUp;
 - (void)display;

@@ -43,6 +43,13 @@
 
 @implementation GLImageView
 
+- (void)setUp
+{
+	[super setUp];
+    
+    _imageTransform = CATransform3DIdentity;
+}
+
 - (GLImageView *)initWithImage:(GLImage *)image
 {
 	if ((self = [self initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)]))
@@ -70,6 +77,13 @@
 		self.animationDuration = [animationImages count] / 30.0;
 	}
 }
+
+- (void)setImageTransform:(CATransform3D)imageTransform
+{
+    _imageTransform = imageTransform;
+    [self setNeedsDisplay];
+}
+
 
 #pragma mark Animation
 
@@ -118,6 +132,10 @@
 
 - (void)drawRect:(CGRect)rect
 {
+    //transform
+    glLoadMatrixf((GLfloat *)&_imageTransform);
+    
+    //draw
     [self.blendColor ?: [UIColor whiteColor] bindGLColor];
 	switch (self.contentMode)
 	{

@@ -39,7 +39,7 @@
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
             transform = CATransform3DScale(transform, 0.01f, 0.01f, 0.01f);
             transform = CATransform3DRotate(transform, -M_PI_2, 1.0f, 0.0f, 0.0f);
-            modelView.transform = transform;
+            modelView.modelTransform = transform;
             
             break;
         }
@@ -54,7 +54,7 @@
             modelView.model = [GLModel modelWithContentsOfFile:@"quad.obj"];
             
             //set default transform
-            modelView.transform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
+            modelView.modelTransform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
             
             break;
         }
@@ -72,7 +72,7 @@
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
             transform = CATransform3DScale(transform, 0.01f, 0.01f, 0.01f);
             transform = CATransform3DRotate(transform, 0.2f, 1.0f, 0.0f, 0.0f);
-            modelView.transform = transform;
+            modelView.modelTransform = transform;
             
             break;
         }
@@ -90,7 +90,7 @@
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -1.0f);
             transform = CATransform3DScale(transform, 0.01f, 0.01f, 0.01f);
             transform = CATransform3DRotate(transform, M_PI_2, 1.0f, 0.0f, 0.0f);
-            modelView.transform = transform;
+            modelView.modelTransform = transform;
             
             break;
         }
@@ -107,7 +107,7 @@
             //set default transform
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -1.0f);
             transform = CATransform3DRotate(transform, M_PI_4, 1.0f, 1.0f, 0.0f);
-            modelView.transform = transform;
+            modelView.modelTransform = transform;
             
             break;
         }
@@ -127,7 +127,7 @@
             transform = CATransform3DRotate(transform, M_PI_4, 1.0f, 0.0f, 0.0f);
             transform = CATransform3DRotate(transform, -0.4f, 0.0f, 1.0f, 0.0f);
             transform = CATransform3DScale(transform, 3.0f, 3.0f, 3.0f);
-            modelView.transform = transform;
+            modelView.modelTransform = transform;
             
             break;
         }

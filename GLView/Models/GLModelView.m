@@ -45,6 +45,8 @@
     GLLight *light = [[GLLight alloc] init];
     light.transform = CATransform3DMakeTranslation(-0.5f, 1.0f, 0.5f);
     self.lights = [NSArray arrayWithObject:light];
+    
+    _modelTransform = CATransform3DIdentity;
 }
 
 - (void)setLights:(NSArray *)lights
@@ -83,6 +85,12 @@
     }
 }
 
+- (void)setModelTransform:(CATransform3D)modelTransform
+{
+    _modelTransform = modelTransform;
+    [self setNeedsDisplay];
+}
+
 - (void)drawRect:(CGRect)rect
 {
     //apply lights
@@ -107,6 +115,9 @@
     {
         glDisable(GL_LIGHTING);
     }
+    
+    //apply model transform
+    glLoadMatrixf((GLfloat *)&_modelTransform);
     
     //set texture
     [self.blendColor ?: [UIColor whiteColor] bindGLColor];

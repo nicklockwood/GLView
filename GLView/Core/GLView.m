@@ -68,11 +68,7 @@
     //clear view
     [view.backgroundColor ?: [UIColor clearColor] bindGLClearColor];
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    //apply transform
-    CATransform3D transform = view.contentTransform;
-    glLoadMatrixf((GLfloat *)&transform);
-    
+
     //do drawing
     if (view.fov <= 0.0f)
     {
@@ -189,7 +185,6 @@
 	//defaults
 	_fov = 0.0f; //orthographic
     _frameInterval = 1.0/60.0; // 60 fps
-    _contentTransform = CATransform3DIdentity;
 }
 
 - (id)initWithCoder:(NSCoder*)coder
@@ -226,12 +221,6 @@
 {
 	_far = far;
 	[self setNeedsDisplay];
-}
-
-- (void)setContentTransform:(CATransform3D)transform
-{
-    _contentTransform = transform;
-    [self setNeedsDisplay];
 }
 
 - (void)setFrameInterval:(NSTimeInterval)frameInterval

@@ -44,6 +44,7 @@
 @property (nonatomic, copy) NSArray *animationImages;
 @property (nonatomic, assign) NSTimeInterval animationDuration;
 @property (nonatomic, assign) NSInteger animationRepeatCount;
+@property (nonatomic, assign) CATransform3D imageTransform;
 
 - (GLImageView *)initWithImage:(GLImage *)image;
 

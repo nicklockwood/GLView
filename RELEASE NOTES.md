@@ -4,7 +4,8 @@ Version 1.5 beta
 - GLImage can now load mipmapped PVR images
 - GLImage now supports luminance and luminance-alpha foramt PVRs
 - GLImage now assumes PVR images are using premultiplied alpha by default
-- Renamed GLModelView transform property to contentTransform
+- Renamed GLModelView transform property to modelTransform
+- Added GLImageView imageTransform property
 - Custom drawing using GLView's drawRect method will now be relative to the center of the view by default
 
 Version 1.4

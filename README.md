@@ -10,12 +10,12 @@ The GLModel and GLModelView classes allow you to load a 3D model using the popul
 The GLView library is modular. If you don't want to render 3D models you can omit the Models classes and the rest of the library will still work. If you aren't interested in loading and displaying images and just want a basic OpenGL context set up for you, you can omit the Images and Models classes.
 
 
-Supported iOS & SDK Versions
+Supported OS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 6.0 (Xcode 4.5.1, Apple LLVM compiler 4.1)
-* Earliest supported deployment target - iOS 5.0
-* Earliest compatible deployment target - iOS 4.3
+* Supported build target - iOS 6.0 / Mac OS 10.8 (Xcode 4.5.2, Apple LLVM compiler 4.1)
+* Earliest supported deployment target - iOS 5.0 / Mac OS 10.7
+* Earliest compatible deployment target - iOS 4.3 / Mac OS 10.6
 
 NOTE: 'Supported' means that the library has been tested with this version. 'Compatible' means that the library should work on this iOS version (i.e. it doesn't rely on any unavailable SDK features) but is no longer being tested for compatibility and may require tweaking or bug fixes to run correctly.
 
@@ -23,7 +23,9 @@ NOTE: 'Supported' means that the library has been tested with this version. 'Com
 ARC Compatibility
 ------------------
 
-GLView makes use of the ARC Helper library to automatically work with both ARC and non-ARC projects through conditional compilation. There is no need to exclude GLView files from the ARC validation process, or to convert GLView using the ARC conversion tool.
+As of version 1.5, GLView requires ARC. If you wish to use GLView in a non-ARC project, just add the -fobjc-arc compiler flag to all of the GLView class files. To do this, go to the Build Phases tab in your target settings, open the Compile Sources group, double-click each of the GLView-related .m files in the list and type -fobjc-arc into the popover.
+
+If you wish to convert your whole project to ARC, comment out the #error line in GLUtils.m, then run the Edit > Refactor > Convert to Objective-C ARC... tool in Xcode and make sure all files that you wish to use ARC for (including all of the GLView files) are checked.
 
 
 Installation
