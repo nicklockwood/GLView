@@ -2,7 +2,7 @@ Version 1.5 beta
 
 - GLView now requires ARC. See README for details
 - GLImage can now load mipmapped PVR images
-- GLImage now supports luminance and luminance-alpha foramt PVRs
+- GLImage now supports additional PVRimage formats
 - GLImage now assumes PVR images are using premultiplied alpha by default
 - Renamed GLModelView transform property to modelTransform
 - Added GLImageView imageTransform property

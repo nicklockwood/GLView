@@ -201,9 +201,9 @@ GLImage methods
 
 	+ (GLImage *)imageNamed:(NSString *)nameOrPath;
 	
-This method works more-or-less like the equivalent UIImage method. The image file specified by the nameOrPath paramater will be loaded and returned. The image is also cached so that any subsequent `imageNamed` calls for the same file will return the exact same copy of the image. IN a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage, as do images that have the ~ipad suffix.
+This method works more-or-less like the equivalent UIImage method. The image file specified by the nameOrPath paramater will be loaded and returned. The image is also cached so that any subsequent `imageNamed:` calls for the same file will return the exact same copy of the image. In a low memory situation, this cache will be cleared. Retina display images using the @2x naming scheme also behave the same way as for UIImage, as do images that have the ~ipad suffix.
 
-The name can include a file extension. If it doesn't, .png is assumed. The name may also include a full or partial file path, and, unlike UIImage's version, GLIMage's imageNamed function can load images outside of the application bundle, such as from the application documents folder. Note however that because these images are cached, it is unwise to load images in this way if they are likely to be replaced or deleted while the app is running, as this may result in unexpected behaviour.
+The name can include a file extension. If it doesn't, .png is assumed. The name may also include a full or partial file path, and, unlike UIImage's version, GLImage's `imageNamed:` function can load images outside of the application bundle, such as from the application documents folder. Note however that because these images are cached, it is unwise to load images in this way if they are likely to be replaced or deleted while the app is running, as this may result in unexpected behaviour.
 
 **NOTE:** OpenGL textures are required to have dimensions that are a power of two, e.g. 8x128, 32x64, 128x128, 512x256, etc. As of version 1.2.2, GLImage can load images whose dimensions are not powers of two and it will automatically frame them inside the smallest valid texture size. However, it is still recommended that you try to use images that are powers of two whenever possible, as it avoids wasting video memory.
 	
@@ -272,7 +272,7 @@ The GLImageMap class has the following methods:
     + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath;
     - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath;
     
-These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format. GLImageMap fully supports trimmed, rotated and aliased images. As with ordinary GLImages, GLImageMap will automatically detect @2x retina files and files with the ~ipad suffix.
+These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format, which can be exported by tools such as Zwoptex or TexturePacker. GLImageMap fully supports trimmed, rotated and aliased images. As with ordinary GLImages, GLImageMap will automatically detect @2x retina files and files with the ~ipad suffix.
 
     + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data;    
     - (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data;
@@ -320,6 +320,10 @@ The duration over which the animationImages sequence will play. This is measured
 	@property (nonatomic, assign) NSInteger animationRepeatCount;
 
 The number of times the animation will repeat. Defaults to zero, which causes the animation to repeat indefinitely until the `stopAnimating` method is called.
+
+    @property (nonatomic, assign) CATransform3D imageTransform;
+    
+A 3D transform to apply to the image. This can be used to center, scale or rotate the image. This can be useful for implementing pinch to zoom/rotate functionality. It is more efficient to transform the image using this property than to transform the entire view using the view.transform or view.layer.transform properties.
 
 
 GLImageView methods
@@ -385,7 +389,7 @@ A color to blend with the model texture. This can be used to tint the model or m
     
 An array of GLLight objects used to illuminate the model. By default this array contains a single white light positioned above and to the left of the object. You can set up to eight lights, although increasing the number of lights has a negative impact on performance. Setting an empty array is equivalent to having a single ambient white light.
     
-    @property (nonatomic, assign) CATransform3D transform;
+    @property (nonatomic, assign) CATransform3D modelTransform;
     
 A 3D transform to apply to the model. This can be used to center, scale or rotate the model to fit the view frame. See the example project for how this can be used.
 
@@ -448,59 +452,49 @@ PVRs are restricted to square images with power-of-two sizes however. See the no
 Generating PVR image files
 ----------------------------
 
-GLImage can load PVR images with any of the following pixel formats:
+GLImage can load PVR images, which are a special format used by iOS graphics chips that is extremely memory efficient and fast to load. Often, images that you would have to load using a background thread if they were PNG or JPEG format in order to avoid blocking the UI can be loaded in real time on the main thread with no performance impact if you use PVR format instead.
 
-- RGBA8888 - 32 bit, high quality 24-bit colour with 8-bit alpha
-- RGBA4444 - 16 bit, 12-bit colour and 4-bit alpha
-- RGBA5551 - 16 bit, higher precision 5-bit color but only 1-bit alpha
-- RGB565 - 16 bit, higher precision color, but no alpha transparency
-- PVRTC4 - 4 bits-per-pixel lossy compression, with or without alpha
-- PVRTC2 - 2 bits-per-pixel lossy compression, with or without alpha
+To generate PVR images, your best option is to use the Imagination PVRTexTool, which you can download as part of the PVR SDK from here: http://www.imgtec.com/powervr/insider/sdkdownloads/
 
-Apple includes a command-line PVR texture generation application called texturetool with the Xcode developer tools. This can usually be found in the following easy-to-remember location:
-
-    /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool
-
-You may wish to set up an alias to this tool by typing the following into the terminal:
-
-    alias texturetool='/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool'
-
-The texturetool application is fairly limited, and can only be used to create 4bpp (bits-per-pixel) and 2bpp compressed images, which are extremely low quality and look a bit like highly compressed jpegs. These are probably not good enough for detailed still images, especially images containing transparency (the PVR OpenGL logo in the example demonstrates this), but may be appropriate for video frames or textures for 3D models.
+The SDK is free to download (though registration is reauired) and includes a fairly easy-to-use GUI tool, and a very powerful command-line tool. The PVRTexTool can be used to batch convert a PNG images to PVR in all known formats.
 
 **NOTE:** In addition to needing power-of-two dimensions, PVR images must also be perfectly square, i.e. the width and height must be equal. Valid sizes are 2x2, 4x4, 8x8, 16x16, 32x32, 64x64, 128x128, 256x256, etc. Remember to crop or scale your images to a valid size before converting them.
 
-The typical texturetool settings you will want to use are one of the following:
+Once installed, you can find the command-line PVRTexTool at:
 
-	texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o {output_file_name}.pvr {input_file_name}.png
+    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL
 
-This generates a 4 bpp compressed PVR image.
+GLImage currently only supports the legacy PVR version 2 texture format. The PVRTexTool supports this using the -legacypvr option. If your image contains transparency, you will also want to enable premultiplied alpha using the -p option.
 
-	texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-2 -f PVR -o {output_file_name}.pvr {input_file_name}.png
-	
-This generates a 2 bpp compressed PVR image.
+Typical texturetool settings you might want to use are:
 
-As stated previously, these files will appear like heavily compressed JPEG images, and will probably not be appropriate for user interface components or images with fine detail. It is also possible to create PVR images in a variety of higher qualities, but for this you will need to use a different tool. One such app is TexturePacker (http://www.texturepacker.com/), which is not free, but provides a handy command line tool for generating additional PVR formats.
+    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i {input_file_name}.png -o {output_file_name}.pvr -legacypvr -p -l -f PVRTC1_4 -q pvrtcbest
 
-The typical TexturePacker settings you will want to use are one of the following:
+This generates a 4 bpp compressed PVR image with alpha at best available compression quality. This will take several seconds to run, so don't be alarmed.
 
-	TexturePacker --disable-rotation --padding 0 --no-trim --opt PVRTC4 {input_file_name}.png --sheet {output_file_name}.pvr
-	
-This generates a 4 bpp compressed PVR image.
+If you will need to zoom your images, or view them at greatly reduced size in the app, it's a good idea to enable mipmapping in order to improve the quality of the image when drawn at smaller sizes. Mipmapping increases the size of the PVR file on disk and in memory by about 80%, so don't use it if you are only planning to display your images at 100% size or higher. To enable mipmapping, add the -m flag and use the -mfilter flag to specify mipmapping algorithm:
 
-	TexturePacker --disable-rotation --padding 0 --no-trim --opt RGBA8888 {input_file_name}.png --sheet {output_file_name}.pvr
-	
-This creates a 32-bit maximum-quality PVR image with alpha transparency.
+    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i {input_file_name}.png -o {output_file_name}.pvr -legacypvr -p -l -m -mfilter cubic -f PVRTC1_4 -q pvrtcbest
+    
+This generates a 4 bpp compressed PVR image with alpha and mipmaps.
 
-	TexturePacker --disable-rotation --padding 0 --no-trim --dither-fs-alpha --opt RGBA4444 {input_file_name}.png --sheet {output_file_name}.pvr
-	
-This creates a 16-bit dithered PVR image with alpha transparency.
+As stated previously, these files will appear like compressed JPEG images, and may not be appropriate for user interface components or images with fine detail. They are better for large photos or images that would load too slowly or use up too much memory if stored in a lossless format such as PNG. However, it is also possible to create PVR images in a variety of higher, non-compressed format by specifying a different value for the -f flag. Available formats are:
 
-	TexturePacker --disable-rotation --padding 0 --no-trim --dither-fs --opt RGB565 {input_file_name}.png --sheet {output_file_name}.pvr
-	
-This creates an opaque 16-bit dithered PVR image without alpha transparency.
+    - RGBG8888 - 32 bits-per-pixel, high quality 24-bit colour with 8-bit alpha
+    - ETC2_RGBA - 16 bits-per-pixel, 12-bit colour and 4-bit alpha
+    - ETC2_RGB_A1 - 16 bits-per-pixel, higher precision 5-bit color but only 1-bit alpha
+    - ETC2_RGB - 16 bits-per-pixel, higher precision color, but no alpha transparency
+    - PVRTC1_4 - 4 bits-per-pixel lossy compression, with alpha
+    - PVRTC1_4_RGB - 4 bits-per-pixel lossy compression, without alpha
+    - PVRTC1_2 - 2 bits-per-pixel lossy compression, with alpha
+    - PVRTC1_2_RGB - 2 bits-per-pixel lossy compression, without alpha
+    
+To batch convert a folder of images, just CD to the directory containing your images then run the following command:
 
-You may wish to add --premultiply-alpha to these commands to improve the quality  (read the Premultiplied Alpha instructions below for more information).
-
+    find ./ -name \*.png | sed 's/\.png//g' | \ xargs -I % -n 1 /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i %.png -o %.pvr -legacypvr -p -l -m -mfilter cubic -f PVRTC1_4 -q pvrtcbest
+    
+This will apply the PVRTexTool command to each file in the folder in turn.
+    
 
 Generating PVR video clips
 ----------------------------
@@ -513,16 +507,17 @@ To use the GLImageView as a PVR video player, you'll need to convert your video 
 
 3) After exporting your video as an MP4, open the new video in QuickTime 7 and go to the export option again. This time select 'Movie to Image Sequence' and export the video as a sequence of PNG files.
 
-4) Now that you have the individual frames, you'll need to convert them to PVRs. Using texturetool or TexturePacker you can batch convert the images. Here are some example command line options:
+4) Now that you have the individual frames, you'll need to convert them to PVRs. Use the batch conversion technique listed above (you may wish to tweak the format, quality, etc. depending on whether your movie has transparency):
 
-	find {image_directory} -name \*.png | sed 's/\.png//g' | xargs -I % -n 1 /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/texturetool -e PVRTC --channel-weighting-perceptual --bits-per-pixel-4 -f PVR -o %.pvr %.png
+	find ./ -name \*.png | sed 's/\.png//g' | \ xargs -I % -n 1 /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i %.png -o %.pvr -legacypvr -p -l -f PVRTC1_4 -q pvrtcbest
 	
-This generates the frames as 4 bpp compressed PVR images (this will take a very long time, you may want to get a coffee). You can do the same with TexturePacker as follows:
+This generates the frames as 4 bpp compressed PVR images with alpha (this will take a very long time, you may want to get a coffee). Since the individual image frames will still be quite large, you may now wish to gzip them by running:
 
-	find {image_directory} -name \*.png | sed 's/\.png//g' | \
-    xargs -I % -n 1 TexturePacker %.png --disable-rotation --no-trim --dither-fs-alpha --opt PVRTC4 %.png --sheet %.pvr
+    find ./ -name \*.pvr | sed 's/\.pvr//g' | xargs -I % -n 1  gzip %.pvr
+    
+(See below for details on gzipped images).
 
-This would create the frames as maximum-quality 32-bit PVR images with alpha transparency.
+5) You can now pass an array containing the image names to the GLImageView class `animationImages` property to play your images in sequence (remember to pass the image file names, not the images themselves as this will reduce memory usage and avoid a long delay when the images first load).
 
 
 Gzipping PVR Images
@@ -532,9 +527,9 @@ PVR image sequences are very large compared with the original MP4 movie, or even
 
     gzip {image_file}
     
-To individually gzip a folder of PVR images, you can use the following command:
+To individually gzip a folder of PVR images, CD to the image folder, then you can use the following command:
 
-    find {image_directory} -name \*.pvr | sed 's/\.pvr//g' | xargs -I % -n 1  gzip %.pvr
+    find ./ -name \*.pvr | sed 's/\.pvr//g' | xargs -I % -n 1  gzip %.pvr
 
 You can load the zipped images by including the GZIP library in your project (https://github.com/nicklockwood/Gzip). The GLImage class will automatically detect the presence of the GZIP library and unzip the images when loading them.
 
@@ -544,12 +539,10 @@ The GLModel class also supports gzip, so if you have very large model files you 
 Premultiplied Alpha
 ---------------------
 
-Images with an alpha channel can be generated with either straight or premultiplied alpha. Typically on iOS, images use premultiplied alpha because it is more efficient for rendering. PNG images added to your Xcode project will be automatically converted to use premultiplied alpha, so GLImage assumes premultiplied alpha when loading PNG images.
+Images with an alpha channel can be generated with either straight or premultiplied alpha. Typically on iOS, images use premultiplied alpha because it is more efficient for rendering. PNG images added to your Xcode project will be automatically converted to use premultiplied alpha, so GLImage assumes premultiplied alpha when loading images.
 
-Oddly, the texturetool that Apples ships with Xcode for creating compressed PVR images generates straight alpha, so GLImage assumes straight alpha for PVR images.
+When using PVR images, straight alpha can result in a one-pixel black or white halo around the opaque parts of the image when rendered (you can see slight white halos in the PVR images in the GLImage demo), so it's recommended that you use premultiplied alpha with PVR images, which can be achieved using the PVRTexTool by adding the -p flag (this is already included in the examples above).
 
-Straight alpha can result in a one-pixel black or white halo around the opaque parts of the image when rendered (you can see slight white halos in the PVR images in the GLImage demo), so it's recommended that you use premultiplied alpha with PVR images, however to generate PVR images with premultiplied alpha you'll need to use another tool such as TexturePacker or Zwoptex to generate your PVRs.
+At present, there's no way to automatically detect the type of alpha when loading a PVR image, so if you have generated your PVRs with straight alpha, GLImage will still assume they are premultiplied, which will make them look even worse when they are displayed. To correct this, call `[image imageWithPremultipliedAlpha:NO]` on the image after loading it to create a copy that will treat the image as having straight alpha instead.
 
-There's no way to automatically detect the type of alpha when loading a PVR image, so even if you have generated your PVRs with premultiplied alpha, GLImage will still assume they are straight multiplied. To correct this call `imageWithPremultipliedAlpha:` on the image after loading it to create a copy that will treat the image as having premultiplied alpha instead (or vice versa).
-
-The Cocos2D Plist file format supported by GLImageMap includes metadata indicating whether the texture file has premultiplied alpha, so no further work is needed when loading sprite sheets with GLImageMap.
+The Cocos2D Plist file format supported by GLImageMap includes metadata indicating whether the texture file has premultiplied alpha or not, so no further work is needed when loading sprite sheets with GLImageMap.

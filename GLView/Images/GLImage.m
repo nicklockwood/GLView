@@ -74,16 +74,18 @@ PVRTextureHeaderV3;
 
 typedef enum
 {
-    OGL_RGBA_4444 = 0x10,
-    OGL_RGBA_5551,
-    OGL_RGBA_8888,
-    OGL_RGB_565,
-    OGL_RGB_555,
-    OGL_RGB_888,
-    OGL_I_8,
-    OGL_AI_88,
-    OGL_PVRTC2,
-    OGL_PVRTC4
+    OGL_RGBA_4444 = 0x10, //ETC2_RGBA
+    OGL_RGBA_5551, //ETC2_RGB_A1
+    OGL_RGBA_8888, //RGBG8888
+    OGL_RGB_565, //ETC2_RGB
+    OGL_RGB_555, //?
+    OGL_RGB_888, //?
+    OGL_I_8, //?
+    OGL_AI_88, //?
+    OGL_PVRTC2, //PVRTC1_4, PVRTC1_4_RGB
+    OGL_PVRTC4, //PVRTC1_2, PVRTC1_2_RGB
+    OGL_BGRA_8888, //?
+    OGL_A_8 //?
 }
 PVRPixelType;
 
@@ -123,6 +125,7 @@ PVRPixelType;
 @property (nonatomic, getter = isRotated) BOOL rotated;
 @property (nonatomic, assign) BOOL premultipliedAlpha;
 @property (nonatomic, strong) GLImage *superimage;
+@property (nonatomic, assign) NSUInteger cost;
 
 @end
 
@@ -151,7 +154,7 @@ static NSCache *imageCache = nil;
             image = [self imageWithContentsOfFile:nameOrPath];
             if (image)
             {
-                [imageCache setObject:image forKey:path];
+                [imageCache setObject:image forKey:path cost:image.cost];
             }
         }
     }
@@ -223,10 +226,13 @@ static NSCache *imageCache = nil;
         //alpha
         self.premultipliedAlpha = YES;
         
-        //create cg context
+        //get texture size
         GLint width = self.textureSize.width;
         GLint height = self.textureSize.height;
-        void *imageData = calloc(height * width, 4);
+        self.cost = width * height * 4;
+        
+        //create cg context
+        void *imageData = calloc(width * height, 4);
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         CGContextRef context = CGBitmapContextCreate(imageData, width, height, 8, 4 * width, colorSpace,
                                                      kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast);
@@ -292,6 +298,9 @@ static NSCache *imageCache = nil;
                 self.textureSize = CGSizeMake(width, height);
                 self.clipRect = CGRectMake(0.0f, 0.0f, width, height);
                 self.contentRect = CGRectMake(0.0f, 0.0f, self.size.width, self.size.height);
+                
+                //used for caching
+                self.cost = [data length] - header->headerLength;
                 
                 //alpha
                 self.premultipliedAlpha = YES;
@@ -370,6 +379,20 @@ static NSCache *imageCache = nil;
                         compressed = YES;
                         format = hasAlpha? GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG: GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
                         type = 0;
+                        break;
+                    }
+                    case OGL_BGRA_8888:
+                    {
+                        compressed = NO;
+                        format = GL_BGRA;
+                        type = GL_UNSIGNED_BYTE;
+                        break;
+                    }
+                    case OGL_A_8:
+                    {
+                        compressed = NO;
+                        format = GL_ALPHA;
+                        type = GL_UNSIGNED_BYTE;
                         break;
                     }
                     default:
@@ -464,6 +487,7 @@ static NSCache *imageCache = nil;
     copy.textureSize = self.textureSize;
     copy.clipRect = self.clipRect;
     copy.contentRect = self.contentRect;
+    copy.cost = self.cost;
     return copy;
 }
 
