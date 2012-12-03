@@ -472,7 +472,7 @@ Typical texturetool settings you might want to use are:
 
 This generates a 4 bpp compressed PVR image with alpha at best available compression quality. This will take several seconds to run, so don't be alarmed.
 
-If you will need to zoom your images, or view them at greatly reduced size in the app, it's a good idea to enable mipmapping in order to improve the quality of the image when drawn at smaller sizes. Mipmapping increases the size of the PVR file on disk and in memory by about 80%, so don't use it if you are only planning to display your images at 100% size or higher. To enable mipmapping, add the -m flag and use the -mfilter flag to specify mipmapping algorithm:
+If you will need to zoom your images, or view them at greatly reduced size in the app, it's a good idea to enable mipmapping in order to improve the quality of the image when drawn at smaller sizes. Mipmapping increases the size of the PVR file on disk and in memory by about 33%, so don't use it if you are only planning to display your images at 100% size or higher. To enable mipmapping, add the -m flag and use the -mfilter flag to specify mipmapping algorithm:
 
     /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i {input_file_name}.png -o {output_file_name}.pvr -legacypvr -p -l -m -mfilter cubic -f PVRTC1_4 -q pvrtcbest
     
