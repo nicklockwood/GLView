@@ -146,6 +146,10 @@ Pauses the animation. The elapsedTime property is not automatically reset so cal
     - (BOOL)isAnimating;
     
 Returns YES if the view is currently animating and NO if it isn't.
+
+    - (BOOL)shouldStopAnimating;
+
+This method is used to automatically stop the animation when some criterion is met. It returns NO by default, but can be overridden by subclasses of GLView. As an example, GLImageView overrides this method to return YES when the animated image sequence comes to an end.
     
     - (void)step:(NSTimeInterval)dt;
 
@@ -523,7 +527,7 @@ This generates the frames as 4 bpp compressed PVR images with alpha (this will t
 Gzipping PVR Images
 ----------------------------
 
-PVR image sequences are very large compared with the original MP4 movie, or even the equivalent PNG image sequence. PVR is optimised for memory usage and loading speed, not disk space, so be prepared for your app to grow dramatically if you include a lot of PVR video frames. To reduce the size of your PVR images on disk you can gzip them, which will reduce their size by about 75%. To gzip a pvr image, you can use the following command line tool:
+PVR image sequences are very large compared with the original MP4 movie, or even the equivalent PNG image sequence. PVR is optimised for memory usage and loading speed, not disk space, so be prepared for your app to grow dramatically if you include a lot of PVR images. To reduce the size of your PVR images on disk you can gzip them, which can reduce their size significantly, depending on the image content. To gzip a pvr image, you can use the following command line tool:
 
     gzip {image_file}
     

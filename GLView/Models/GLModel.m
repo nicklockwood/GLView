@@ -267,7 +267,7 @@ WWDC2010Attributes;
                 NSArray *parts = [indexString componentsSeparatedByString:@"/"];
                 
                 GLuint fIndex = uniqueIndexStrings;
-                NSNumber *index = [indexStrings objectForKey:indexStrings];
+                NSNumber *index = [indexStrings objectForKey:indexString];
                 if (index == nil)
                 {
                     uniqueIndexStrings ++;

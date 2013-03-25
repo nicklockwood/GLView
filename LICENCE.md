@@ -5,6 +5,7 @@ version 1.5 beta, December 1st, 2012
 Copyright (C) 2011 Charcoal Design
 
 * Water droplet video courtesy of http://www.stockfootageforfree.com
+* Sprite images courtesy of Daniel Cook - http://lostgarden.com
 * Demon model courtesy of Apple iPhoneGLEssentials example project
 * Chair model courtesy of http://opengameart.org
 

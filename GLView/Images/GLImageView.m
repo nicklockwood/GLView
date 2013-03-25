@@ -74,7 +74,9 @@
 	{
 		[self stopAnimating];
 		_animationImages = [animationImages copy];
-		self.animationDuration = [animationImages count] / 30.0;
+        NSInteger count = [animationImages count];
+		self.animationDuration = count? count / 30.0: 0.0;
+        self.currentFrame = nil;
 	}
 }
 
@@ -87,21 +89,17 @@
 
 #pragma mark Animation
 
-- (void)startAnimating
+- (BOOL)shouldStopAnimating
 {
-	if (self.animationImages)
-	{
-		[super startAnimating];
-	}
+    return (self.animationRepeatCount > 0 && self.elapsedTime / self.animationDuration >= self.animationRepeatCount);
 }
 
 - (void)step:(NSTimeInterval)dt
 {
-    //end animation?
-    if (self.animationRepeatCount > 0 && self.elapsedTime / self.animationDuration >= self.animationRepeatCount)
+    //end of animation?
+    if ([self shouldStopAnimating])
     {
         self.elapsedTime = self.animationDuration * self.animationRepeatCount - 0.001;
-        [self stopAnimating];
     }
 	
 	//calculate frame
@@ -113,13 +111,13 @@
 		if (frame != self.currentFrame)
 		{
 			self.currentFrame = frame;
-			if ([self.currentFrame isKindOfClass:[GLImage class]])
+			if ([frame isKindOfClass:[GLImage class]])
 			{
-				self.image = self.currentFrame;
+				self.image = frame;
 			}
-			else if ([self.currentFrame isKindOfClass:[NSString class]])
+			else if ([frame isKindOfClass:[NSString class]])
 			{
-				self.image = [GLImage imageWithContentsOfFile:self.currentFrame];
+				self.image = [GLImage imageWithContentsOfFile:frame];
 			}
 		}
 	}
