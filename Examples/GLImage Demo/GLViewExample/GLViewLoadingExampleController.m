@@ -39,8 +39,7 @@
 	static NSArray *files = nil;
 	if (files == nil)
 	{
-		files = [[NSArray alloc] initWithObjects:
-				 @"logo.png",
+		files = @[@"logo.png",
 				 @"logo-maximum.jpg",
 				 @"logo-very-high.jpg",
 				 @"logo-high.jpg",
@@ -52,8 +51,7 @@
 				 @"logo-RGBA4.pvr",
 				 @"logo-RGB4.pvr",
 				 @"logo-RGBA2.pvr",
-				 @"logo-RGB2.pvr",
-				 nil];
+				 @"logo-RGB2.pvr"];
 	}
 	return files;
 }
@@ -77,9 +75,9 @@
 
 - (void)setLabelText:(NSArray *)params
 {
-	UILabel *label = [params objectAtIndex:0];
+	UILabel *label = params[0];
 	label.alpha = 1.0f;
-	label.text = [params objectAtIndex:1];
+	label.text = params[1];
 }
  
 - (void)loadImages
@@ -103,10 +101,10 @@
 		//load images
 		for (int i = 0; i < [files count]; i++)
 		{
-			NSTimeInterval seconds = [self loadImageNamed:[files objectAtIndex:i]];
+			NSTimeInterval seconds = [self loadImageNamed:files[i]];
 			int ms = ceil(seconds * 1000.0 / (double)NUMBER_TO_LOAD);
 			[self performSelectorOnMainThread:@selector(setLabelText:)
-								   withObject:[NSArray arrayWithObjects:[self.view viewWithTag:100 + i], [NSString stringWithFormat:@"%1.2fs (%ims each)", seconds, ms], nil]
+								   withObject:@[[self.view viewWithTag:100 + i], [NSString stringWithFormat:@"%1.2fs (%ims each)", seconds, ms]]
 								waitUntilDone:YES];
 		}
 		
@@ -137,7 +135,7 @@
 	
 	//files
 	NSArray *files = [self files];
-	_filenameLabel.text = [self nameFromFilename:[files objectAtIndex:0]];
+	_filenameLabel.text = [self nameFromFilename:files[0]];
 	_timeLabel.tag = 100;
 	_timeLabel.text = @"Loading...";
 	[self knockBackLabel:_timeLabel];
@@ -146,7 +144,7 @@
 		UILabel *label = [[UILabel alloc] initWithFrame:_filenameLabel.frame];
 		label.font = _filenameLabel.font;
 		label.textColor = _filenameLabel.textColor;
-		label.text = [self nameFromFilename:[files objectAtIndex:i]];
+		label.text = [self nameFromFilename:files[i]];
 		label.center = CGPointMake(label.center.x, label.center.y + 25.0f * i);
 		[self.view addSubview:label];
 		

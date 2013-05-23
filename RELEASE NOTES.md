@@ -1,4 +1,4 @@
-Version 1.5 beta
+Version 1.5
 
 - GLView now requires ARC. See README for details
 - GLImage can now load mipmapped PVR images

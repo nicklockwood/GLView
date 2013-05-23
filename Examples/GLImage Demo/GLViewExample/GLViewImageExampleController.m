@@ -36,7 +36,7 @@
     //take a snaphost of the first imageview
     //and save it in the documents folder
     UIImage *image = [_imageView1 snapshot];
-    NSString *path = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"image.png"];
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"image.png"];
     NSData *data = UIImagePNGRepresentation(image);
     [data writeToFile:path atomically:YES];
 }

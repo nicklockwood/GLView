@@ -115,7 +115,7 @@
             path = [path GL_stringByDeletingPathExtension];
             
             //get metadata
-            NSDictionary *metadata = [dict objectForKey:@"metadata"];
+            NSDictionary *metadata = dict[@"metadata"];
             if (metadata)
             {
                 //get image path from metadata
@@ -130,7 +130,7 @@
                 image = [image imageWithPremultipliedAlpha:premultiplied];
                 
                 //set scale
-                scale = (image.textureSize.width / CGSizeFromString([metadata objectForKey:@"size"]).width) ?: (image.scale / plistScale);
+                scale = (image.textureSize.width / CGSizeFromString(metadata[@"size"]).width) ?: (image.scale / plistScale);
             }
             else
             {
@@ -142,36 +142,36 @@
         if (image)
         {
             //get frames
-            NSDictionary *frames = [dict objectForKey:@"frames"];
+            NSDictionary *frames = dict[@"frames"];
             if (frames)
             {
                 if ((self = [self init]))
                 {
                     for (NSString *name in frames)
                     {
-                        NSDictionary *spriteDict = [frames objectForKey:name];
+                        NSDictionary *spriteDict = frames[name];
                         
                         //get clip rect
-                        CGRect clipRect = CGRectFromString([spriteDict objectForKey:@"textureRect"]);
+                        CGRect clipRect = CGRectFromString(spriteDict[@"textureRect"]);
                         clipRect.origin.x *= scale;
                         clipRect.origin.y *= scale;
                         clipRect.size.width *= scale;
                         clipRect.size.height *= scale;
                         
                         //get image size
-                        CGSize size = CGSizeFromString([spriteDict objectForKey:@"spriteSize"]);
+                        CGSize size = CGSizeFromString(spriteDict[@"spriteSize"]);
                         
                         //get content rect
                         CGRect contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
-                        BOOL spriteTrimmed = [[spriteDict objectForKey:@"spriteTrimmed"] boolValue];
+                        BOOL spriteTrimmed = [spriteDict[@"spriteTrimmed"] boolValue];
                         if (spriteTrimmed)
                         {
-                            contentRect = CGRectFromString([spriteDict objectForKey:@"spriteColorRect"]);
-                            size = CGSizeFromString([spriteDict objectForKey:@"spriteSourceSize"]);
+                            contentRect = CGRectFromString(spriteDict[@"spriteColorRect"]);
+                            size = CGSizeFromString(spriteDict[@"spriteSourceSize"]);
                         }
                         
                         //get rotation
-                        BOOL rotated = [[spriteDict objectForKey:@"textureRotated"] boolValue];
+                        BOOL rotated = [spriteDict[@"textureRotated"] boolValue];
                         
                         //add subimage
                         GLImage *subimage = [[[image imageWithClipRect:clipRect] imageWithSize:size] imageWithContentRect:contentRect];
@@ -179,7 +179,7 @@
                         [self addImage:subimage withName:name];
                         
                         //aliases
-                        for (NSString *alias in [spriteDict objectForKey:@"aliases"])
+                        for (NSString *alias in spriteDict[@"aliases"])
                         {
                             [self addImage:subimage withName:alias];
                         }
@@ -213,7 +213,7 @@
 
 - (void)addImage:(GLImage *)image withName:(NSString *)name
 {
-    [self.imagesByName setObject:image forKey:name];
+    (self.imagesByName)[name] = image;
 }
 
 - (NSInteger)imageCount
@@ -223,7 +223,7 @@
 
 - (NSString *)imageNameAtIndex:(NSInteger)index
 {
-    return [[self.imagesByName allKeys] objectAtIndex:index];
+    return [self.imagesByName allKeys][index];
 }
 
 - (GLImage *)imageAtIndex:(NSInteger)index
@@ -233,10 +233,10 @@
 
 - (GLImage *)imageNamed:(NSString *)name
 {
-    GLImage *image = [self.imagesByName objectForKey:name];
+    GLImage *image = (self.imagesByName)[name];
     if (!image)
     {
-        return [self.imagesByName objectForKey:[name stringByAppendingPathExtension:@"png"]];
+        return (self.imagesByName)[[name stringByAppendingPathExtension:@"png"]];
     }
     return image;
 }

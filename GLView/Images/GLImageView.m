@@ -107,7 +107,7 @@
 	if (numberOfFrames)
 	{
         NSInteger frameIndex = numberOfFrames * (self.elapsedTime / self.animationDuration);
-		id frame = [self.animationImages objectAtIndex:frameIndex % numberOfFrames];
+		id frame = (self.animationImages)[frameIndex % numberOfFrames];
 		if (frame != self.currentFrame)
 		{
 			self.currentFrame = frame;

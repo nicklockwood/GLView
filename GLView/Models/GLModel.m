@@ -267,24 +267,24 @@ WWDC2010Attributes;
                 NSArray *parts = [indexString componentsSeparatedByString:@"/"];
                 
                 GLuint fIndex = uniqueIndexStrings;
-                NSNumber *index = [indexStrings objectForKey:indexString];
+                NSNumber *index = indexStrings[indexString];
                 if (index == nil)
                 {
                     uniqueIndexStrings ++;
-                    [indexStrings setObject:[NSNumber numberWithShort:fIndex] forKey:indexString];
+                    indexStrings[indexString] = @(fIndex);
                     
-                    GLuint vIndex = [[parts objectAtIndex:0] intValue];
+                    GLuint vIndex = [parts[0] intValue];
                     [vertexData appendBytes:tempVertexData.bytes + (vIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
 
                     if ([parts count] > 1)
                     {
-                        GLuint tIndex = [[parts objectAtIndex:1] intValue];
+                        GLuint tIndex = [parts[1] intValue];
                         if (tIndex) [textCoordData appendBytes:tempTextCoordData.bytes + (tIndex - 1) * sizeof(GLfloat) * 2 length:sizeof(GLfloat) * 2];
                     }
                     
                     if ([parts count] > 2)
                     {
-                        GLuint nIndex = [[parts objectAtIndex:2] intValue];
+                        GLuint nIndex = [parts[2] intValue];
                         if (nIndex) [normalData appendBytes:tempNormalData.bytes + (nIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
                     }
                 }

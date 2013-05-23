@@ -12,7 +12,7 @@
 
 @interface GLViewVideoExampleController : UIViewController
 
-@property (unsafe_unretained, readonly, nonatomic) IBOutlet GLImageView *videoView;
+@property (unsafe_unretained, nonatomic) IBOutlet GLImageView *videoView;
 
 - (IBAction)play;
 - (IBAction)stop;

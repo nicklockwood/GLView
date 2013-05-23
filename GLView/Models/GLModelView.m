@@ -44,7 +44,7 @@
     
     GLLight *light = [[GLLight alloc] init];
     light.transform = CATransform3DMakeTranslation(-0.5f, 1.0f, 0.5f);
-    self.lights = [NSArray arrayWithObject:light];
+    self.lights = @[light];
     
     _modelTransform = CATransform3DIdentity;
 }
@@ -103,7 +103,7 @@
         {
             if (i < [self.lights count])
             {
-                [[self.lights objectAtIndex:i] bind:GL_LIGHT0 + i];
+                [(self.lights)[i] bind:GL_LIGHT0 + i];
             }
             else
             {
