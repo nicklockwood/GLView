@@ -113,7 +113,7 @@
         {
             //generate default image path
             path = [path GL_stringByDeletingPathExtension];
-            
+
             //get metadata
             NSDictionary *metadata = dict[@"metadata"];
             if (metadata)
@@ -191,6 +191,11 @@
                         
                         //get rotation
                         BOOL rotated = [sprite[@"textureRotated"] ?: sprite[@"rotated"] boolValue];
+                        if (rotated && sprite[@"frame"])
+                        {
+                            clipRect.size = CGSizeMake(clipRect.size.height,
+                                                       clipRect.size.width);
+                        }
                         
                         //add subimage
                         GLImage *subimage = [[[image imageWithClipRect:clipRect] imageWithSize:size] imageWithContentRect:contentRect];
