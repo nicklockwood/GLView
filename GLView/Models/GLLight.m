@@ -2,7 +2,7 @@
 //  GLLight.m
 //
 //  GLView Project
-//  Version 1.5 beta
+//  Version 1.5.1
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design

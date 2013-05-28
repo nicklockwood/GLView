@@ -1,3 +1,7 @@
+Version 1.5.1
+
+- Fixed crash when loading TexturePacker v2 sprite sheets
+
 Version 1.5
 
 - GLView now requires ARC. See README for details

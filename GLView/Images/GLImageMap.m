@@ -2,7 +2,7 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.5 beta
+//  Version 1.5.1
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -118,12 +118,33 @@
             NSDictionary *metadata = dict[@"metadata"];
             if (metadata)
             {
-                //get image path from metadata
-                NSString *imageFile = [metadata valueForKeyPath:@"target.textureFileName"];
-                NSString *extension = [metadata valueForKeyPath:@"target.textureFileExtension"];
-                if ([extension hasPrefix:@"."]) extension = [extension substringFromIndex:1];
-                path = [[[path ?: @"" stringByDeletingLastPathComponent] stringByAppendingPathComponent:imageFile] stringByAppendingPathExtension:extension];
-                image = [GLImage imageWithContentsOfFile:path];
+                //get image file from metadata
+                NSString *imageFile = metadata[@"textureFileName"];
+                if (!imageFile)
+                {
+                    NSDictionary *target = metadata[@"target"];
+                    if (target)
+                    {
+                        imageFile = target[@"textureFileName"];
+                        NSString *extension = target[@"textureFileExtension"];
+                        if (imageFile && extension)
+                        {
+                            if ([extension hasPrefix:@"."])
+                            {
+                                imageFile = [imageFile stringByAppendingString:extension];
+                            }
+                            else
+                            {
+                                imageFile = [imageFile stringByAppendingPathExtension:extension];
+                            }
+                        }
+                    }
+                    if (!imageFile) imageFile = [path lastPathComponent];
+                }
+                
+                //load image
+                path = [[path ?: @"" stringByDeletingLastPathComponent] stringByAppendingPathComponent:imageFile];
+                image = [GLImage imageWithContentsOfFile:[path GL_normalizedPathWithDefaultExtension:@"png"]];
                 
                 //set premultiplied property
                 BOOL premultiplied = [[metadata valueForKeyPath:@"target.premultipliedAlpha"] boolValue];
@@ -149,29 +170,27 @@
                 {
                     for (NSString *name in frames)
                     {
-                        NSDictionary *spriteDict = frames[name];
+                        NSDictionary *sprite = frames[name];
                         
                         //get clip rect
-                        CGRect clipRect = CGRectFromString(spriteDict[@"textureRect"]);
+                        CGRect clipRect = CGRectFromString(sprite[@"textureRect"] ?: sprite[@"frame"]);
                         clipRect.origin.x *= scale;
                         clipRect.origin.y *= scale;
                         clipRect.size.width *= scale;
                         clipRect.size.height *= scale;
                         
                         //get image size
-                        CGSize size = CGSizeFromString(spriteDict[@"spriteSize"]);
+                        CGSize size = CGSizeFromString(sprite[@"spriteSourceSize"] ?: sprite[@"spriteSize"] ?: sprite[@"sourceSize"]);
                         
                         //get content rect
-                        CGRect contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
-                        BOOL spriteTrimmed = [spriteDict[@"spriteTrimmed"] boolValue];
-                        if (spriteTrimmed)
+                        CGRect contentRect = CGRectFromString(sprite[@"spriteColorRect"] ?: sprite[@"sourceColorRect"]);
+                        if (CGRectEqualToRect(contentRect, CGRectZero))
                         {
-                            contentRect = CGRectFromString(spriteDict[@"spriteColorRect"]);
-                            size = CGSizeFromString(spriteDict[@"spriteSourceSize"]);
+                            contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
                         }
                         
                         //get rotation
-                        BOOL rotated = [spriteDict[@"textureRotated"] boolValue];
+                        BOOL rotated = [sprite[@"textureRotated"] ?: sprite[@"rotated"] boolValue];
                         
                         //add subimage
                         GLImage *subimage = [[[image imageWithClipRect:clipRect] imageWithSize:size] imageWithContentRect:contentRect];
@@ -179,7 +198,7 @@
                         [self addImage:subimage withName:name];
                         
                         //aliases
-                        for (NSString *alias in spriteDict[@"aliases"])
+                        for (NSString *alias in sprite[@"aliases"])
                         {
                             [self addImage:subimage withName:alias];
                         }
