@@ -1,3 +1,8 @@
+Version 1.6 beta
+
+- Added support for loading SpriteKit texture atlasses in Xcode 5 and above
+- GLImageMap now supports subscripting
+
 Version 1.5.1
 
 - Fixed crash when loading TexturePacker v2 sprite sheets

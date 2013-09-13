@@ -2,7 +2,7 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.5.1
+//  Version 1.6 beta
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -38,14 +38,15 @@
 
 - (NSString *)GL_stringByDeletingPathExtension;
 - (BOOL)GL_hasRetinaFileSuffix;
+- (NSString *)GL_stringByDeletingRetinaSuffix;
 - (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension;
 
 @end
 
 
-@interface NSData (Private)
+@interface NSDictionary (Private)
 
-- (NSData *)GL_unzippedData;
++ (NSDictionary *)GL_dictionaryWithData:(NSData *)data;
 
 @end
 
@@ -59,10 +60,8 @@
 
 @interface GLImageMap ()
 
+@property (nonatomic, copy) NSArray *imageNames;
 @property (nonatomic, strong) NSMutableDictionary *imagesByName;
-
-- (void)addImage:(GLImage *)image withName:(NSString *)name;
-- (GLImageMap *)initWithImage:(GLImage *)image path:(NSString *)path data:(NSData *)data;
 
 @end
 
@@ -90,23 +89,44 @@
 
 - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath
 {
-    //load image map
-    NSString *dataPath = [nameOrPath GL_normalizedPathWithDefaultExtension:@"plist"];
-    return [self initWithImage:nil path:nameOrPath data:[NSData dataWithContentsOfFile:dataPath]];
+    //check for xc texture atlas
+    NSString *dataPath = [nameOrPath GL_normalizedPathWithDefaultExtension:@"atlasc"];
+    if (dataPath && [[dataPath pathExtension] isEqualToString:@"atlasc"])
+    {
+        if ((self = [self init]))
+        {
+            //load atlas
+            NSString *plistPath = [dataPath stringByAppendingPathComponent:[[[dataPath lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"plist"]];
+            NSDictionary *atlas = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+            
+            //add sprites
+            for (NSDictionary *dict in atlas[@"images"])
+            {
+                NSString *imagePath = [dataPath stringByAppendingPathComponent:dict[@"path"]];
+                GLImage *image = [GLImage imageWithContentsOfFile:imagePath];
+                [self addFrames:dict[@"subimages"] withImage:image scale:1.0f];
+            }
+            
+            //set sorted image names
+            self.imageNames = [[self.imagesByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+        }
+        return self;
+    }
+    else
+    {
+        //load cocos sprite atlas
+        dataPath = [nameOrPath GL_normalizedPathWithDefaultExtension:@"plist"];
+        return [self initWithImage:nil path:nameOrPath dictionary:[NSDictionary GL_dictionaryWithData:[NSData dataWithContentsOfFile:dataPath]]];
+    }
 }
 
-- (GLImageMap *)initWithImage:(GLImage *)image path:(NSString *)path data:(NSData *)data
+- (GLImageMap *)initWithImage:(GLImage *)image path:(NSString *)path dictionary:(NSDictionary *)dict
 {
     //calculate scale from path
     NSString *plistPath = [path GL_normalizedPathWithDefaultExtension:@"plist"];
     CGFloat plistScale = [plistPath GL_hasRetinaFileSuffix]? 2.0f: 1.0f;
     CGFloat scale = image.scale / plistScale;
-    
-    //attempt to unzip data
-    data = [data GL_unzippedData];
-    
-    NSPropertyListFormat format = 0;
-    NSDictionary *dict = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:&format error:NULL];
+
     if (dict && [dict isKindOfClass:[NSDictionary class]])
     {
         if (!image)
@@ -168,46 +188,11 @@
             {
                 if ((self = [self init]))
                 {
-                    for (NSString *name in frames)
-                    {
-                        NSDictionary *sprite = frames[name];
+                    //add sprites
+                    [self addFrames:frames withImage:image scale:scale];
                         
-                        //get clip rect
-                        CGRect clipRect = CGRectFromString(sprite[@"textureRect"] ?: sprite[@"frame"]);
-                        clipRect.origin.x *= scale;
-                        clipRect.origin.y *= scale;
-                        clipRect.size.width *= scale;
-                        clipRect.size.height *= scale;
-                        
-                        //get image size
-                        CGSize size = CGSizeFromString(sprite[@"spriteSourceSize"] ?: sprite[@"spriteSize"] ?: sprite[@"sourceSize"]);
-                        
-                        //get content rect
-                        CGRect contentRect = CGRectFromString(sprite[@"spriteColorRect"] ?: sprite[@"sourceColorRect"]);
-                        if (CGRectEqualToRect(contentRect, CGRectZero))
-                        {
-                            contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
-                        }
-                        
-                        //get rotation
-                        BOOL rotated = [sprite[@"textureRotated"] ?: sprite[@"rotated"] boolValue];
-                        if (rotated && sprite[@"frame"])
-                        {
-                            clipRect.size = CGSizeMake(clipRect.size.height,
-                                                       clipRect.size.width);
-                        }
-                        
-                        //add subimage
-                        GLImage *subimage = [[[image imageWithClipRect:clipRect] imageWithSize:size] imageWithContentRect:contentRect];
-                        subimage.rotated = rotated; //TODO: replace with more robust orientation mechanism
-                        [self addImage:subimage withName:name];
-                        
-                        //aliases
-                        for (NSString *alias in sprite[@"aliases"])
-                        {
-                            [self addImage:subimage withName:alias];
-                        }
-                    }
+                    //set sorted image names
+                    self.imageNames = [[self.imagesByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
                 }
                 return self;
             }
@@ -232,12 +217,93 @@
 
 - (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data
 {
-    return [self initWithImage:image path:nil data:data];
+    return [self initWithImage:image path:nil dictionary:[NSDictionary GL_dictionaryWithData:data]];
 }
 
-- (void)addImage:(GLImage *)image withName:(NSString *)name
+- (void)addFrames:(id)frames withImage:(GLImage *)image scale:(CGFloat)scale
 {
-    (self.imagesByName)[name] = image;
+    for (id item in frames)
+    {
+        //get sprite name and data
+        NSString *name = nil;
+        NSDictionary *sprite = nil;
+        BOOL cocosFormat = [item isKindOfClass:[NSString class]];
+        if (cocosFormat)
+        {
+            name = item;
+            sprite = frames[name];
+        }
+        else
+        {
+            sprite = item;
+            name = [item[@"name"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            if ([name GL_hasRetinaFileSuffix])
+            {
+                name = [name GL_stringByDeletingRetinaSuffix];
+                if (self.imagesByName[name] && [[UIScreen mainScreen] scale] < 2.0f) continue;
+            }
+            else if (self.imagesByName[name])
+            {
+                continue;
+            }
+        }
+        
+        //get clip rect
+        CGRect clipRect = CGRectFromString(sprite[@"textureRect"] ?: sprite[@"frame"]);
+        clipRect.origin.x *= scale;
+        clipRect.origin.y *= scale;
+        clipRect.size.width *= scale;
+        clipRect.size.height *= scale;
+        
+        //get image size
+        CGSize size = CGSizeFromString(sprite[@"spriteSourceSize"] ?: sprite[@"spriteSize"] ?: sprite[@"sourceSize"]);
+        
+        //get content rect
+        CGRect contentRect = CGRectZero;
+        if (cocosFormat)
+        {
+            contentRect = CGRectFromString(sprite[@"spriteColorRect"] ?: sprite[@"sourceColorRect"]);
+        }
+        else
+        {
+            contentRect.origin = CGPointFromString(sprite[@"spriteOffset"]);
+            contentRect.size = CGRectFromString(sprite[@"textureRect"]).size;
+        }
+        
+        //get rotation
+        BOOL rotated = [sprite[@"textureRotated"] ?: sprite[@"rotated"] boolValue];
+        if (rotated)
+        {
+            if (sprite[@"frame"])
+            {
+                clipRect.size = CGSizeMake(clipRect.size.height,
+                                           clipRect.size.width);
+            }
+            else if (!cocosFormat)
+            {
+                contentRect.size = CGSizeMake(contentRect.size.height, contentRect.size.width);
+            }
+        }
+        if (CGRectIsEmpty(contentRect))
+        {
+            contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+        }
+        else if (!cocosFormat)
+        {
+            contentRect.origin.y = size.height - contentRect.origin.y - contentRect.size.height;
+        }
+        
+        //add subimage
+        GLImage *subimage = [[[image imageWithClipRect:clipRect] imageWithSize:size] imageWithContentRect:contentRect];
+        subimage.rotated = rotated; //TODO: replace with more robust orientation mechanism
+        self.imagesByName[name] = subimage;
+        
+        //aliases
+        for (NSString *alias in sprite[@"aliases"])
+        {
+            self.imagesByName[alias] = subimage;
+        }
+    }
 }
 
 - (NSInteger)imageCount
@@ -247,12 +313,12 @@
 
 - (NSString *)imageNameAtIndex:(NSInteger)index
 {
-    return [self.imagesByName allKeys][index];
+    return self.imageNames[index];
 }
 
 - (GLImage *)imageAtIndex:(NSInteger)index
 {
-    return [self imageNamed:[self imageNameAtIndex:index]];
+    return self.imagesByName[self.imageNames[index]];
 }
 
 - (GLImage *)imageNamed:(NSString *)name
@@ -260,9 +326,24 @@
     GLImage *image = (self.imagesByName)[name];
     if (!image)
     {
-        return (self.imagesByName)[[name stringByAppendingPathExtension:@"png"]];
+        return self.imagesByName[[name stringByAppendingPathExtension:@"png"]];
     }
     return image;
+}
+
+- (GLImage *)objectAtIndexedSubscript:(NSInteger)index
+{
+    return [self imageAtIndex:index];
+}
+
+- (GLImage *)objectForKeyedSubscript:(NSString *)name
+{
+    return [self imageNamed:name];
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state objects:(id __unsafe_unretained [])buffer count:(NSUInteger)len
+{
+    return [self.imageNames countByEnumeratingWithState:state objects:buffer count:len];
 }
 
 @end

@@ -2,7 +2,7 @@
 //  GLImageMap.h
 //
 //  GLView Project
-//  Version 1.5.1
+//  Version 1.6 beta
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -35,7 +35,7 @@
 #import "GLUtils.h"
 
 
-@interface GLImageMap : NSObject
+@interface GLImageMap : NSObject <NSFastEnumeration>
 
 + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath;
 + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data;
@@ -47,5 +47,8 @@
 - (NSString *)imageNameAtIndex:(NSInteger)index;
 - (GLImage *)imageAtIndex:(NSInteger)index;
 - (GLImage *)imageNamed:(NSString *)name;
+
+- (GLImage *)objectAtIndexedSubscript:(NSInteger)index;
+- (GLImage *)objectForKeyedSubscript:(NSString *)name;
 
 @end

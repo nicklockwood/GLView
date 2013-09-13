@@ -26,7 +26,7 @@
 {
     [super viewDidLoad];
     
-    self.imageMap = [GLImageMap imageMapWithContentsOfFile:@"lostgarden.plist"];
+    self.imageMap = [GLImageMap imageMapWithContentsOfFile:@"lostgarden"];
     self.tableView.rowHeight = 80.0f;
     [self.tableView reloadData];
 }

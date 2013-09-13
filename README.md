@@ -13,7 +13,7 @@ The GLView library is modular. If you don't want to render 3D models you can omi
 Supported OS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 6.1 (Xcode 4.6.2, Apple LLVM compiler 4.2)
+* Supported build target - iOS 7.0 (Xcode 5.0, Apple LLVM compiler 5.0)
 * Earliest supported deployment target - iOS 5.0
 * Earliest compatible deployment target - iOS 4.3
 
@@ -276,7 +276,7 @@ The GLImageMap class has the following methods:
     + (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath;
     - (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath;
     
-These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be .plist. Currently the only image map file format that is supported is the Cocos2D sprite map format, which can be exported by tools such as Zwoptex or TexturePacker. GLImageMap fully supports trimmed, rotated and aliased images. As with ordinary GLImages, GLImageMap will automatically detect @2x retina files and files with the ~ipad suffix.
+These methods are used to create a GLImageMap from a file. The parameter can be an absolute or relative file path (relative paths are assumed to be inside the application bundle). If the file extension is omitted it is assumed to be and Xcode 5 .atlasc file (see "Using Xcode 5 / SpriteKit texture atlasses" below), or a .plist. Currently the only image map file formats that are supported are the Xcode 5 / SpriteKit texture atlas format, and the Cocos2D sprite map format, which can be exported by tools such as Zwoptex or TexturePacker. GLImageMap fully supports rotated and trimmed images, as well as image aliases. It will automatically detect @2x Retina imagemap files and files with the ~ipad suffix.
 
     + (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data;    
     - (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data;
@@ -289,15 +289,17 @@ This method returns the number of images in the image map.
     
     - (NSString *)imageNameAtIndex:(NSInteger)index;
     
-This method returns the image name at the specified index. Note that image map images are unordered, so do not assume that the image order will match the order of images in the file that was loaded. If you wish to access image map images in a specific order, it is a good idea to name them numerically.
+This method returns the image name at the specified index. Image names are sorted alphabetically, and do not necessarily reflect the order in which they appear in the sprite sheet file.
     
     - (GLImage *)imageAtIndex:(NSInteger)index;
+    - (GLImage *)objectAtIndexedSubscript:(NSInteger)index;
     
-This method returns the image map image at the specified index. Note that image map images are unordered, so do not assume that the image order will match the order of images in the file that was loaded. If you wish to access image map images in a specific order, it is a good idea to name them numerically.
+These methods return the image map image at the specified index. Both methods behave the same way, but the second is included to support object subscripting, allowing the sprite to be accessed using the `spritemap[index]` syntax. Image map images are sorted alphabetically, and do not neccesarily reflect the order in which they appear in the sprite sheet file. If you wish to access the images in a specific order, it is a good idea to name them numerically, padded to the same length with zeros.
     
     - (GLImage *)imageNamed:(NSString *)name;
+    - (GLImage *)objectForKeyedSubscript:(NSString *)name;
     
-This method returns the image map image with the specified name. Depending on the tool used to generate the image map data file, the names may include a file extension. If you do not include a file extension in the image name, png is assumed.
+These methods return the image map image with the specified name. Both methods behave the same way, but the second is included to support object subscripting, allowing the sprite to be accessed using the `spritemap[@"spriteName"]` syntax. Depending on the tool used to generate the image map data file, the name may include a file extension. If you do not include a file extension in the name parameter, png is assumed.
 
 
 GLImageView properties
@@ -549,4 +551,16 @@ When using PVR images, straight alpha can result in a one-pixel black or white h
 
 At present, there's no way to automatically detect the type of alpha when loading a PVR image, so if you have generated your PVRs with straight alpha, GLImage will still assume they are premultiplied, which will make them look even worse when they are displayed. To correct this, call `[image imageWithPremultipliedAlpha:NO]` on the image after loading it to create a copy that will treat the image as having straight alpha instead.
 
-The Cocos2D Plist file format supported by GLImageMap includes metadata indicating whether the texture file has premultiplied alpha or not, so no further work is needed when loading sprite sheets with GLImageMap.
+The sprite sheet formats supported by GLImageMap include metadata indicating whether the texture file has premultiplied alpha or not, so no further work is needed when loading sprite sheets with GLImageMap.
+
+
+Using Xcode 5 / SpriteKit texture atlasses
+---------------------------------------------
+
+The GLView library can load sprites stored in the Xcode 5 / SpriteKit texture atlas format. To use a texture atlas, first create a folder containing all of your sprite images (both standard and @2x variants) with the extension .atlas, and add it to your project.
+
+Then, in your project build settings, search for "SpriteKit" and set the "Enable Texture Atlas Generation" option (this may appear as SPRITEKIT_TEXTURE_ATLAS_OUTPUT if you have not  yet imported the atlas), with the default "Output Texture Atlas Format" of "RGBA8888_PNG" (GLView does not currently support any of Xcode's compressed texture formats).
+
+There is no need to import the SpriteKit framework. When importing your sprite sheet using the GLImageMap +imageMapWithContentsOfFile method, either specify the file extension "atlasc" (note the "c"), or leave off the path extension and GLImageMap will automatically find the atlas file if available.
+
+You will need to use Xcode 5 or above to generate the atlas files, but they can be loaded and used by GLImageMap for apps running on iOS 4.3 and above - they are not limited to iOS 7.

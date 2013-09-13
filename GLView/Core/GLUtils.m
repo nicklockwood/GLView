@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.5.1
+//  Version 1.6 beta
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -156,6 +156,21 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 @end
 
 
+@implementation NSDictionary (GL)
+
++ (NSDictionary *)GL_dictionaryWithData:(NSData *)data
+{
+    //attempt to unzip data
+    data = [data GL_unzippedData];
+    
+    //deserialize
+    NSPropertyListFormat format = 0;
+    return data? [NSPropertyListSerialization propertyListWithData:data options:0 format:&format error:NULL]: nil;
+}
+
+@end
+
+
 @implementation NSString (GL)
 
 - (NSString *)GL_pathExtension
@@ -197,6 +212,23 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
         if ([name hasSuffix:@"@2x"]) return YES;
     }
     return NO;
+}
+
+- (NSString *)GL_stringByDeletingRetinaSuffix
+{
+    SEL selector = NSSelectorFromString(@"stringByDeletingRetinaSuffix");
+    if ([self respondsToSelector:selector])
+    {
+        return [self valueForKey:@"stringByDeletingRetinaSuffix"];
+    }
+    NSString *result = [self stringByDeletingPathExtension];
+    if ([result hasSuffix:@"@2x"])
+    {
+        //TODO: handle ~ipad/~iphone
+        result = [result substringToIndex:[result length] - 3];
+        return [result stringByAppendingPathExtension:[self pathExtension]];
+    }
+    return self;
 }
 
 - (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension
