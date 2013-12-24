@@ -1,7 +1,9 @@
-Version 1.6 beta
+Version 1.6
 
 - Added support for loading SpriteKit texture atlasses in Xcode 5 and above
+- Added blendMode property for GLImage
 - GLImageMap now supports subscripting
+- Now conforms to -Weverything warning level
 
 Version 1.5.1
 

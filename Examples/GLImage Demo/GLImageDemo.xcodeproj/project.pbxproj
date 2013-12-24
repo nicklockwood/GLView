@@ -15,7 +15,6 @@
 		012E3CDD157E4F5600960744 /* ImageMapTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 012E3CDC157E4F5600960744 /* ImageMapTableCell.xib */; };
 		014FE6B817D67DD600ACA4B7 /* lostgarden.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 014FE6B717D67DD600ACA4B7 /* lostgarden.atlas */; };
 		014FE6BC17D6893100ACA4B7 /* lostgarden.plist in Resources */ = {isa = PBXBuildFile; fileRef = 014FE6B917D6893100ACA4B7 /* lostgarden.plist */; };
-		014FE6BD17D6893100ACA4B7 /* lostgarden.png in Resources */ = {isa = PBXBuildFile; fileRef = 014FE6BA17D6893100ACA4B7 /* lostgarden.png */; };
 		014FE6BE17D6893100ACA4B7 /* lostgarden@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 014FE6BB17D6893100ACA4B7 /* lostgarden@2x.png */; };
 		016B4BCE13CB825000A06541 /* GLViewImageExampleController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BB513CB825000A06541 /* GLViewImageExampleController.xib */; };
 		016B4BD013CB825000A06541 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016B4BB913CB825000A06541 /* MainWindow.xib */; };
@@ -26,6 +25,8 @@
 		0183CA62157D072000805862 /* GLUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0183CA61157D072000805862 /* GLUtils.m */; };
 		01B126A6157E1DAF00E57BA2 /* GLViewImageMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */; };
 		01B126A7157E1DAF00E57BA2 /* GLViewImageMapController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */; };
+		01CBD3D8186A4F890058171F /* lostgarden.png in Resources */ = {isa = PBXBuildFile; fileRef = 014FE6BA17D6893100ACA4B7 /* lostgarden.png */; };
+		01CBD3DB186A4FE90058171F /* GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CBD3DA186A4FE90058171F /* GZIP.m */; };
 		01D3DC88166A224500C9AED8 /* GLLight.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D3DC83166A224500C9AED8 /* GLLight.m */; };
 		01D3DC89166A224500C9AED8 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D3DC85166A224500C9AED8 /* GLModel.m */; };
 		01D3DC8A166A224500C9AED8 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D3DC87166A224500C9AED8 /* GLModelView.m */; };
@@ -35,7 +36,6 @@
 		01F00A331565974600CF44D9 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A241565974600CF44D9 /* GLView.m */; };
 		01F00A351565974600CF44D9 /* GLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A291565974600CF44D9 /* GLImage.m */; };
 		01F00A361565974600CF44D9 /* GLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A2B1565974600CF44D9 /* GLImageView.m */; };
-		01F9EC0F162D70E000877219 /* NSData+GZIP.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F9EC0E162D70E000877219 /* NSData+GZIP.m */; };
 		01F9EC34162D710100877219 /* logo-high.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 01F9EC16162D710100877219 /* logo-high.jpg */; };
 		01F9EC35162D710100877219 /* logo-low.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 01F9EC17162D710100877219 /* logo-low.jpg */; };
 		01F9EC36162D710100877219 /* logo-maximum.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 01F9EC18162D710100877219 /* logo-maximum.jpg */; };
@@ -704,6 +704,8 @@
 		01B126A3157E1DAF00E57BA2 /* GLViewImageMapController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewImageMapController.h; sourceTree = "<group>"; };
 		01B126A4157E1DAF00E57BA2 /* GLViewImageMapController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewImageMapController.m; sourceTree = "<group>"; };
 		01B126A5157E1DAF00E57BA2 /* GLViewImageMapController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GLViewImageMapController.xib; sourceTree = "<group>"; };
+		01CBD3D9186A4FE00058171F /* GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GZIP.h; sourceTree = "<group>"; };
+		01CBD3DA186A4FE90058171F /* GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GZIP.m; sourceTree = "<group>"; };
 		01D3DC82166A224500C9AED8 /* GLLight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLLight.h; sourceTree = "<group>"; };
 		01D3DC83166A224500C9AED8 /* GLLight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLLight.m; sourceTree = "<group>"; };
 		01D3DC84166A224500C9AED8 /* GLModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModel.h; sourceTree = "<group>"; };
@@ -720,8 +722,6 @@
 		01F00A291565974600CF44D9 /* GLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImage.m; sourceTree = "<group>"; };
 		01F00A2A1565974600CF44D9 /* GLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLImageView.h; sourceTree = "<group>"; };
 		01F00A2B1565974600CF44D9 /* GLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLImageView.m; sourceTree = "<group>"; };
-		01F9EC0D162D70E000877219 /* NSData+GZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+GZIP.h"; sourceTree = "<group>"; };
-		01F9EC0E162D70E000877219 /* NSData+GZIP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+GZIP.m"; sourceTree = "<group>"; };
 		01F9EC16162D710100877219 /* logo-high.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "logo-high.jpg"; sourceTree = "<group>"; };
 		01F9EC17162D710100877219 /* logo-low.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "logo-low.jpg"; sourceTree = "<group>"; };
 		01F9EC18162D710100877219 /* logo-maximum.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "logo-maximum.jpg"; sourceTree = "<group>"; };
@@ -1529,8 +1529,8 @@
 		01F9EC0C162D70E000877219 /* GZIP */ = {
 			isa = PBXGroup;
 			children = (
-				01F9EC0D162D70E000877219 /* NSData+GZIP.h */,
-				01F9EC0E162D70E000877219 /* NSData+GZIP.m */,
+				01CBD3D9186A4FE00058171F /* GZIP.h */,
+				01CBD3DA186A4FE90058171F /* GZIP.m */,
 			);
 			path = GZIP;
 			sourceTree = "<group>";
@@ -2219,7 +2219,7 @@
 		0116538313C8FD7600942540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Charcoal Design";
 			};
 			buildConfigurationList = 0116538613C8FD7600942540 /* Build configuration list for PBXProject "GLImageDemo" */;
@@ -2244,6 +2244,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01CBD3D8186A4F890058171F /* lostgarden.png in Resources */,
 				016B4BCE13CB825000A06541 /* GLViewImageExampleController.xib in Resources */,
 				016B4BD013CB825000A06541 /* MainWindow.xib in Resources */,
 				B215E95913D5CEFC005BDC39 /* GLViewVideoExampleController.xib in Resources */,
@@ -2767,7 +2768,6 @@
 				01F9F090162D710A00877219 /* droplet485.pvr.gz in Resources */,
 				01F9F091162D710A00877219 /* droplet486.pvr.gz in Resources */,
 				01F9F092162D710A00877219 /* droplet487.pvr.gz in Resources */,
-				014FE6BD17D6893100ACA4B7 /* lostgarden.png in Resources */,
 				01F9F093162D710A00877219 /* droplet488.pvr.gz in Resources */,
 				01F9F094162D710A00877219 /* droplet489.pvr.gz in Resources */,
 				01F9F095162D710A00877219 /* droplet490.pvr.gz in Resources */,
@@ -2909,7 +2909,7 @@
 				0183CA5E157CED8400805862 /* GLImageMap.m in Sources */,
 				0183CA62157D072000805862 /* GLUtils.m in Sources */,
 				01B126A6157E1DAF00E57BA2 /* GLViewImageMapController.m in Sources */,
-				01F9EC0F162D70E000877219 /* NSData+GZIP.m in Sources */,
+				01CBD3DB186A4FE90058171F /* GZIP.m in Sources */,
 				01D3DC88166A224500C9AED8 /* GLLight.m in Sources */,
 				01D3DC89166A224500C9AED8 /* GLModel.m in Sources */,
 				01D3DC8A166A224500C9AED8 /* GLModelView.m in Sources */,
@@ -2950,32 +2950,119 @@
 		011653B613C8FD7800942540 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				WARNING_CFLAGS = (
+					"-Weverything",
+					"-Wno-objc-missing-property-synthesis",
+				);
 			};
 			name = Debug;
 		};
 		011653B713C8FD7800942540 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_CXX0X_EXTENSIONS = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_IMPLICIT_SIGN_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_EXPLICIT_OWNERSHIP_TYPE = YES;
+				CLANG_WARN_OBJC_IMPLICIT_ATOMIC_PROPERTIES = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = YES;
+				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_MULTIPLE_DEFINITION_TYPES_FOR_SELECTOR = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_PEDANTIC = YES;
+				GCC_WARN_SHADOW = YES;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNKNOWN_PRAGMAS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_LABEL = YES;
+				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
+				WARNING_CFLAGS = (
+					"-Weverything",
+					"-Wno-objc-missing-property-synthesis",
+				);
 			};
 			name = Release;
 		};

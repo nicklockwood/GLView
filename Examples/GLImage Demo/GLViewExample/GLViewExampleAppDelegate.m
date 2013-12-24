@@ -10,9 +10,9 @@
 
 @implementation GLViewExampleAppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+- (BOOL)application:(__unused UIApplication *)application didFinishLaunchingWithOptions:(__unused NSDictionary *)launchOptions
 {
-    _window.rootViewController = _viewController;
+    self.window.rootViewController = self.viewController;
     return YES;
 }
 

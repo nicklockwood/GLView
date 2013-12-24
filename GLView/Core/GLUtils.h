@@ -2,7 +2,7 @@
 //  GLUtils.h
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -32,6 +32,10 @@
 //
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+
+
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import <OpenGLES/ES1/gl.h>
@@ -49,3 +53,6 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
 - (void)bindGLColor;
 
 @end
+
+
+#pragma GCC diagnostic pop

@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -32,6 +32,11 @@
 //
 
 #import "GLModelView.h"
+
+
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wgnu"
 
 
 @implementation GLModelView
@@ -91,7 +96,7 @@
     [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect
+- (void)drawRect:(__unused CGRect)rect
 {
     //apply lights
     if ([self.lights count])
@@ -99,7 +104,7 @@
         //normalize normals
         glEnable(GL_NORMALIZE);
         
-        for (int i = 0; i < GL_MAX_LIGHTS; i++)
+        for (NSUInteger i = 0; i < GL_MAX_LIGHTS; i++)
         {
             if (i < [self.lights count])
             {

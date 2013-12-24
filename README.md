@@ -191,6 +191,15 @@ The content rectangle used to specify the portion of the image which is textured
 
 Images that have translucent parts can either use premultiplied or non-premultiplied alpha. iOS typically uses premultiplied alpha when loading images and this is the default for non-PVR images. PVR images generated using Apple's command-line tools do not have premultiplied alpha, so for PVR images it is assumed that the image does not have premultiplied alpha so this property will be NO for PVR images by default, however some tools have the option to generate PVR images with premultiplied alpha, and this is generally recommended to avoid odd black or white halos around opaque parts of the image. There is no way to detect if a PVR image was generated with premultiplied alpha, so if you know that it was, or if the image looks wrong when rendered, you can toggle this property using the `imageWithPremultipliedAlpha:` method. See the Premultiplied Alpha section below for more details.
 
+    @property (nonatomic, readonly) GLBlendMode blendMode;
+    
+The blendMode property determines how the image will be blended with the existing onscreen content when drawn. You can change this property using the `imageWithBlendMode:` method. This property is of type GLBlendMode, which has the following possible values:
+
+* GLBlendModeNormal - This is the default blend mode, and behaves like ordinary alpha blending.
+* GLBlendModeMultiply - This works like the multiply blend mode in Photoshop - the colors are mutliplied together
+* GLBlendModeAdd - This works like the Linear Dodge blend mode in Photoshop - good for creating glowing images
+* GLBlendModeScreen - This works like the Screen blend mode in Photoshop - the underlying color is lightened
+
     @property (nonatomic, readonly) const GLfloat *textureCoords;
 
 The texture coordinates used for rendering the image. These are handy if you need to render the image yourself using OpenGL functions instead of using the `drawAtPoint:` or `drawInRect:` methods. The textureCoords array will always contain exactly 8 GLfloat values.
@@ -234,6 +243,10 @@ These methods allow you to create a GLImage from an NSData object. The data cont
     - (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha;
     
 Images that have translucent parts can either use premultiplied or non-premultiplied alpha. iOS typically uses premultiplied alpha when loading images and this is the default for non-PVR images. PVR images generated using Apple's command-line tools do not have premultiplied alpha, so for PVR images it is assumed that the image does not have premultiplied alpha. Some tools however have the option to generate PVR images with premultiplied alpha, and this is generally recommended to avoid odd black or white halos around opaque parts of the image, but since there is no way to detect this from the file format, these images may render incorrectly when loaded with GLImage. To correct this, use this method with a value of YES to create a version of the image that will render correctly. See the Premultiplied Alpha section below for more details.
+
+    - (GLImage *)imageWithBlendMode:(GLBlendMode)blendMode;
+
+This method can be used to create a copy of the image that uses a different blend mode. For details of the different blend modes available, check the blendMode property description above.
 
     - (GLImage *)imageWithOrientation:(UIImageOrientation)orientation;
 

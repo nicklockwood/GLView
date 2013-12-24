@@ -12,9 +12,9 @@
 
 
 #if TARGET_IPHONE_SIMULATOR
-#define NUMBER_TO_LOAD 1000
+static const int NumberToLoad = 1000;
 #else
-#define NUMBER_TO_LOAD 100
+static const int NumberToLoad = 100;
 #endif
 
 
@@ -25,7 +25,7 @@
 	@autoreleasepool
     {
         NSTimeInterval startTime = CACurrentMediaTime();
-        for (int i = 0; i < NUMBER_TO_LOAD; i++)
+        for (int i = 0; i < NumberToLoad; i++)
         {
             [GLImage imageWithContentsOfFile:name];
         }
@@ -58,14 +58,14 @@
 
 - (void)disableRefreshButton
 {
-	_refreshButton.enabled = NO;
-	_refreshButton.alpha = 0.25f;
+	self.refreshButton.enabled = NO;
+	self.refreshButton.alpha = 0.25f;
 }
 
 - (void)enableRefreshButton
 {
-	_refreshButton.enabled = YES;
-	_refreshButton.alpha = 1.0f;
+	self.refreshButton.enabled = YES;
+	self.refreshButton.alpha = 1.0f;
 }
 
 - (void)knockBackLabel:(UILabel *)label
@@ -91,20 +91,20 @@
 		NSArray *files = [self files];
 		
 		//clear labels
-		for (int i = 0; i < [files count]; i++)
+		for (NSUInteger i = 0; i < [files count]; i++)
 		{
 			[self performSelectorOnMainThread:@selector(knockBackLabel:)
-								   withObject:[self.view viewWithTag:100 + i]
+								   withObject:[self.view viewWithTag:100 + (NSInteger)i]
 								waitUntilDone:YES];
 		}
 		
 		//load images
-		for (int i = 0; i < [files count]; i++)
+		for (NSUInteger i = 0; i < [files count]; i++)
 		{
 			NSTimeInterval seconds = [self loadImageNamed:files[i]];
-			int ms = ceil(seconds * 1000.0 / (double)NUMBER_TO_LOAD);
+			double ms = ceil(seconds * 1000.0 / (double)NumberToLoad);
 			[self performSelectorOnMainThread:@selector(setLabelText:)
-								   withObject:@[[self.view viewWithTag:100 + i], [NSString stringWithFormat:@"%1.2fs (%ims each)", seconds, ms]]
+								   withObject:@[[self.view viewWithTag:100 + (NSInteger)i], [NSString stringWithFormat:@"%1.2fs (%1.0fms each)", seconds, ms]]
 								waitUntilDone:YES];
 		}
 		
@@ -131,27 +131,27 @@
 {
     [super viewDidLoad];
     
-	_ttlLabel.text = [NSString stringWithFormat:@"Time to load %i images", NUMBER_TO_LOAD];
+	self.ttlLabel.text = [NSString stringWithFormat:@"Time to load %i images", NumberToLoad];
 	
 	//files
 	NSArray *files = [self files];
-	_filenameLabel.text = [self nameFromFilename:files[0]];
-	_timeLabel.tag = 100;
-	_timeLabel.text = @"Loading...";
-	[self knockBackLabel:_timeLabel];
-	for (int i = 1; i < [files count]; i++)
+	self.filenameLabel.text = [self nameFromFilename:files[0]];
+	self.timeLabel.tag = 100;
+	self.timeLabel.text = @"Loading...";
+	[self knockBackLabel:self.timeLabel];
+	for (NSUInteger i = 1; i < [files count]; i++)
 	{
-		UILabel *label = [[UILabel alloc] initWithFrame:_filenameLabel.frame];
-		label.font = _filenameLabel.font;
-		label.textColor = _filenameLabel.textColor;
+		UILabel *label = [[UILabel alloc] initWithFrame:self.filenameLabel.frame];
+		label.font = self.filenameLabel.font;
+		label.textColor = self.filenameLabel.textColor;
 		label.text = [self nameFromFilename:files[i]];
 		label.center = CGPointMake(label.center.x, label.center.y + 25.0f * i);
 		[self.view addSubview:label];
 		
-		label = [[UILabel alloc] initWithFrame:_timeLabel.frame];
-		label.textAlignment = _timeLabel.textAlignment;
-		label.font = _timeLabel.font;
-		label.textColor = _timeLabel.textColor;
+		label = [[UILabel alloc] initWithFrame:self.timeLabel.frame];
+		label.textAlignment = self.timeLabel.textAlignment;
+		label.font = self.timeLabel.font;
+		label.textColor = self.timeLabel.textColor;
 		label.text = @"Loading...";
 		label.center = CGPointMake(label.center.x, label.center.y + 25.0f * i);
 		label.tag = 100 + i;
@@ -160,16 +160,6 @@
 	}
 	
 	[self performSelectorInBackground:@selector(loadImages) withObject:nil];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-	self.refreshButton = nil;
-	self.ttlLabel = nil;
-	self.filenameLabel = nil;
-	self.timeLabel = nil;
 }
 
 @end

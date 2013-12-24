@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -32,6 +32,12 @@
 //
 
 #import "GLView.h"
+
+
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wgnu"
 
 
 @interface GLLayer : CAEAGLLayer
@@ -115,7 +121,7 @@
     //create CGImage with the pixel data
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-    CGImageRef image = CGImageCreate(width, height, 8, 32, width * 4, colorspace, kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast, dataProvider, NULL, true, kCGRenderingIntentDefault);
+    CGImageRef image = CGImageCreate(width, height, 8, 32, width * 4, colorspace, (CGBitmapInfo)(kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast), dataProvider, NULL, true, kCGRenderingIntentDefault);
     
     //render image in current context
     CGContextDrawImage(ctx, CGRectMake(0.0, 0.0, self.bounds.size.width, self.bounds.size.height), image);
@@ -235,7 +241,7 @@
 
 - (void)setFrameInterval:(NSTimeInterval)frameInterval
 {
-    if (_frameInterval != frameInterval)
+    if (ABS(_frameInterval - frameInterval) < 0.001)
     {
         _frameInterval = frameInterval;
         if (self.animating)
@@ -355,7 +361,7 @@
     [self.layer display];
 }
 
-- (void)drawRect:(CGRect)rect
+- (void)drawRect:(__unused CGRect)rect
 {
     //override this
 }
@@ -434,7 +440,7 @@
     }
 }
 
-- (void)step:(NSTimeInterval)dt
+- (void)step:(__unused NSTimeInterval)dt
 {
 	//override this
 }

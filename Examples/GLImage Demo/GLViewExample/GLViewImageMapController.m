@@ -26,14 +26,14 @@
 {
     [super viewDidLoad];
     
-    self.imageMap = [GLImageMap imageMapWithContentsOfFile:@"lostgarden"];
+    self.imageMap = [GLImageMap imageMapWithContentsOfFile:@"lostgarden.plist"];
     self.tableView.rowHeight = 80.0f;
     [self.tableView reloadData];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger)tableView:(__unused UITableView *)tableView numberOfRowsInSection:(__unused NSInteger)section
 {
-    return [self.imageMap imageCount];
+    return (NSInteger)[self.imageMap imageCount];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -49,7 +49,7 @@
     }
     
     //set image
-    NSString *name = [self.imageMap imageNameAtIndex:indexPath.row];
+    NSString *name = [self.imageMap imageNameAtIndex:(NSUInteger)indexPath.row];
     ((GLImageView *)[cell viewWithTag:1]).image = [self.imageMap imageNamed:name];
     ((UILabel *)[cell viewWithTag:2]).text = name;
     

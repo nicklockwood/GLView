@@ -2,7 +2,7 @@
 //  GLView.h
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -30,6 +30,11 @@
 //
 //  3. This notice may not be removed or altered from any source distribution.
 //
+
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+
 
 #import <UIKit/UIKit.h>
 #import "GLUtils.h"
@@ -59,3 +64,6 @@
 - (UIImage *)snapshot;
 
 @end
+
+
+#pragma GCC diagnostic pop

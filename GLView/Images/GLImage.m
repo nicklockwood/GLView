@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -33,6 +33,13 @@
 
 #import "GLImage.h"
 #import "GLView.h"
+
+
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wfour-char-constants"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wgnu"
 
 
 typedef struct
@@ -124,6 +131,7 @@ PVRPixelType;
 @property (nonatomic, assign) CGRect contentRect;
 @property (nonatomic, getter = isRotated) BOOL rotated;
 @property (nonatomic, assign) BOOL premultipliedAlpha;
+@property (nonatomic, assign) GLBlendMode blendMode;
 @property (nonatomic, strong) GLImage *superimage;
 @property (nonatomic, assign) NSUInteger cost;
 
@@ -140,6 +148,7 @@ static NSCache *imageCache = nil;
 + (void)initialize
 {
     imageCache = [[NSCache alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:imageCache selector:NSSelectorFromString(@"removeAllObjects") name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 }
 
 + (GLImage *)imageNamed:(NSString *)nameOrPath
@@ -165,27 +174,27 @@ static NSCache *imageCache = nil;
 #pragma mark -
 #pragma mark Loading
 
-+ (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath
++ (instancetype)imageWithContentsOfFile:(NSString *)nameOrPath
 {
     return [[self alloc] initWithContentsOfFile:nameOrPath];
 }
 
-+ (GLImage *)imageWithUIImage:(UIImage *)image
++ (instancetype)imageWithUIImage:(UIImage *)image
 {
     return [[self alloc] initWithUIImage:image];
 }
 
-+ (GLImage *)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock
++ (instancetype)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock
 {
     return [[self alloc] initWithSize:size scale:scale drawingBlock:drawingBlock];
 }
 
-+ (GLImage *)imageWithData:(NSData *)data scale:(CGFloat)scale
++ (instancetype)imageWithData:(NSData *)data scale:(CGFloat)scale
 {
     return [[self alloc] initWithData:data scale:scale];
 }
 
-- (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath
+- (instancetype)initWithContentsOfFile:(NSString *)nameOrPath
 {
     //get normalised path
     NSString *path = [nameOrPath GL_normalizedPathWithDefaultExtension:@"png"];
@@ -195,12 +204,11 @@ static NSCache *imageCache = nil;
     return [self initWithData:data scale:[path GL_hasRetinaFileSuffix]? 2.0f: 1.0f];
 }
 
-- (GLImage *)initWithUIImage:(UIImage *)image
+- (instancetype)initWithUIImage:(UIImage *)image
 {
     if (image)
     {
-        return [self initWithSize:image.size scale:image.scale drawingBlock:^(CGContextRef context)
-        {
+        return [self initWithSize:image.size scale:image.scale drawingBlock:^(__unused CGContextRef context) {
             [image drawAtPoint:CGPointZero];
         }];
     }
@@ -209,7 +217,7 @@ static NSCache *imageCache = nil;
     return ((self = nil));
 }
 
-- (GLImage *)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock
+- (instancetype)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock
 {
     if ((self = [super init]))
     {
@@ -235,7 +243,7 @@ static NSCache *imageCache = nil;
         void *imageData = calloc(width * height, 4);
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
         CGContextRef context = CGBitmapContextCreate(imageData, width, height, 8, 4 * width, colorSpace,
-                                                     kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast);
+                                                     (CGBitmapInfo)(kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast));
         CGColorSpaceRelease(colorSpace);
         
         //perform drawing
@@ -247,7 +255,7 @@ static NSCache *imageCache = nil;
         
         //bind shared gl context
         EAGLContext *glContext = [EAGLContext currentContext];
-        [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
+        [EAGLContext setCurrentContext:[GLView sharedContext]];
         
         //create texture
         glGenTextures(1, &_texture);
@@ -266,7 +274,7 @@ static NSCache *imageCache = nil;
     return self;
 }
 
-- (GLImage *)initWithData:(NSData *)data scale:(CGFloat)scale
+- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale
 {
     //attempt to unzip data
     data = [data GL_unzippedData];
@@ -404,7 +412,7 @@ static NSCache *imageCache = nil;
                 
                 //bind shared context
                 EAGLContext *context = [EAGLContext currentContext];
-                [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
+                [EAGLContext setCurrentContext:[GLView sharedContext]];
                 
                 //create texture
                 glGenTextures(1, &_texture);
@@ -413,7 +421,7 @@ static NSCache *imageCache = nil;
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
                 GLsizei offset = header->headerLength;
-                for (int i = 0; i < (header->numMipmaps + 1); i++)
+                for (unsigned int i = 0; i < (header->numMipmaps + 1); i++)
                 {
                     GLsizei mipmapWidth = width >> i;
                     GLsizei mipmapHeight = height >> i;
@@ -422,12 +430,12 @@ static NSCache *imageCache = nil;
                     {
                         pixelBytes = MAX(32, pixelBytes);
                         glCompressedTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight, 0,
-                                               pixelBytes, [data bytes] + offset);
+                                               pixelBytes, (uint8_t *)[data bytes] + offset);
                     }
                     else
                     {
                         glTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight,
-                                     0, format, type, [data bytes] + offset);
+                                     0, format, type, (uint8_t *)[data bytes] + offset);
                     }
                     offset += pixelBytes;
                 }
@@ -464,7 +472,7 @@ static NSCache *imageCache = nil;
     if (!_superimage)
     {
         EAGLContext *context = [EAGLContext currentContext];
-        [EAGLContext setCurrentContext:[GLView performSelector:@selector(sharedContext)]];
+        [EAGLContext setCurrentContext:[GLView sharedContext]];
         glDeleteTextures(1, &_texture);
         [EAGLContext setCurrentContext:context];
     }
@@ -491,14 +499,21 @@ static NSCache *imageCache = nil;
     return copy;
 }
 
-- (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha
+- (instancetype)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha
 {
     GLImage *copy = [self copy];
     copy.premultipliedAlpha = premultipliedAlpha;
     return copy;
 }
 
-- (GLImage *)imageWithClipRect:(CGRect)clipRect
+- (instancetype)imageWithBlendMode:(GLBlendMode)blendMode
+{
+    GLImage *copy = [self copy];
+    copy.blendMode = blendMode;
+    return copy;
+}
+
+- (instancetype)imageWithClipRect:(CGRect)clipRect
 {
     GLImage *copy = [self copy];
     copy.clipRect = clipRect;
@@ -507,14 +522,14 @@ static NSCache *imageCache = nil;
     return copy;
 }
 
-- (GLImage *)imageWithContentRect:(CGRect)contentRect
+- (instancetype)imageWithContentRect:(CGRect)contentRect
 {
     GLImage *copy = [self copy];
     copy.contentRect = contentRect;
     return copy;
 }
 
-- (GLImage *)imageWithScale:(CGFloat)scale
+- (instancetype)imageWithScale:(CGFloat)scale
 {
     CGFloat deltaScale = scale / self.scale;
     GLImage *copy = [self copy];
@@ -524,7 +539,7 @@ static NSCache *imageCache = nil;
     return copy;
 }
 
-- (GLImage *)imageWithSize:(CGSize)size
+- (instancetype)imageWithSize:(CGSize)size
 {
     CGPoint scale = CGPointMake(size.width / self.size.width, size.height / self.size.height);
     GLImage *copy = [self copy];
@@ -541,7 +556,40 @@ static NSCache *imageCache = nil;
 {
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
-    glBlendFunc(self.premultipliedAlpha? GL_ONE: GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    GLenum source, dest;
+    switch (self.blendMode)
+    {
+        case GLBlendModeNormal:
+        {
+            source = GL_SRC_ALPHA;
+            dest = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case GLBlendModeMultiply:
+        {
+            source = GL_DST_COLOR;
+            dest = GL_ONE_MINUS_SRC_ALPHA;
+            break;
+        }
+        case GLBlendModeAdd:
+        {
+            source = GL_SRC_ALPHA;
+            dest = GL_ONE;
+            break;
+        }
+        case GLBlendModeScreen:
+        {
+            source = GL_SRC_ALPHA;
+            dest = GL_ONE_MINUS_SRC_COLOR;
+            break;
+        }
+    }
+    if (source == GL_SRC_ALPHA && self.premultipliedAlpha)
+    {
+        source = GL_ONE;
+    }
+    glBlendFunc(source, dest);
     
     glBindTexture(GL_TEXTURE_2D, self.texture);
 }

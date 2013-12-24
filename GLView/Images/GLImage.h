@@ -2,7 +2,7 @@
 //  GLImage.h
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -31,8 +31,22 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+
+
 #import <UIKit/UIKit.h>
 #import "GLUtils.h"
+
+
+typedef NS_ENUM(NSUInteger, GLBlendMode)
+{
+    GLBlendModeNormal = 0, // GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
+    GLBlendModeMultiply, // GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA
+    GLBlendModeAdd, // GL_SRC_ALPHA, GL_ONE
+    GLBlendModeScreen // GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR
+};
 
 
 typedef void (^GLImageDrawingBlock)(CGContextRef context);
@@ -46,28 +60,33 @@ typedef void (^GLImageDrawingBlock)(CGContextRef context);
 @property (nonatomic, readonly) CGRect clipRect;
 @property (nonatomic, readonly) CGRect contentRect;
 @property (nonatomic, readonly) BOOL premultipliedAlpha;
+@property (nonatomic, readonly) GLBlendMode blendMode;
 @property (nonatomic, readonly) const GLfloat *textureCoords;
 @property (nonatomic, readonly) const GLfloat *vertexCoords;
 
-+ (GLImage *)imageNamed:(NSString *)nameOrPath;
-+ (GLImage *)imageWithContentsOfFile:(NSString *)nameOrPath;
-+ (GLImage *)imageWithUIImage:(UIImage *)image;
-+ (GLImage *)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
-+ (GLImage *)imageWithData:(NSData *)data scale:(CGFloat)scale;
++ (instancetype)imageNamed:(NSString *)nameOrPath;
++ (instancetype)imageWithContentsOfFile:(NSString *)nameOrPath;
++ (instancetype)imageWithUIImage:(UIImage *)image;
++ (instancetype)imageWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
++ (instancetype)imageWithData:(NSData *)data scale:(CGFloat)scale;
 
-- (GLImage *)initWithContentsOfFile:(NSString *)nameOrPath;
-- (GLImage *)initWithUIImage:(UIImage *)image;
-- (GLImage *)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
-- (GLImage *)initWithData:(NSData *)data scale:(CGFloat)scale;
+- (instancetype)initWithContentsOfFile:(NSString *)nameOrPath;
+- (instancetype)initWithUIImage:(UIImage *)image;
+- (instancetype)initWithSize:(CGSize)size scale:(CGFloat)scale drawingBlock:(GLImageDrawingBlock)drawingBlock;
+- (instancetype)initWithData:(NSData *)data scale:(CGFloat)scale;
 
-- (GLImage *)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha;
-- (GLImage *)imageWithClipRect:(CGRect)clipRect;
-- (GLImage *)imageWithContentRect:(CGRect)clipRect;
-- (GLImage *)imageWithScale:(CGFloat)scale;
-- (GLImage *)imageWithSize:(CGSize)size;
+- (instancetype)imageWithPremultipliedAlpha:(BOOL)premultipliedAlpha;
+- (instancetype)imageWithBlendMode:(GLBlendMode)blendMode;
+- (instancetype)imageWithClipRect:(CGRect)clipRect;
+- (instancetype)imageWithContentRect:(CGRect)clipRect;
+- (instancetype)imageWithScale:(CGFloat)scale;
+- (instancetype)imageWithSize:(CGSize)size;
 
 - (void)bindTexture;
 - (void)drawAtPoint:(CGPoint)point;
 - (void)drawInRect:(CGRect)rect;
 
 @end
+
+
+#pragma GCC diagnostic pop

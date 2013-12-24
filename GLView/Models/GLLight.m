@@ -2,7 +2,7 @@
 //  GLLight.m
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -32,6 +32,11 @@
 //
 
 #import "GLLight.h"
+
+
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wgnu"
 
 
 @implementation GLLight

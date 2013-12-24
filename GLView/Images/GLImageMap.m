@@ -2,7 +2,7 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -32,6 +32,11 @@
 //
 
 #import "GLImageMap.h"
+
+
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wgnu"
 
 
 @interface NSString (Private)
@@ -68,17 +73,17 @@
 
 @implementation GLImageMap
 
-+ (GLImageMap *)imageMapWithContentsOfFile:(NSString *)nameOrPath
++ (instancetype)imageMapWithContentsOfFile:(NSString *)nameOrPath
 {
     return [[self alloc] initWithContentsOfFile:nameOrPath];
 }
 
-+ (GLImageMap *)imageMapWithImage:(GLImage *)image data:(NSData *)data
++ (instancetype)imageMapWithImage:(GLImage *)image data:(NSData *)data
 {
     return [[self alloc] initWithImage:image data:data];
 }
 
-- (GLImageMap *)init
+- (instancetype)init
 {
     if ((self = [super init]))
     {
@@ -87,7 +92,7 @@
     return self;
 }
 
-- (GLImageMap *)initWithContentsOfFile:(NSString *)nameOrPath
+- (instancetype)initWithContentsOfFile:(NSString *)nameOrPath
 {
     //check for xc texture atlas
     NSString *dataPath = [nameOrPath GL_normalizedPathWithDefaultExtension:@"atlasc"];
@@ -108,7 +113,7 @@
             }
             
             //set sorted image names
-            self.imageNames = [[self.imagesByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            self.imageNames = [[self.imagesByName allKeys] sortedArrayUsingSelector:NSSelectorFromString(@"compare:")];
         }
         return self;
     }
@@ -120,7 +125,7 @@
     }
 }
 
-- (GLImageMap *)initWithImage:(GLImage *)image path:(NSString *)path dictionary:(NSDictionary *)dict
+- (instancetype)initWithImage:(GLImage *)image path:(NSString *)path dictionary:(NSDictionary *)dict
 {
     //calculate scale from path
     NSString *plistPath = [path GL_normalizedPathWithDefaultExtension:@"plist"];
@@ -192,7 +197,7 @@
                     [self addFrames:frames withImage:image scale:scale];
                         
                     //set sorted image names
-                    self.imageNames = [[self.imagesByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+                    self.imageNames = [[self.imagesByName allKeys] sortedArrayUsingSelector:NSSelectorFromString(@"compare:")];
                 }
                 return self;
             }
@@ -215,7 +220,7 @@
     return nil;
 }
 
-- (GLImageMap *)initWithImage:(GLImage *)image data:(NSData *)data
+- (instancetype)initWithImage:(GLImage *)image data:(NSData *)data
 {
     return [self initWithImage:image path:nil dictionary:[NSDictionary GL_dictionaryWithData:data]];
 }
@@ -306,12 +311,12 @@
     }
 }
 
-- (NSInteger)imageCount
+- (NSUInteger)imageCount
 {
     return [self.imagesByName count];
 }
 
-- (NSString *)imageNameAtIndex:(NSInteger)index
+- (NSString *)imageNameAtIndex:(NSUInteger)index
 {
     return self.imageNames[index];
 }

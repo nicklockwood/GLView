@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -39,6 +39,11 @@
 #if !__has_feature(objc_arc)
 #error This library requires automatic reference counting
 #endif
+
+
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wgnu"
 
 
 #pragma mark-
@@ -82,7 +87,12 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
             rgba[3] = components[3];
             break;
         }
-        default:
+        case kCGColorSpaceModelCMYK:
+        case kCGColorSpaceModelDeviceN:
+        case kCGColorSpaceModelIndexed:
+        case kCGColorSpaceModelLab:
+        case kCGColorSpaceModelPattern:
+        case kCGColorSpaceModelUnknown:
         {
             
 #ifdef DEBUG
@@ -164,8 +174,7 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
     data = [data GL_unzippedData];
     
     //deserialize
-    NSPropertyListFormat format = 0;
-    return data? [NSPropertyListSerialization propertyListWithData:data options:0 format:&format error:NULL]: nil;
+    return data? [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL]: nil;
 }
 
 @end
@@ -249,7 +258,7 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager respondsToSelector:normalizedPathSelector])
     {
-        return objc_msgSend(fileManager, normalizedPathSelector, path);
+        return ((id (*)(id, SEL, id))objc_msgSend)(fileManager, normalizedPathSelector, path);
     }
     
     //convert to absolute path

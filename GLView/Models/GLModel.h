@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -32,19 +32,26 @@
 //
 
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+
+
 #import <Foundation/Foundation.h>
 #import "GLUtils.h"
 
 
 @interface GLModel : NSObject
 
-+ (GLModel *)modelNamed:(NSString *)nameOrPath;
-+ (GLModel *)modelWithContentsOfFile:(NSString *)nameOrPath;
-+ (GLModel *)modelWithData:(NSData *)data;
++ (instancetype)modelNamed:(NSString *)nameOrPath;
++ (instancetype)modelWithContentsOfFile:(NSString *)nameOrPath;
++ (instancetype)modelWithData:(NSData *)data;
 
-- (GLModel *)initWithContentsOfFile:(NSString *)nameOrPath;
-- (GLModel *)initWithData:(NSData *)data;
+- (instancetype)initWithContentsOfFile:(NSString *)nameOrPath;
+- (instancetype)initWithData:(NSData *)data;
 
 - (void)draw;
 
 @end
+
+
+#pragma GCC diagnostic pop

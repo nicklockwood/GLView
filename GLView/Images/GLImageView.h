@@ -2,7 +2,7 @@
 //  GLImageView.h
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -31,6 +31,11 @@
 //  3. This notice may not be removed or altered from any source distribution.
 //
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+
+
 #import <UIKit/UIKit.h>
 #import "GLView.h"
 #import "GLImage.h"
@@ -46,6 +51,9 @@
 @property (nonatomic, assign) NSInteger animationRepeatCount;
 @property (nonatomic, assign) CATransform3D imageTransform;
 
-- (GLImageView *)initWithImage:(GLImage *)image;
+- (instancetype)initWithImage:(GLImage *)image;
 
 @end
+
+
+#pragma GCC diagnostic pop

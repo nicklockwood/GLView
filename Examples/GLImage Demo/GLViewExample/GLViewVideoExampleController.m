@@ -9,7 +9,7 @@
 #import "GLViewVideoExampleController.h"
 
 
-#define NUMBER_OF_FRAMES 604
+static const int NumberOfFrames = 604;
 
 
 @implementation GLViewVideoExampleController
@@ -19,33 +19,27 @@
     [super viewDidLoad];
     
 	//create array of video frame names
-	NSMutableArray *frames = [NSMutableArray arrayWithCapacity:NUMBER_OF_FRAMES];
-	for (int i = 0; i < NUMBER_OF_FRAMES; i++)
+	NSMutableArray *frames = [NSMutableArray arrayWithCapacity:NumberOfFrames];
+	for (int i = 0; i < NumberOfFrames; i++)
 	{
 		[frames addObject:[NSString stringWithFormat:@"droplet%03i.pvr.gz", i + 1]]; 
 	}
 	
 	//add frames to image view
-    _videoView.animationImages = frames;
+    self.videoView.animationImages = frames;
 	
 	//auto-play
-	[_videoView startAnimating];
+	[self.videoView startAnimating];
 }
 
 - (IBAction)play
 {
-	[_videoView startAnimating];
+	[self.videoView startAnimating];
 }
 
 - (IBAction)stop
 {
-	[_videoView stopAnimating];
+	[self.videoView stopAnimating];
 }
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return YES;
-}
-
 
 @end

@@ -14,50 +14,31 @@
 {
     [super viewDidLoad];
     
-	_scrollView.contentSize = _contentView.bounds.size;
-	[_scrollView addSubview:_contentView];
+	self.scrollView.contentSize = self.contentView.bounds.size;
+	[self.scrollView addSubview:self.contentView];
 	
-    _imageView1.image = [GLImage imageNamed:@"logo.png"];
-	_imageView2.image = [GLImage imageNamed:@"logo-opaque.png"];
-	_imageView3.image = [GLImage imageNamed:@"logo-RGBA8888.pvr"];
-	_imageView4.image = [GLImage imageNamed:@"logo-RGBA8888-opaque.pvr"];
-	_imageView5.image = [GLImage imageNamed:@"logo-RGBA4444.pvr"];
-	_imageView6.image = [GLImage imageNamed:@"logo-RGB565.pvr"];
-	_imageView7.image = [GLImage imageNamed:@"logo-RGBA4.pvr"];
-	_imageView8.image = [GLImage imageNamed:@"logo-RGB4.pvr"];
-	_imageView9.image = [GLImage imageNamed:@"logo-RGBA2.pvr"];
-	_imageView10.image = [GLImage imageNamed:@"logo-RGB2.pvr"];
+    self.imageView1.image = [GLImage imageNamed:@"logo.png"];
+	self.imageView2.image = [GLImage imageNamed:@"logo-opaque.png"];
+	self.imageView3.image = [GLImage imageNamed:@"logo-RGBA8888.pvr"];
+	self.imageView4.image = [GLImage imageNamed:@"logo-RGBA8888-opaque.pvr"];
+	self.imageView5.image = [GLImage imageNamed:@"logo-RGBA4444.pvr"];
+	self.imageView6.image = [GLImage imageNamed:@"logo-RGB565.pvr"];
+	self.imageView7.image = [GLImage imageNamed:@"logo-RGBA4.pvr"];
+	self.imageView8.image = [GLImage imageNamed:@"logo-RGB4.pvr"];
+	self.imageView9.image = [GLImage imageNamed:@"logo-RGBA2.pvr"];
+	self.imageView10.image = [GLImage imageNamed:@"logo-RGB2.pvr"];
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)viewDidAppear:(__unused BOOL)animated
 {
-	[_scrollView flashScrollIndicators];
+	[self.scrollView flashScrollIndicators];
     
     //take a snaphost of the first imageview
     //and save it in the documents folder
-    UIImage *image = [_imageView1 snapshot];
+    UIImage *image = [self.imageView1 snapshot];
     NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0] stringByAppendingPathComponent:@"image.png"];
     NSData *data = UIImagePNGRepresentation(image);
     [data writeToFile:path atomically:YES];
 }
-
-- (void)viewDidUnload
-{
-	[super viewDidUnload];
-	
-	self.scrollView = nil;
-	self.contentView = nil;
-	self.imageView1 = nil;
-	self.imageView2 = nil;
-	self.imageView3 = nil;
-	self.imageView4 = nil;
-	self.imageView5 = nil;
-	self.imageView6 = nil;
-	self.imageView7 = nil;
-	self.imageView8 = nil;
-	self.imageView9 = nil;
-	self.imageView10 = nil;
-}
-
 
 @end

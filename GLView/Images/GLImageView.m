@@ -2,7 +2,7 @@
 //  GLImageView.m
 //
 //  GLView Project
-//  Version 1.6 beta
+//  Version 1.6
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -34,6 +34,11 @@
 #import "GLImageView.h"
 
 
+#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
+#pragma GCC diagnostic ignored "-Wgnu"
+
+
 @interface GLImageView ()
 
 @property (nonatomic, unsafe_unretained) id currentFrame;
@@ -50,7 +55,7 @@
     _imageTransform = CATransform3DIdentity;
 }
 
-- (GLImageView *)initWithImage:(GLImage *)image
+- (instancetype)initWithImage:(GLImage *)image
 {
 	if ((self = [self initWithFrame:CGRectMake(0, 0, image.size.width, image.size.height)]))
 	{
@@ -74,7 +79,7 @@
 	{
 		[self stopAnimating];
 		_animationImages = [animationImages copy];
-        NSInteger count = [animationImages count];
+        NSUInteger count = [animationImages count];
 		self.animationDuration = count? count / 30.0: 0.0;
         self.currentFrame = nil;
 	}
@@ -94,7 +99,7 @@
     return (self.animationRepeatCount > 0 && self.elapsedTime / self.animationDuration >= self.animationRepeatCount);
 }
 
-- (void)step:(NSTimeInterval)dt
+- (void)step:(__unused NSTimeInterval)dt
 {
     //end of animation?
     if ([self shouldStopAnimating])
@@ -103,10 +108,10 @@
     }
 	
 	//calculate frame
-	NSInteger numberOfFrames = [self.animationImages count];
+	NSUInteger numberOfFrames = [self.animationImages count];
 	if (numberOfFrames)
 	{
-        NSInteger frameIndex = numberOfFrames * (self.elapsedTime / self.animationDuration);
+        NSUInteger frameIndex = (NSUInteger)(numberOfFrames * (self.elapsedTime / self.animationDuration));
 		id frame = (self.animationImages)[frameIndex % numberOfFrames];
 		if (frame != self.currentFrame)
 		{
@@ -123,7 +128,7 @@
 	}
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
+- (CGSize)sizeThatFits:(__unused CGSize)size
 {
     return self.image.size;
 }
@@ -229,7 +234,7 @@
 			break;
 		}
 		case UIViewContentModeScaleToFill:
-		default:
+        case UIViewContentModeRedraw:
 		{
 			rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.height / 2.0f,
                               self.bounds.size.width, self.bounds.size.height);
