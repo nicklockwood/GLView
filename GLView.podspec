@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.author        = { "Nick Lockwood" => "support@charcoaldesign.co.uk" }
   s.source        = { :git => "https://github.com/nicklockwood/GLView.git", :tag => "1.6" }
   s.platform      = :ios
-  s.source_files  = 'GLView'
+  s.source_files  = 'GLView/Core/', 'GLView/Images/', 'GLView/Models/'
   s.frameworks    = 'QuartzCore', 'OpenGLES'
   s.requires_arc  = true
   s.ios.deployment_target = '4.3'
