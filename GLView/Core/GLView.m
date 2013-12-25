@@ -76,8 +76,7 @@
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //apply transform
-    CATransform3D transform = view.contentTransform;
-    glLoadMatrixf((GLfloat *)&transform);
+    GLLoadCATransform3D(view.contentTransform);
     
     //do drawing
     if (view.fov <= 0.0f)

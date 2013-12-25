@@ -104,11 +104,11 @@
         //normalize normals
         glEnable(GL_NORMALIZE);
         
-        for (NSUInteger i = 0; i < GL_MAX_LIGHTS; i++)
+        for (GLuint i = 0; i < GL_MAX_LIGHTS; i++)
         {
             if (i < [self.lights count])
             {
-                [(self.lights)[i] bind:GL_LIGHT0 + i];
+                [self.lights[i] bind:GL_LIGHT0 + i];
             }
             else
             {
@@ -122,7 +122,7 @@
     }
     
     //apply model transform
-    glLoadMatrixf((GLfloat *)&_modelTransform);
+    GLLoadCATransform3D(self.modelTransform);
     
     //set texture
     [self.blendColor ?: [UIColor whiteColor] bindGLColor];

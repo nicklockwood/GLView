@@ -1,5 +1,6 @@
 Version 1.6
 
+- Now works correctly on ARM64
 - Added support for loading SpriteKit texture atlasses in Xcode 5 and above
 - Added blendMode property for GLImage
 - GLImageMap now supports subscripting

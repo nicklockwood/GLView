@@ -136,7 +136,7 @@
 - (void)drawRect:(CGRect)rect
 {
     //transform
-    glLoadMatrixf((GLfloat *)&_imageTransform);
+    GLLoadCATransform3D(self.imageTransform);
     
     //draw
     [self.blendColor ?: [UIColor whiteColor] bindGLColor];

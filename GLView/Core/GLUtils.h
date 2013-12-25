@@ -43,6 +43,7 @@
 
 
 void CGRectGetGLCoords(CGRect rect, GLfloat *coords);
+void GLLoadCATransform3D(CATransform3D transform);
 
 
 @interface UIColor (GL)

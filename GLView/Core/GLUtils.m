@@ -52,14 +52,25 @@
 
 void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
 {
-    coords[0] = rect.origin.x;
-    coords[1] = rect.origin.y;
-    coords[2] = rect.origin.x + rect.size.width;
-    coords[3] = rect.origin.y;
-    coords[4] = rect.origin.x + rect.size.width;
-    coords[5] = rect.origin.y + rect.size.height;
-    coords[6] = rect.origin.x;
-    coords[7] = rect.origin.y + rect.size.height;
+    coords[0] = (GLfloat)rect.origin.x;
+    coords[1] = (GLfloat)rect.origin.y;
+    coords[2] = (GLfloat)(rect.origin.x + rect.size.width);
+    coords[3] = (GLfloat)rect.origin.y;
+    coords[4] = (GLfloat)(rect.origin.x + rect.size.width);
+    coords[5] = (GLfloat)(rect.origin.y + rect.size.height);
+    coords[6] = (GLfloat)rect.origin.x;
+    coords[7] = (GLfloat)(rect.origin.y + rect.size.height);
+}
+
+
+void GLLoadCATransform3D(CATransform3D transform)
+{
+    GLfloat matrix[16];
+    for (int i = 0; i < 16; i++)
+    {
+        matrix[i] = (GLfloat)((CGFloat *)&transform)[i];
+    }
+    glLoadMatrixf(matrix);
 }
 
 
@@ -73,18 +84,18 @@ void CGRectGetGLCoords(CGRect rect, GLfloat *coords)
     {
         case kCGColorSpaceModelMonochrome:
         {
-            rgba[0] = components[0];
-            rgba[1] = components[0];
-            rgba[2] = components[0];
-            rgba[3] = components[1];
+            rgba[0] = (GLfloat)components[0];
+            rgba[1] = (GLfloat)components[0];
+            rgba[2] = (GLfloat)components[0];
+            rgba[3] = (GLfloat)components[1];
             break;
         }
         case kCGColorSpaceModelRGB:
         {
-            rgba[0] = components[0];
-            rgba[1] = components[1];
-            rgba[2] = components[2];
-            rgba[3] = components[3];
+            rgba[0] = (GLfloat)components[0];
+            rgba[1] = (GLfloat)components[1];
+            rgba[2] = (GLfloat)components[2];
+            rgba[3] = (GLfloat)components[3];
             break;
         }
         case kCGColorSpaceModelCMYK:

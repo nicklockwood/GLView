@@ -42,6 +42,9 @@
 #pragma GCC diagnostic ignored "-Wgnu"
 
 
+#pragma pack(4) //ensure structs use 32-bit alignment
+
+
 typedef struct
 {
     uint32_t headerLength;

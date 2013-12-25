@@ -70,7 +70,13 @@
     glLightfv(light, GL_SPECULAR, color);
     
     //set position
-    GLfloat position[4] = {self.transform.m41, self.transform.m42, self.transform.m43, self.transform.m44};
+    GLfloat position[4] =
+    {
+        (GLfloat)self.transform.m41,
+        (GLfloat)self.transform.m42,
+        (GLfloat)self.transform.m43,
+        (GLfloat)self.transform.m44
+    };
     glLightfv(light, GL_POSITION, position);
 }
 
