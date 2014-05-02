@@ -473,27 +473,27 @@ Generating PVR image files
 
 GLImage can load PVR images, which are a special format used by iOS graphics chips that is extremely memory efficient and fast to load. Often, images that you would have to load using a background thread if they were PNG or JPEG format in order to avoid blocking the UI can be loaded in real time on the main thread with no performance impact if you use PVR format instead.
 
-To generate PVR images, your best option is to use the Imagination PVRTexTool, which you can download as part of the PVR SDK from here: http://www.imgtec.com/powervr/insider/sdkdownloads/
+To generate PVR images, your best option is to use the Imagination PVRTexTool, which you can download as part of the PVR SDK from here: http://community.imgtec.com/developers/powervr/installers/
 
-The SDK is free to download (though registration is reauired) and includes a fairly easy-to-use GUI tool, and a very powerful command-line tool. The PVRTexTool can be used to batch convert a PNG images to PVR in all known formats.
+The SDK is free to download (though registration is required) and includes a fairly easy-to-use GUI tool, and a very powerful command-line tool. The PVRTexTool can be used to batch convert a PNG images to PVR in all known formats.
 
 **NOTE:** In addition to needing power-of-two dimensions, PVR images must also be perfectly square, i.e. the width and height must be equal. Valid sizes are 2x2, 4x4, 8x8, 16x16, 32x32, 64x64, 128x128, 256x256, etc. Remember to crop or scale your images to a valid size before converting them.
 
 Once installed, you can find the command-line PVRTexTool at:
 
-    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL
+    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI
 
 GLImage currently only supports the legacy PVR version 2 texture format. The PVRTexTool supports this using the -legacypvr option. If your image contains transparency, you will also want to enable premultiplied alpha using the -p option.
 
 Typical texturetool settings you might want to use are:
 
-    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i {input_file_name}.png -o {output_file_name}.pvr -legacypvr -p -l -f PVRTC1_4 -q pvrtcbest
+    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI -i {input_file_name}.png -o {output_file_name}.pvr -legacypvr -p -l -f PVRTC1_4 -q pvrtcbest
 
 This generates a 4 bpp compressed PVR image with alpha at best available compression quality. This will take several seconds to run, so don't be alarmed.
 
 If you will need to zoom your images, or view them at greatly reduced size in the app, it's a good idea to enable mipmapping in order to improve the quality of the image when drawn at smaller sizes. Mipmapping increases the size of the PVR file on disk and in memory by about 33%, so don't use it if you are only planning to display your images at 100% size or higher. To enable mipmapping, add the -m flag and use the -mfilter flag to specify mipmapping algorithm:
 
-    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i {input_file_name}.png -o {output_file_name}.pvr -legacypvr -p -l -m -mfilter cubic -f PVRTC1_4 -q pvrtcbest
+    /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI -i {input_file_name}.png -o {output_file_name}.pvr -legacypvr -p -l -m -mfilter cubic -f PVRTC1_4 -q pvrtcbest
     
 This generates a 4 bpp compressed PVR image with alpha and mipmaps.
 
@@ -510,7 +510,7 @@ As stated previously, these files will appear like compressed JPEG images, and m
     
 To batch convert a folder of images, just CD to the directory containing your images then run the following command:
 
-    find ./ -name \*.png | sed 's/\.png//g' | \ xargs -I % -n 1 /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i %.png -o %.pvr -legacypvr -p -l -m -mfilter cubic -f PVRTC1_4 -q pvrtcbest
+    find ./ -name \*.png | sed 's/\.png//g' | \ xargs -I % -n 1 /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI -i %.png -o %.pvr -legacypvr -p -l -m -mfilter cubic -f PVRTC1_4 -q pvrtcbest
     
 This will apply the PVRTexTool command to each file in the folder in turn.
     
@@ -528,7 +528,7 @@ To use the GLImageView as a PVR video player, you'll need to convert your video 
 
 4) Now that you have the individual frames, you'll need to convert them to PVRs. Use the batch conversion technique listed above (you may wish to tweak the format, quality, etc. depending on whether your movie has transparency):
 
-	find ./ -name \*.png | sed 's/\.png//g' | \ xargs -I % -n 1 /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CL/OSX_x86/PVRTexToolCL -i %.png -o %.pvr -legacypvr -p -l -f PVRTC1_4 -q pvrtcbest
+	find ./ -name \*.png | sed 's/\.png//g' | \ xargs -I % -n 1 /Applications/Imagination/PowerVR/GraphicsSDK/PVRTexTool/CLI/OSX_x86/PVRTexToolCLI -i %.png -o %.pvr -legacypvr -p -l -f PVRTC1_4 -q pvrtcbest
 	
 This generates the frames as 4 bpp compressed PVR images with alpha (this will take a very long time, you may want to get a coffee). Since the individual image frames will still be quite large, you may now wish to gzip them by running:
 
