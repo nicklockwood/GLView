@@ -150,6 +150,7 @@
 
 - (void)viewDidLoad
 {
+    [super viewDidLoad];
     [self setModel:0];
 }
 

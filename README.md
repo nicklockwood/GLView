@@ -13,7 +13,7 @@ The GLView library is modular. If you don't want to render 3D models you can omi
 Supported OS & SDK Versions
 -----------------------------
 
-* Supported build target - iOS 7.0 (Xcode 5.0, Apple LLVM compiler 5.0)
+* Supported build target - iOS 8.0 (Xcode 6.0, Apple LLVM compiler 6.0)
 * Earliest supported deployment target - iOS 5.0
 * Earliest compatible deployment target - iOS 4.3
 
@@ -567,7 +567,7 @@ At present, there's no way to automatically detect the type of alpha when loadin
 The sprite sheet formats supported by GLImageMap include metadata indicating whether the texture file has premultiplied alpha or not, so no further work is needed when loading sprite sheets with GLImageMap.
 
 
-Using Xcode 5 / SpriteKit texture atlasses
+Using Xcode 5 / SpriteKit texture atlases
 ---------------------------------------------
 
 The GLView library can load sprites stored in the Xcode 5 / SpriteKit texture atlas format. To use a texture atlas, first create a folder containing all of your sprite images (both standard and @2x variants) with the extension .atlas, and add it to your project.
@@ -577,3 +577,8 @@ Then, in your project build settings, search for "SpriteKit" and set the "Enable
 There is no need to import the SpriteKit framework. When importing your sprite sheet using the GLImageMap +imageMapWithContentsOfFile method, either specify the file extension "atlasc" (note the "c"), or leave off the path extension and GLImageMap will automatically find the atlas file if available.
 
 You will need to use Xcode 5 or above to generate the atlas files, but they can be loaded and used by GLImageMap for apps running on iOS 4.3 and above - they are not limited to iOS 7.
+
+
+Release notes
+--------------
+

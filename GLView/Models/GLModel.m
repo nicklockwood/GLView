@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.6
+//  Version 1.6.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -151,7 +151,7 @@ WWDC2010Attributes;
     self.elementSize = elementAttributes->byteSize / elementAttributes->numElements;
     switch (self.elementSize) {
         case sizeof(GLuint):
-            self.elementType = GL_UNSIGNED_INT;
+            self.elementType = GL_UNSIGNED_INT_OES;
             break;
         case sizeof(GLushort):
             self.elementType = GL_UNSIGNED_SHORT;
@@ -325,7 +325,7 @@ WWDC2010Attributes;
     GLuint *faceIndices = (GLuint *)faceIndexData.bytes;
     if (self.elementCount > USHRT_MAX)
     {
-        self.elementType = GL_UNSIGNED_INT;
+        self.elementType = GL_UNSIGNED_INT_OES;
         self.elementSize = sizeof(GLuint);
         self.elements = malloc([faceIndexData length]);
         memcpy(self.elements, faceIndices, [faceIndexData length]);

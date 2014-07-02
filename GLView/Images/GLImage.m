@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.6
+//  Version 1.6.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -179,7 +179,7 @@ static NSCache *imageCache = nil;
 
 + (instancetype)imageWithContentsOfFile:(NSString *)nameOrPath
 {
-    return [[self alloc] initWithContentsOfFile:nameOrPath];
+    return [(GLImage *)[self alloc] initWithContentsOfFile:nameOrPath];
 }
 
 + (instancetype)imageWithUIImage:(UIImage *)image

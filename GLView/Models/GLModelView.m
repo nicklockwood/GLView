@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.6
+//  Version 1.6.1
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -45,7 +45,7 @@
 {
 	[super setUp];
     
-	self.fov = M_PI_2;
+	self.fov = (CGFloat)M_PI_2;
     
     GLLight *light = [[GLLight alloc] init];
     light.transform = CATransform3DMakeTranslation(-0.5f, 1.0f, 0.5f);

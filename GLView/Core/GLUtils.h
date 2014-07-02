@@ -2,7 +2,7 @@
 //  GLUtils.h
 //
 //  GLView Project
-//  Version 1.6
+//  Version 1.6.1
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -50,7 +50,6 @@ void GLLoadCATransform3D(CATransform3D transform);
 
 - (void)getGLComponents:(GLfloat *)rgba;
 - (void)bindGLClearColor;
-- (void)bindGLBlendColor;
 - (void)bindGLColor;
 
 @end

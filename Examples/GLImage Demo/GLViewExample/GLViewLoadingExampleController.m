@@ -154,7 +154,7 @@ static const int NumberToLoad = 100;
 		label.textColor = self.timeLabel.textColor;
 		label.text = @"Loading...";
 		label.center = CGPointMake(label.center.x, label.center.y + 25.0f * i);
-		label.tag = 100 + i;
+		label.tag = 100 + (signed)i;
 		[self knockBackLabel:label];
 		[self.view addSubview:label];
 	}

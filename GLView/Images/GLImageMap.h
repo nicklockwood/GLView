@@ -2,7 +2,7 @@
 //  GLImageMap.h
 //
 //  GLView Project
-//  Version 1.6
+//  Version 1.6.1
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -50,10 +50,10 @@
 
 - (NSUInteger)imageCount;
 - (NSString *)imageNameAtIndex:(NSUInteger)index;
-- (GLImage *)imageAtIndex:(NSInteger)index;
+- (GLImage *)imageAtIndex:(NSUInteger)index;
 - (GLImage *)imageNamed:(NSString *)name;
 
-- (GLImage *)objectAtIndexedSubscript:(NSInteger)index;
+- (GLImage *)objectAtIndexedSubscript:(NSUInteger)index;
 - (GLImage *)objectForKeyedSubscript:(NSString *)name;
 
 @end
