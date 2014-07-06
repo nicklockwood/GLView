@@ -175,10 +175,11 @@
 - (void)setUp
 {
     //set up layer
-    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-    eaglLayer.contentsScale = [UIScreen mainScreen].scale;
-    eaglLayer.drawableProperties = @{kEAGLDrawablePropertyRetainedBacking: @NO,
-                                    kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8};
+    GLLayer *glLayer = (GLLayer *)self.layer;
+    glLayer.needsDisplayOnBoundsChange = YES;
+    glLayer.contentsScale = [UIScreen mainScreen].scale;
+    glLayer.drawableProperties = @{kEAGLDrawablePropertyRetainedBacking: @NO,
+                                   kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8};
     
     //create context
     _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1
@@ -189,16 +190,16 @@
     _framebufferHeight = 0.0f;
     _previousSize = CGSizeZero;
     [self createFramebuffer];
-	
-	//defaults
-	_fov = 0.0f; //orthographic
+    
+    //defaults
+    _fov = 0.0f; //orthographic
     _frameInterval = 1.0/60.0; // 60 fps
     _contentTransform = CATransform3DIdentity;
 }
 
 - (id)initWithCoder:(NSCoder*)coder
 {
-	if ((self = [super initWithCoder:coder]))
+    if ((self = [super initWithCoder:coder]))
     {
         [self setUp];
     }
@@ -207,7 +208,7 @@
 
 - (id)initWithFrame:(CGRect)frame
 {
-	if ((self = [super initWithFrame:frame]))
+    if ((self = [super initWithFrame:frame]))
     {
         [self setUp];
     }
@@ -216,20 +217,20 @@
 
 - (void)setFov:(CGFloat)fov
 {
-	_fov = fov;
-	[self setNeedsDisplay];
+    _fov = fov;
+    [self setNeedsDisplay];
 }
 
 - (void)setNear:(CGFloat)near
 {
-	_near = near;
-	[self setNeedsDisplay];
+    _near = near;
+    [self setNeedsDisplay];
 }
 
 - (void)setFar:(CGFloat)far
 {
-	_far = far;
-	[self setNeedsDisplay];
+    _far = far;
+    [self setNeedsDisplay];
 }
 
 - (void)setContentTransform:(CATransform3D)transform
@@ -322,26 +323,26 @@
     [EAGLContext setCurrentContext:self.context];
     
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, self.defaultFramebuffer);
-	glViewport(0, 0, _framebufferWidth, self.framebufferHeight);
-	
+    glViewport(0, 0, _framebufferWidth, self.framebufferHeight);
+    
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-	if (self.fov <= 0.0f)
-	{
-		GLfloat near = self.near ?: (-self.framebufferWidth * 0.5f);
-		GLfloat far = self.far ?: (self.framebufferWidth * 0.5f);
-    	glOrthof(-self.bounds.size.width / 2.0f, self.bounds.size.width / 2.0,
+    if (self.fov <= 0.0f)
+    {
+        GLfloat near = self.near ?: (-self.framebufferWidth * 0.5f);
+        GLfloat far = self.far ?: (self.framebufferWidth * 0.5f);
+        glOrthof(-self.bounds.size.width / 2.0f, self.bounds.size.width / 2.0,
                  self.bounds.size.height / 2.0f, -self.bounds.size.height / 2.0f, near, far);
-	}
-	else
-	{
-		GLfloat near = (self.near > 0.0f)? self.near: 1.0f;
-		GLfloat far = (self.far > self.near)? self.far: (near + 50.0f);
-		GLfloat aspect = self.bounds.size.width / self.bounds.size.height;
-		GLfloat top = tanf(self.fov * 0.5f) * near;
-		glFrustumf(aspect * -top, aspect * top, -top, top, near, far);
-		glTranslatef(0.0f, 0.0f, -near);
-	}
+    }
+    else
+    {
+        GLfloat near = (self.near > 0.0f)? self.near: 1.0f;
+        GLfloat far = (self.far > self.near)? self.far: (near + 50.0f);
+        GLfloat aspect = self.bounds.size.width / self.bounds.size.height;
+        GLfloat top = tanf(self.fov * 0.5f) * near;
+        glFrustumf(aspect * -top, aspect * top, -top, top, near, far);
+        glTranslatef(0.0f, 0.0f, -near);
+    }
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -367,13 +368,13 @@
 
 - (void)didMoveToSuperview
 {
-	[super didMoveToSuperview];
-	if (!self.superview)
-	{
+    [super didMoveToSuperview];
+    if (!self.superview)
+    {
         //pause
-		[self.timer invalidate];
+        [self.timer invalidate];
         self.timer = nil;
-	}
+    }
     else if (!self.timer && self.animating)
     {
         //resume
@@ -397,18 +398,18 @@
 - (void)startAnimating
 {
     self.animating = YES;
-	self.lastTime = CACurrentMediaTime();
-	self.elapsedTime = 0.0;
-	if (!self.timer)
-	{
-		[self startTimer];
-	}
+    self.lastTime = CACurrentMediaTime();
+    self.elapsedTime = 0.0;
+    if (!self.timer)
+    {
+        [self startTimer];
+    }
 }
 
 - (void)stopAnimating
 {
-	[self.timer invalidate];
-	self.timer = nil;
+    [self.timer invalidate];
+    self.timer = nil;
     self.animating = NO;
 }
 
@@ -420,11 +421,11 @@
 
 - (void)step
 {
-	//update time
-	NSTimeInterval currentTime = CACurrentMediaTime();
-	NSTimeInterval deltaTime = currentTime - self.lastTime;
-	self.elapsedTime += deltaTime;
-	self.lastTime = currentTime;
+    //update time
+    NSTimeInterval currentTime = CACurrentMediaTime();
+    NSTimeInterval deltaTime = currentTime - self.lastTime;
+    self.elapsedTime += deltaTime;
+    self.lastTime = currentTime;
     
     //step animation
     [self step:deltaTime];
@@ -441,7 +442,7 @@
 
 - (void)step:(__unused NSTimeInterval)dt
 {
-	//override this
+    //override this
 }
 
 
