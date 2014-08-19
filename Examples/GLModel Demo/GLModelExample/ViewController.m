@@ -20,6 +20,9 @@
 
 - (void)setModel:(NSInteger)index
 {
+    [self.modelView.models removeAllObjects];
+    [self.modelView.textures removeAllObjects];
+    
     switch (index)
     {
         case 0:
@@ -28,9 +31,9 @@
             self.navBar.topItem.title = @"demon.model";
             
             //set model
-            self.modelView.texture = [GLImage imageNamed:@"demon.png"];
+            [self.modelView addTexture:[GLImage imageNamed:@"demon.png"]];
             self.modelView.blendColor = nil;
-            self.modelView.model = [GLModel modelWithContentsOfFile:@"demon.model"];
+            [self.modelView addModel:[GLModel modelWithContentsOfFile:@"demon.model"]];
             
             //set default transform
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
@@ -46,9 +49,8 @@
             self.navBar.topItem.title = @"quad";
             
             //set model
-            self.modelView.texture = nil;
             self.modelView.blendColor = [UIColor redColor];
-            self.modelView.model = [GLModel modelWithContentsOfFile:@"quad.obj"];
+            [self.modelView addModel:[GLModel modelWithContentsOfFile:@"quad.obj"]];
             
             //set default transform
             self.modelView.modelTransform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
@@ -61,9 +63,9 @@
             self.navBar.topItem.title = @"chair.obj";
             
             //set model
-            self.modelView.texture = [GLImage imageNamed:@"chair.tga"];
+            [self.modelView addTexture:[GLImage imageNamed:@"chair.tga"]];
             self.modelView.blendColor = nil;
-            self.modelView.model = [GLModel modelWithContentsOfFile:@"chair.obj"];
+            [self.modelView addModel:[GLModel modelWithContentsOfFile:@"chair.obj"]];
             
             //set default transform
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
@@ -79,9 +81,8 @@
             self.navBar.topItem.title = @"diamond.obj";
             
             //set model
-            self.modelView.texture = nil;
             self.modelView.blendColor = [UIColor greenColor];
-            self.modelView.model = [GLModel modelWithContentsOfFile:@"diamond.obj"];
+            [self.modelView addModel:[GLModel modelWithContentsOfFile:@"diamond.obj"]];
             
             //set default transform
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -1.0f);
@@ -97,9 +98,8 @@
             self.navBar.topItem.title = @"cube.obj";
             
             //set model
-            self.modelView.texture = nil;
             self.modelView.blendColor = [UIColor whiteColor];
-            self.modelView.model = [GLModel modelWithContentsOfFile:@"cube.obj"];
+            [self.modelView addModel:[GLModel modelWithContentsOfFile:@"cube.obj"]];
             
             //set default transform
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -1.0f);
@@ -114,9 +114,8 @@
             self.navBar.topItem.title = @"ship.obj";
             
             //set model
-            self.modelView.texture = nil;
             self.modelView.blendColor = [UIColor grayColor];
-            self.modelView.model = [GLModel modelWithContentsOfFile:@"ship.obj"];
+            [self.modelView addModel:[GLModel modelWithContentsOfFile:@"ship.obj"]];
             
             //set default transform
             CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -15.0f);
