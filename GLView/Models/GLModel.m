@@ -283,6 +283,10 @@ WWDC2010Attributes;
                     indexStrings[indexString] = @(fIndex);
                     
                     GLuint vIndex = [parts[0] intValue];
+                    
+                    NSUInteger currLoc = (vIndex - 1) * sizeof(GLfloat) * 3;
+                    if (currLoc >= tempVertexData.length) break;
+                    
                     [vertexData appendBytes:tempVertexData.bytes + (vIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
 
                     if ([parts count] > 1)

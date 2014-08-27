@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "GLView"
-  s.version      = "1.6.1"
+  s.version      = "1.6.3"
   s.license       = 'zlib'
   s.summary      = "Simple library for displaying OpenGL cimages and models on iOS."
   s.description  = <<-DESC

@@ -45,13 +45,16 @@
 
 @interface GLModelView : GLView
 
-@property (nonatomic, strong) GLModel *model;
-@property (nonatomic, strong) GLImage *texture;
+//@property (nonatomic, strong) GLModel *model;
+@property (nonatomic, strong) NSMutableArray *textures;
 @property (nonatomic, strong) UIColor *blendColor;
 @property (nonatomic, assign) CATransform3D modelTransform;
 @property (nonatomic, copy) NSArray *lights;
+@property (nonatomic, strong) NSMutableArray *models;
+
+-(void) addTexture:(GLImage *)texture;
+-(void) addModel:(GLModel *)model;
 
 @end
-
 
 #pragma GCC diagnostic pop

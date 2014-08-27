@@ -52,6 +52,9 @@
     self.lights = @[light];
     
     _modelTransform = CATransform3DIdentity;
+    
+    self.models = [[NSMutableArray alloc] init];
+    self.textures = [[NSMutableArray alloc] init];
 }
 
 - (void)setLights:(NSArray *)lights
@@ -63,11 +66,11 @@
     }
 }
 
-- (void)setModel:(GLModel *)model
+- (void)addModel:(GLModel *)model
 {
-    if (_model != model)
+    if (model != nil)
     {
-        _model = model;
+        [self.models addObject:model];
         [self setNeedsDisplay];
     }
 }
@@ -81,11 +84,11 @@
     }
 }
 
-- (void)setTexture:(GLImage *)texture
+- (void)addTexture:(GLImage *)texture
 {
-    if (_texture != texture)
+    if (texture != nil)
     {
-        _texture = texture;
+        [self.textures addObject:texture];
         [self setNeedsDisplay];
     }
 }
@@ -121,24 +124,30 @@
         glDisable(GL_LIGHTING);
     }
     
-    //apply model transform
-    GLLoadCATransform3D(self.modelTransform);
-    
-    //set texture
-    [self.blendColor ?: [UIColor whiteColor] bindGLColor];
-    if (self.texture)
-    {
-        [self.texture bindTexture];
-    }
-    else
-    {
-        glDisable(GL_TEXTURE_2D);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-    
     //render the model
-    [self.model draw];
+    for (NSUInteger i = 0; i < self.models.count; i++) {
+        //apply model transform
+        GLLoadCATransform3D(self.modelTransform);
+        
+        //set texture
+        [self.blendColor ?: [UIColor whiteColor] bindGLColor];
+        
+        GLModel *model = [self.models objectAtIndex:i];
+        
+        if (self.textures.count > i)
+        {
+            GLImage *texture = [self.textures objectAtIndex:i];
+            [texture bindTexture];
+        }
+        else
+        {
+            glDisable(GL_TEXTURE_2D);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+        [model draw];
+    }
+    
 }
 
 @end
