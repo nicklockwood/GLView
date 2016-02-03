@@ -30,6 +30,7 @@
 		01F00A531565978500CF44D9 /* GLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A4B1565978500CF44D9 /* GLModel.m */; };
 		01F00A541565978500CF44D9 /* GLModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F00A4D1565978500CF44D9 /* GLModelView.m */; };
 		01F9F144162EA40C00877219 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 01F9F143162EA40C00877219 /* Default-568h@2x.png */; };
+		AE99CAFE1C625B7100A12A10 /* kettlebell.obj in Resources */ = {isa = PBXBuildFile; fileRef = AE99CAFD1C625B7100A12A10 /* kettlebell.obj */; };
 		B29BD29E14A22A8400BB4E68 /* demon.model in Resources */ = {isa = PBXBuildFile; fileRef = B29BD29B14A22A8400BB4E68 /* demon.model */; };
 		B29BD29F14A22A8400BB4E68 /* demon.png in Resources */ = {isa = PBXBuildFile; fileRef = B29BD29D14A22A8400BB4E68 /* demon.png */; };
 		B2FC80D914B4BCD40075C520 /* chair.tga in Resources */ = {isa = PBXBuildFile; fileRef = B2FC80D814B4BCD40075C520 /* chair.tga */; };
@@ -73,6 +74,7 @@
 		01F00A4C1565978500CF44D9 /* GLModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLModelView.h; sourceTree = "<group>"; };
 		01F00A4D1565978500CF44D9 /* GLModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLModelView.m; sourceTree = "<group>"; };
 		01F9F143162EA40C00877219 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		AE99CAFD1C625B7100A12A10 /* kettlebell.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = kettlebell.obj; sourceTree = "<group>"; };
 		B29BD29B14A22A8400BB4E68 /* demon.model */ = {isa = PBXFileReference; lastKnownFileType = file; path = demon.model; sourceTree = "<group>"; };
 		B29BD29D14A22A8400BB4E68 /* demon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = demon.png; sourceTree = "<group>"; };
 		B2FC80D814B4BCD40075C520 /* chair.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = chair.tga; path = GLModelExample/Images/chair.tga; sourceTree = SOURCE_ROOT; };
@@ -225,6 +227,7 @@
 				B29BD29B14A22A8400BB4E68 /* demon.model */,
 				B2FC80DA14B4BCF00075C520 /* chair.obj */,
 				01ADC13715BE07D00075F3AC /* ship.obj */,
+				AE99CAFD1C625B7100A12A10 /* kettlebell.obj */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -264,7 +267,7 @@
 		012AB0EC14A140900016FFF1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0720;
 			};
 			buildConfigurationList = 012AB0EF14A140900016FFF1 /* Build configuration list for PBXProject "GLModelDemo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -299,6 +302,7 @@
 				01400A56153244D900EE0FB5 /* quad.obj in Resources */,
 				01ADC13815BE07D00075F3AC /* ship.obj in Resources */,
 				01F9F144162EA40C00877219 /* Default-568h@2x.png in Resources */,
+				AE99CAFE1C625B7100A12A10 /* kettlebell.obj in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,8 +375,10 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -442,6 +448,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -483,9 +490,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GLModelExample/GLModelDemo-Prefix.pch";
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "GLModelExample/GLModelDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.charcoaldesign.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GLModelDemo;
 				WRAPPER_EXTENSION = app;
 			};
@@ -495,9 +505,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GLModelExample/GLModelDemo-Prefix.pch";
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				INFOPLIST_FILE = "GLModelExample/GLModelDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.charcoaldesign.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GLModelDemo;
 				WRAPPER_EXTENSION = app;
 			};
