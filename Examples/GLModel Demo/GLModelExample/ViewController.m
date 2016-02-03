@@ -128,6 +128,26 @@
             
             break;
         }
+        case 6:
+        {
+            //set title
+            self.navBar.topItem.title = @"kettlebell.obj";
+            
+            //set model
+            self.modelView.texture = nil;
+            self.modelView.blendColor = [UIColor grayColor];
+            self.modelView.model = [GLModel modelWithContentsOfFile:@"kettlebell.obj"];
+            
+            //set default transform
+            CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -15.0f);
+            transform = CATransform3DRotate(transform, (CGFloat)M_PI + 0.4f, 0.0f, 0.0f, 1.0f);
+            transform = CATransform3DRotate(transform, (CGFloat)M_PI_4, 1.0f, 0.0f, 0.0f);
+            transform = CATransform3DRotate(transform, -0.4f, 0.0f, 1.0f, 0.0f);
+            transform = CATransform3DScale(transform, 80.0f, 80.0f, 80.0f);
+            self.modelView.modelTransform = transform;
+            
+            break;
+        }
     }
 }
 
@@ -137,7 +157,7 @@
                                  delegate:self
                         cancelButtonTitle:nil
                    destructiveButtonTitle:nil
-                        otherButtonTitles:@"Demon", @"Quad", @"Chair", @"Diamond", @"Cube", @"Ship", nil] showInView:self.view];
+                        otherButtonTitles:@"Demon", @"Quad", @"Chair", @"Diamond", @"Cube", @"Ship", @"Kettlebell", nil] showInView:self.view];
 }
 
 - (void)actionSheet:(__unused UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex

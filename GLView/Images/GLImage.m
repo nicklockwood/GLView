@@ -286,7 +286,7 @@ static NSCache *imageCache = nil;
     if ([data length] >= sizeof(PVRTextureHeaderV2))
     {
         //parse header
-        PVRTextureHeaderV2 *header = (PVRTextureHeaderV2 *)[data bytes];
+        const PVRTextureHeaderV2 *header = (const PVRTextureHeaderV2 *)[data bytes];
         
         //check tag
         if (CFSwapInt32HostToBig(header->pvrTag) == 'PVR!')
@@ -433,12 +433,12 @@ static NSCache *imageCache = nil;
                     {
                         pixelBytes = MAX(32, pixelBytes);
                         glCompressedTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight, 0,
-                                               pixelBytes, (uint8_t *)[data bytes] + offset);
+                                               pixelBytes, (const uint8_t *)[data bytes] + offset);
                     }
                     else
                     {
                         glTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight,
-                                     0, format, type, (uint8_t *)[data bytes] + offset);
+                                     0, format, type, (const uint8_t *)[data bytes] + offset);
                     }
                     offset += pixelBytes;
                 }
@@ -454,7 +454,7 @@ static NSCache *imageCache = nil;
     if ([data length] >= sizeof(PVRTextureHeaderV3))
     {
         //parse header
-        PVRTextureHeaderV3 *header = (PVRTextureHeaderV3 *)[data bytes];
+        const PVRTextureHeaderV3 *header = (const PVRTextureHeaderV3 *)[data bytes];
         
         //check tag
         if (header->version == 0x03525650 || header->version == 0x50565203)
@@ -466,7 +466,7 @@ static NSCache *imageCache = nil;
 
     //attempt to load as regular image
     UIImage *image = [UIImage imageWithData:data];
-    image = [UIImage imageWithCGImage:image.CGImage scale:scale orientation:UIImageOrientationUp];
+    image = [UIImage imageWithCGImage:(CGImageRef)image.CGImage scale:scale orientation:UIImageOrientationUp];
     return [self initWithUIImage:image];
 }
 

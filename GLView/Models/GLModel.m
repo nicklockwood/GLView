@@ -89,6 +89,7 @@ WWDC2010Attributes;
 @interface GLModel ()
 
 @property (nonatomic, assign) GLfloat *vertices;
+@property (nonatomic, assign) GLfloat *vertexColors;
 @property (nonatomic, assign) GLfloat *texCoords;
 @property (nonatomic, assign) GLfloat *normals;
 @property (nonatomic, assign) void *elements;
@@ -106,6 +107,7 @@ WWDC2010Attributes;
 - (void)dealloc
 {
     free(_vertices);
+    free(_vertexColors);
     free(_texCoords);
     free(_normals);
     free(_elements);
@@ -120,9 +122,9 @@ WWDC2010Attributes;
     if ([data length] < sizeof(WWDC2010Header) + sizeof(WWDC2010TOC))
     {
         //can't be correct file type
-        return NO;  
+        return NO;
     }
-    
+
     //check header
     WWDC2010Header *header = (WWDC2010Header *)[data bytes];
     if(strncmp(header->fileIdentifier, "AppleOpenGLDemoModelWWDC2010", sizeof(header->fileIdentifier)))
@@ -133,14 +135,14 @@ WWDC2010Attributes;
     {
         return NO;
     }
-    
+
     //load table of contents
     WWDC2010TOC *toc = (WWDC2010TOC *)([data bytes] + sizeof(WWDC2010Header));
     if(toc->attribHeaderSize > sizeof(WWDC2010Attributes))
     {
         return NO;
     }
-    
+
     //copy elements
     WWDC2010Attributes *elementAttributes = (WWDC2010Attributes *)([data bytes] + toc->byteElementOffset);
     if (elementAttributes->primType != GL_TRIANGLES)
@@ -163,7 +165,7 @@ WWDC2010Attributes;
     self.elementCount = elementAttributes->numElements;
     self.elements = malloc(elementAttributes->byteSize);
     memcpy(self.elements, elementAttributes + 1, elementAttributes->byteSize);
-        
+
     //copy vertex data
     WWDC2010Attributes *vertexAttributes = (WWDC2010Attributes *)([data bytes] + toc->bytePositionOffset);
     if (vertexAttributes->datatype != GL_FLOAT)
@@ -175,7 +177,7 @@ WWDC2010Attributes;
     self.vertexCount = vertexAttributes->numElements;
     self.vertices = malloc(vertexAttributes->byteSize);
     memcpy(self.vertices, vertexAttributes + 1, vertexAttributes->byteSize);
-    
+
     //copy text coord data
     WWDC2010Attributes *texCoordAttributes = (WWDC2010Attributes *)([data bytes] + toc->byteTexcoordOffset);
     if (texCoordAttributes->datatype != GL_FLOAT)
@@ -188,7 +190,7 @@ WWDC2010Attributes;
         self.texCoords = malloc(texCoordAttributes->byteSize);
         memcpy(self.texCoords, texCoordAttributes + 1, texCoordAttributes->byteSize);
     }
-    
+
     //copy normal data
     WWDC2010Attributes *normalAttributes = (WWDC2010Attributes *)([data bytes] + toc->byteNormalOffset);
     if (normalAttributes->datatype != GL_FLOAT)
@@ -201,29 +203,31 @@ WWDC2010Attributes;
         self.normals = malloc(normalAttributes->byteSize);
         memcpy(self.normals, normalAttributes + 1, normalAttributes->byteSize);
     }
-    
+
     //success
     return YES;
 }
 
 - (BOOL)loadObjModel:(NSData *)data
-{    
+{
     //convert to string
     NSString *string = [[NSString alloc] initWithBytesNoCopy:(void *)data.bytes length:data.length encoding:NSASCIIStringEncoding freeWhenDone:NO];
-    
+
     //set up storage
     NSMutableData *tempVertexData = [[NSMutableData alloc] init];
+    NSMutableData *tempVertexColorData = [[NSMutableData alloc] init];
     NSMutableData *vertexData = [[NSMutableData alloc] init];
+    NSMutableData *vertexColorData = [[NSMutableData alloc] init];
     NSMutableData *tempTextCoordData = [[NSMutableData alloc] init];
     NSMutableData *textCoordData = [[NSMutableData alloc] init];
     NSMutableData *tempNormalData = [[NSMutableData alloc] init];
     NSMutableData *normalData = [[NSMutableData alloc] init];
     NSMutableData *faceIndexData = [[NSMutableData alloc] init];
-    
+
     //utility collections
     NSInteger uniqueIndexStrings = 0;
     NSMutableDictionary *indexStrings = [[NSMutableDictionary alloc] init];
-    
+
     //scan through lines
     NSString *line = nil;
     NSScanner *lineScanner = [NSScanner scannerWithString:string];
@@ -232,11 +236,11 @@ WWDC2010Attributes;
         //get line
         [lineScanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&line];
         NSScanner *scanner = [NSScanner scannerWithString:line];
-        
+
         //get line type
         NSString *type = nil;
         [scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceCharacterSet] intoString:&type];
-        
+
         if ([type isEqualToString:@"v"])
         {
             //vertex
@@ -245,6 +249,22 @@ WWDC2010Attributes;
             [scanner scanFloat:&coords[1]];
             [scanner scanFloat:&coords[2]];
             [tempVertexData appendBytes:coords length:sizeof(coords)];
+
+            // Note: Some viewers support vertex colors in OBJ files... let's make this one of them!
+            //       Vertices look like this: `v 1220.094482 -572.500000 177.713943 0.984314 0.764706 1.000000`
+            //       where the last 4 numbers represent RGBA, from 0 to 1 (alpha may or may not be present).
+            //       See: http://gamedev.stackexchange.com/questions/21303/how-can-i-include-vertex-color-information-in-obj-files/66270#66270
+            
+            //vertex color
+            GLfloat rgba[4];
+            BOOL hasColorData = [scanner scanFloat:&rgba[0]];
+            if (hasColorData) {
+                [scanner scanFloat:&rgba[1]];
+                [scanner scanFloat:&rgba[2]];
+                BOOL hasAlpha = [scanner scanFloat:&rgba[3]];
+                if (!hasAlpha) rgba[3] = 1.0f;
+                [tempVertexColorData appendBytes:rgba length:sizeof(rgba)];
+            }
         }
         else if ([type isEqualToString:@"vt"])
         {
@@ -272,25 +292,29 @@ WWDC2010Attributes;
             {
                 count ++;
                 [scanner scanUpToCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:&indexString];
-                
+
                 NSArray *parts = [indexString componentsSeparatedByString:@"/"];
-                
+
                 GLuint fIndex = uniqueIndexStrings;
                 NSNumber *index = indexStrings[indexString];
                 if (index == nil)
                 {
                     uniqueIndexStrings ++;
                     indexStrings[indexString] = @(fIndex);
-                    
+
                     GLuint vIndex = [parts[0] intValue];
                     [vertexData appendBytes:tempVertexData.bytes + (vIndex - 1) * sizeof(GLfloat) * 3 length:sizeof(GLfloat) * 3];
+
+                    if ([tempVertexColorData length] > 0) {
+                        [vertexColorData appendBytes:tempVertexColorData.bytes + (vIndex - 1) * sizeof(GLfloat) * 4 length:sizeof(GLfloat) * 4];
+                    }
 
                     if ([parts count] > 1)
                     {
                         GLuint tIndex = [parts[1] intValue];
                         if (tIndex) [textCoordData appendBytes:tempTextCoordData.bytes + (tIndex - 1) * sizeof(GLfloat) * 2 length:sizeof(GLfloat) * 2];
                     }
-                    
+
                     if ([parts count] > 2)
                     {
                         GLuint nIndex = [parts[2] intValue];
@@ -301,7 +325,7 @@ WWDC2010Attributes;
                 {
                     fIndex = [index unsignedLongValue];
                 }
-                
+
                 if (count > 3)
                 {
                     //face has more than 3 sides
@@ -309,17 +333,17 @@ WWDC2010Attributes;
                     [faceIndexData appendBytes:faceIndexData.bytes + faceIndexData.length - sizeof(GLuint) * 3 length:sizeof(GLuint)];
                     [faceIndexData appendBytes:faceIndexData.bytes + faceIndexData.length - sizeof(GLuint) * 2 length:sizeof(GLuint)];
                 }
-                
+
                 [faceIndexData appendBytes:&fIndex length:sizeof(GLuint)];
             }
-            
+
         }
         //TODO: more
     }
     while (![lineScanner isAtEnd]);
-    
+
     //release temporary storage
-    
+
     //copy elements
     self.elementCount = [faceIndexData length] / sizeof(GLuint);
     GLuint *faceIndices = (GLuint *)faceIndexData.bytes;
@@ -350,27 +374,33 @@ WWDC2010Attributes;
             ((GLubyte *)_elements)[i] = faceIndices[i];
         }
     }
-    
+
     //copy vertices
     self.componentCount = 3;
     self.vertexCount = [vertexData length] / (3 * sizeof(GLfloat));
     self.vertices = malloc([vertexData length]);
     memcpy(self.vertices, vertexData.bytes, [vertexData length]);
-    
+
+    if ([vertexColorData length] > 0) {
+        //copy vertex colors
+        self.vertexColors = malloc([vertexColorData length]);
+        memcpy(self.vertexColors, vertexColorData.bytes, [vertexColorData length]);
+    }
+
     //copy texture coords
     if ([textCoordData length])
     {
         self.texCoords = malloc([textCoordData length]);
         memcpy(self.texCoords, textCoordData.bytes, [textCoordData length]);
     }
-    
+
     //copy normals
     if ([normalData length])
     {
         self.normals = malloc([normalData length]);
         memcpy(self.normals, normalData.bytes, [normalData length]);
     }
-    
+
     //success
     return YES;
 }
@@ -423,7 +453,7 @@ static NSCache *modelCache = nil;
 {
     //normalise path
     NSString *path = [nameOrPath GL_normalizedPathWithDefaultExtension:@"obj"];
-    
+
     //load data
     return [self initWithData:[NSData dataWithContentsOfFile:path]];
 }
@@ -432,7 +462,7 @@ static NSCache *modelCache = nil;
 {
     //attempt to unzip data
     data = [data GL_unzippedData];
-    
+
     if (!data)
     {
         //bail early before something bad happens
@@ -461,11 +491,20 @@ static NSCache *modelCache = nil;
 
 - (void)draw
 {
+    // Vertex color rendering example: http://stackoverflow.com/a/18774932/363789
+    // Note: 'po glGetError()' in debug console gives you errors from the last-run GL line
+
     glEnable(GL_DEPTH_TEST);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(self.componentCount, GL_FLOAT, 0, self.vertices);
     
+    if (self.vertexColors) {
+        glEnableClientState(GL_COLOR_ARRAY);
+        // Note: Open GL ES only supports colors with 4 components (RGBA), so don't try a size of 3 below
+        glColorPointer(4, GL_FLOAT, 0, self.vertexColors);
+    }
+
     if (self.texCoords)
     {
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -475,7 +514,7 @@ static NSCache *modelCache = nil;
     {
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
-    
+
     if (self.normals)
     {
         glEnableClientState(GL_NORMAL_ARRAY);
@@ -485,9 +524,9 @@ static NSCache *modelCache = nil;
     {
         glDisableClientState(GL_NORMAL_ARRAY);
     }
-    
+
     glDrawElements(GL_TRIANGLES, self.elementCount, self.elementType, self.elements);
-    
+
     glDisable(GL_DEPTH_TEST);
 }
 

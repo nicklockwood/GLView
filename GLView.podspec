@@ -1,9 +1,8 @@
-
 Pod::Spec.new do |s|
   s.name         = "GLView"
-  s.version      = "1.6.1"
+  s.version      = "1.7"
   s.license       = 'zlib'
-  s.summary      = "Simple library for displaying OpenGL cimages and models on iOS."
+  s.summary      = "Simple library for displaying OpenGL images and models on iOS."
   s.description  = <<-DESC
                       GLView is a collection of classes designed to make it as easy as possible to get up and running with OpenGL functionality within an iOS app.
                       The GLImage and GLImageView classes make it possible to load and display PVR formatted images and video clips in your app without needing to know any OpenGL whatsoever. See more about PVR images and video below.
@@ -12,7 +11,7 @@ Pod::Spec.new do |s|
                    DESC
   s.homepage      = "https://github.com/nicklockwood/GLView"
   s.author        = { "Nick Lockwood" => "support@charcoaldesign.co.uk" }
-  s.source        = { :git => "https://github.com/nicklockwood/GLView.git", :tag => "1.6.1" }
+  s.source        = { :git => "https://github.com/nicklockwood/GLView.git", :tag => "1.7" }
   s.platform      = :ios
   s.source_files  = 'GLView/Core/', 'GLView/Images/', 'GLView/Models/'
   s.frameworks    = 'QuartzCore', 'OpenGLES'
