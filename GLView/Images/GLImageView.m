@@ -2,7 +2,7 @@
 //  GLImageView.m
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -34,9 +34,11 @@
 #import "GLImageView.h"
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 @interface GLImageView ()
@@ -144,60 +146,60 @@
 	{
 		case UIViewContentModeCenter:
 		{
-			rect = CGRectMake(-self.image.size.width / 2.0f, -self.image.size.height / 2.0f,
+			rect = CGRectMake(-self.image.size.width / 2.0, -self.image.size.height / 2.0,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeTopLeft:
 		{
-			rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.height / 2.0f, 
+			rect = CGRectMake(-self.bounds.size.width / 2.0, -self.bounds.size.height / 2.0, 
                               self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeTop:
 		{
-			rect = CGRectMake(-self.image.size.width / 2.0f, -self.bounds.size.height / 2.0f,
+			rect = CGRectMake(-self.image.size.width / 2.0, -self.bounds.size.height / 2.0,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
         case UIViewContentModeTopRight:
 		{
-			rect = CGRectMake(self.bounds.size.width / 2.0f - self.image.size.width,
-                              -self.bounds.size.height / 2.0f,
+			rect = CGRectMake(self.bounds.size.width / 2.0 - self.image.size.width,
+                              -self.bounds.size.height / 2.0,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeRight:
 		{
-			rect = CGRectMake(self.bounds.size.width / 2.0f - self.image.size.width,
-							  -self.image.size.height / 2.0f,
+			rect = CGRectMake(self.bounds.size.width / 2.0 - self.image.size.width,
+							  -self.image.size.height / 2.0,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottomRight:
 		{
-			rect = CGRectMake(self.bounds.size.width / 2.0f - self.image.size.width,
-							  self.bounds.size.height / 2.0f - self.image.size.height,
+			rect = CGRectMake(self.bounds.size.width / 2.0 - self.image.size.width,
+							  self.bounds.size.height / 2.0 - self.image.size.height,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottom:
 		{
-			rect = CGRectMake(-self.image.size.width / 2.0f,
-							  self.bounds.size.height / 2.0f - self.image.size.height,
+			rect = CGRectMake(-self.image.size.width / 2.0,
+							  self.bounds.size.height / 2.0 - self.image.size.height,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeBottomLeft:
 		{
-			rect = CGRectMake(-self.bounds.size.width / 2.0f,
-                              self.bounds.size.height / 2.0f - self.image.size.height,
+			rect = CGRectMake(-self.bounds.size.width / 2.0,
+                              self.bounds.size.height / 2.0 - self.image.size.height,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
 		case UIViewContentModeLeft:
 		{
-			rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.image.size.height / 2.0f,
+			rect = CGRectMake(-self.bounds.size.width / 2.0, -self.image.size.height / 2.0,
 							  self.image.size.width, self.image.size.height);
 			break;
 		}
@@ -207,12 +209,12 @@
 			CGFloat aspect2 = self.bounds.size.width / self.bounds.size.height;
 			if (aspect1 < aspect2)
 			{
-				rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.width / aspect1 / 2.0f,
+				rect = CGRectMake(-self.bounds.size.width / 2.0, -self.bounds.size.width / aspect1 / 2.0,
 								  self.bounds.size.width, self.bounds.size.width / aspect1);
 			}
 			else
 			{
-				rect = CGRectMake(-self.bounds.size.height * aspect1 / 2.0f, -self.bounds.size.height / 2.0f,
+				rect = CGRectMake(-self.bounds.size.height * aspect1 / 2.0, -self.bounds.size.height / 2.0,
                                   self.bounds.size.height * aspect1, self.bounds.size.height);
 			}
 			break;
@@ -223,12 +225,12 @@
 			CGFloat aspect2 = self.bounds.size.width / self.bounds.size.height;
 			if (aspect1 > aspect2)
 			{
-				rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.width / aspect1 / 2.0f,
+				rect = CGRectMake(-self.bounds.size.width / 2.0, -self.bounds.size.width / aspect1 / 2.0,
 								  self.bounds.size.width, self.bounds.size.width / aspect1);
 			}
 			else
 			{
-				rect = CGRectMake(-self.bounds.size.height * aspect1 / 2.0f, -self.bounds.size.width / 2.0f,
+				rect = CGRectMake(-self.bounds.size.height * aspect1 / 2.0, -self.bounds.size.width / 2.0,
                                   self.bounds.size.height * aspect1, self.bounds.size.height);
 			}
 			break;
@@ -236,7 +238,7 @@
 		case UIViewContentModeScaleToFill:
         case UIViewContentModeRedraw:
 		{
-			rect = CGRectMake(-self.bounds.size.width / 2.0f, -self.bounds.size.height / 2.0f,
+			rect = CGRectMake(-self.bounds.size.width / 2.0, -self.bounds.size.height / 2.0,
                               self.bounds.size.width, self.bounds.size.height);
 		}
 	}

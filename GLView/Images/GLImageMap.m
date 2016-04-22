@@ -2,7 +2,7 @@
 //  GLImageMap.m
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -34,15 +34,18 @@
 #import "GLImageMap.h"
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wnullable-to-nonnull-conversion"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 @interface NSString (Private)
 
 - (NSString *)GL_stringByDeletingPathExtension;
-- (BOOL)GL_hasRetinaFileSuffix;
+- (CGFloat)GL_scaleFromFileSuffix;
 - (NSString *)GL_stringByDeletingRetinaSuffix;
 - (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension;
 
@@ -109,7 +112,7 @@
             {
                 NSString *imagePath = [dataPath stringByAppendingPathComponent:dict[@"path"]];
                 GLImage *image = [GLImage imageWithContentsOfFile:imagePath];
-                [self addFrames:dict[@"subimages"] withImage:image scale:1.0f];
+                [self addFrames:dict[@"subimages"] withImage:image scale:1.0];
             }
             
             //set sorted image names
@@ -129,7 +132,7 @@
 {
     //calculate scale from path
     NSString *plistPath = [path GL_normalizedPathWithDefaultExtension:@"plist"];
-    CGFloat plistScale = [plistPath GL_hasRetinaFileSuffix]? 2.0f: 1.0f;
+    CGFloat plistScale = [plistPath GL_scaleFromFileSuffix];
     CGFloat scale = image.scale / plistScale;
 
     if (dict && [dict isKindOfClass:[NSDictionary class]])
@@ -242,10 +245,10 @@
         {
             sprite = item;
             name = [item[@"name"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            if ([name GL_hasRetinaFileSuffix])
+            if ([name GL_scaleFromFileSuffix] > 1.0)
             {
                 name = [name GL_stringByDeletingRetinaSuffix];
-                if (self.imagesByName[name] && [[UIScreen mainScreen] scale] < 2.0f) continue;
+                if (self.imagesByName[name] && [[UIScreen mainScreen] scale] < 2.0) continue;
             }
             else if (self.imagesByName[name])
             {
@@ -291,7 +294,7 @@
         }
         if (CGRectIsEmpty(contentRect))
         {
-            contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+            contentRect = CGRectMake(0.0, 0.0, size.width, size.height);
         }
         else if (!cocosFormat)
         {

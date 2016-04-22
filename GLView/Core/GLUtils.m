@@ -2,7 +2,7 @@
 //  GLUtils.m
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -41,9 +41,9 @@
 #endif
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 #pragma mark-
@@ -145,7 +145,7 @@ void GLLoadCATransform3D(CATransform3D transform)
 
 - (BOOL)GL_isGzippedData
 {
-    UInt8 *bytes = (UInt8 *)[self bytes];
+    const UInt8 *bytes = (const UInt8 *)[self bytes];
     return ([self length] >= 2 && bytes[0] == 0x1f && bytes[1] == 0x8b);
 }
 
@@ -198,7 +198,6 @@ void GLLoadCATransform3D(CATransform3D transform)
     return extension;
 }
 
-
 - (NSString *)GL_stringByDeletingPathExtension
 {
     NSString *extension = [self pathExtension];
@@ -210,32 +209,35 @@ void GLLoadCATransform3D(CATransform3D transform)
     return path;
 }
 
-- (BOOL)GL_hasRetinaFileSuffix
+- (CGFloat)GL_scaleFromFileSuffix
 {
+    //use StandardPaths if available
     SEL pathScaleSelector = NSSelectorFromString(@"scaleFromSuffix");
     if ([self respondsToSelector:pathScaleSelector])
     {
-        return [[self valueForKey:@"scaleFromSuffix"] floatValue] == 2.0f;
+        return [[self valueForKey:@"scaleFromSuffix"] doubleValue];
     }
     else
     {
         NSString *name = [self GL_stringByDeletingPathExtension];
         if ([name hasSuffix:@"~ipad"]) name = [name substringToIndex:[name length] - 5];
         if ([name hasSuffix:@"~iphone"]) name = [name substringToIndex:[name length] - 7];
-        if ([name hasSuffix:@"@2x"]) return YES;
+        if ([name hasSuffix:@"@3x"]) return 3.0;
+        if ([name hasSuffix:@"@2x"]) return 2.0;
     }
-    return NO;
+    return 1.0;
 }
 
 - (NSString *)GL_stringByDeletingRetinaSuffix
 {
-    SEL selector = NSSelectorFromString(@"stringByDeletingRetinaSuffix");
+    //use StandardPaths if available
+    SEL selector = NSSelectorFromString(@"stringByDeletingScaleSuffix");
     if ([self respondsToSelector:selector])
     {
-        return [self valueForKey:@"stringByDeletingRetinaSuffix"];
+        return [self valueForKey:@"stringByDeletingScaleSuffix"];
     }
-    NSString *result = [self stringByDeletingPathExtension];
-    if ([result hasSuffix:@"@2x"])
+    NSString *result = [self GL_stringByDeletingPathExtension];
+    if ([result hasSuffix:@"@2x"] || [result hasSuffix:@"@3x"])
     {
         //TODO: handle ~ipad/~iphone
         result = [result substringToIndex:[result length] - 3];
@@ -271,8 +273,16 @@ void GLLoadCATransform3D(CATransform3D transform)
         path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:path];
     }
     
-    //check for @2x version
-    if ([UIScreen mainScreen].scale == 2.0f)
+    //check for Retina version
+    if ([UIScreen mainScreen].scale == 3.0)
+    {
+        NSString *retinaPath = [[[path GL_stringByDeletingPathExtension] stringByAppendingString:@"@3x"] stringByAppendingPathExtension:extension];
+        if ([fileManager fileExistsAtPath:retinaPath])
+        {
+            path = retinaPath;
+        }
+    }
+    else if ([UIScreen mainScreen].scale == 2.0)
     {
         NSString *retinaPath = [[[path GL_stringByDeletingPathExtension] stringByAppendingString:@"@2x"] stringByAppendingPathExtension:extension];
         if ([fileManager fileExistsAtPath:retinaPath])

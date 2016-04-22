@@ -1389,7 +1389,9 @@
 				0116538F13C8FD7600942540 /* Frameworks */,
 				0116538D13C8FD7600942540 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		0116538D13C8FD7600942540 /* Products */ = {
 			isa = PBXGroup;
@@ -2219,7 +2221,7 @@
 		0116538313C8FD7600942540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Charcoal Design";
 			};
 			buildConfigurationList = 0116538613C8FD7600942540 /* Build configuration list for PBXProject "GLImageDemo" */;
@@ -2969,6 +2971,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CLANG_WARN__EXIT_TIME_DESTRUCTORS = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -2998,12 +3001,14 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-double-promotion",
+					"-Wno-conversion",
 				);
 			};
 			name = Debug;
@@ -3056,12 +3061,14 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				WARNING_CFLAGS = (
 					"-Weverything",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-double-promotion",
+					"-Wno-conversion",
 				);
 			};
 			name = Release;
@@ -3078,6 +3085,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "GLViewExample/GLImageDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.akqa.charcoaldesign.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GLImageDemo;
 				SPRITEKIT_TEXTURE_ATLAS_FORMAT = RGBA8888_PNG;
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
@@ -3097,6 +3105,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "GLViewExample/GLImageDemo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.akqa.charcoaldesign.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GLImageDemo;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SPRITEKIT_TEXTURE_ATLAS_FORMAT = RGBA8888_PNG;

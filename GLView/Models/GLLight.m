@@ -2,7 +2,7 @@
 //  GLLight.m
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 17/05/2012.
 //  Copyright 2011 Charcoal Design
@@ -34,9 +34,10 @@
 #import "GLLight.h"
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 @implementation GLLight
@@ -45,10 +46,10 @@
 {
     if ((self = [super init]))
     {
-        self.ambientColor = [UIColor colorWithWhite:0.2f alpha:1.0f];
+        self.ambientColor = [UIColor colorWithWhite:0.2 alpha:1.0];
         self.diffuseColor = [UIColor whiteColor];
         self.specularColor = [UIColor whiteColor];
-        self.transform = CATransform3DMakeTranslation(0.0f, 0.0f, 1.0f);
+        self.transform = CATransform3DMakeTranslation(0.0, 0.0, 1.0);
     }
     return self;
 }

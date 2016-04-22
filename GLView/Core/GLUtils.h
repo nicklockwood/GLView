@@ -2,7 +2,7 @@
 //  GLUtils.h
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 04/06/2012.
 //  Copyright 2011 Charcoal Design
@@ -32,8 +32,8 @@
 //
 
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 
 #import <Foundation/Foundation.h>
@@ -55,4 +55,4 @@ void GLLoadCATransform3D(CATransform3D transform);
 @end
 
 
-#pragma GCC diagnostic pop
+#pragma clang diagnostic pop

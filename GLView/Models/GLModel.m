@@ -2,7 +2,7 @@
 //  GLModel.h
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -34,11 +34,11 @@
 #import "GLModel.h"
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wpointer-arith"
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wpointer-arith"
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 typedef struct
@@ -124,7 +124,7 @@ WWDC2010Attributes;
     }
     
     //check header
-    WWDC2010Header *header = (WWDC2010Header *)[data bytes];
+    const WWDC2010Header *header = (const WWDC2010Header *)[data bytes];
     if(strncmp(header->fileIdentifier, "AppleOpenGLDemoModelWWDC2010", sizeof(header->fileIdentifier)))
     {
         return NO;
@@ -135,14 +135,14 @@ WWDC2010Attributes;
     }
     
     //load table of contents
-    WWDC2010TOC *toc = (WWDC2010TOC *)([data bytes] + sizeof(WWDC2010Header));
+    const WWDC2010TOC *toc = (const WWDC2010TOC *)([data bytes] + sizeof(WWDC2010Header));
     if(toc->attribHeaderSize > sizeof(WWDC2010Attributes))
     {
         return NO;
     }
     
     //copy elements
-    WWDC2010Attributes *elementAttributes = (WWDC2010Attributes *)([data bytes] + toc->byteElementOffset);
+    const WWDC2010Attributes *elementAttributes = (const WWDC2010Attributes *)([data bytes] + toc->byteElementOffset);
     if (elementAttributes->primType != GL_TRIANGLES)
     {
         //TODO: extend GLModel with support for other primitive types
@@ -165,7 +165,7 @@ WWDC2010Attributes;
     memcpy(self.elements, elementAttributes + 1, elementAttributes->byteSize);
         
     //copy vertex data
-    WWDC2010Attributes *vertexAttributes = (WWDC2010Attributes *)([data bytes] + toc->bytePositionOffset);
+    const WWDC2010Attributes *vertexAttributes = (const WWDC2010Attributes *)([data bytes] + toc->bytePositionOffset);
     if (vertexAttributes->datatype != GL_FLOAT)
     {
         //TODO: extend GLModel with support for other data types
@@ -177,7 +177,7 @@ WWDC2010Attributes;
     memcpy(self.vertices, vertexAttributes + 1, vertexAttributes->byteSize);
     
     //copy text coord data
-    WWDC2010Attributes *texCoordAttributes = (WWDC2010Attributes *)([data bytes] + toc->byteTexcoordOffset);
+    const WWDC2010Attributes *texCoordAttributes = (const WWDC2010Attributes *)([data bytes] + toc->byteTexcoordOffset);
     if (texCoordAttributes->datatype != GL_FLOAT)
     {
         //TODO: extend GLModel with support for other data types
@@ -190,7 +190,7 @@ WWDC2010Attributes;
     }
     
     //copy normal data
-    WWDC2010Attributes *normalAttributes = (WWDC2010Attributes *)([data bytes] + toc->byteNormalOffset);
+    const WWDC2010Attributes *normalAttributes = (const WWDC2010Attributes *)([data bytes] + toc->byteNormalOffset);
     if (normalAttributes->datatype != GL_FLOAT)
     {
         //TODO: extend GLModel with support for other data types
@@ -208,9 +208,16 @@ WWDC2010Attributes;
 
 - (BOOL)loadObjModel:(NSData *)data
 {    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-pointer-types-discards-qualifiers"
+
     //convert to string
-    NSString *string = [[NSString alloc] initWithBytesNoCopy:(void *)data.bytes length:data.length encoding:NSASCIIStringEncoding freeWhenDone:NO];
-    
+    NSString *string = [[NSString alloc] initWithBytesNoCopy:data.bytes
+                                                      length:data.length
+                                                    encoding:NSASCIIStringEncoding
+                                                freeWhenDone:NO];
+#pragma clang diagnostic pop
+
     //set up storage
     NSMutableData *tempVertexData = [[NSMutableData alloc] init];
     NSMutableData *vertexData = [[NSMutableData alloc] init];
@@ -322,7 +329,7 @@ WWDC2010Attributes;
     
     //copy elements
     self.elementCount = [faceIndexData length] / sizeof(GLuint);
-    GLuint *faceIndices = (GLuint *)faceIndexData.bytes;
+    const GLuint *faceIndices = (const GLuint *)faceIndexData.bytes;
     if (self.elementCount > USHRT_MAX)
     {
         self.elementType = GL_UNSIGNED_INT_OES;

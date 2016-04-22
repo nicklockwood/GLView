@@ -2,7 +2,7 @@
 //  GLImage.m
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -35,11 +35,12 @@
 #import "GLView.h"
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wfour-char-constants"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wfour-char-constants"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 #pragma pack(4) //ensure structs use 32-bit alignment
@@ -102,7 +103,7 @@ PVRPixelType;
 
 @interface NSString (Private)
 
-- (BOOL)GL_hasRetinaFileSuffix;
+- (CGFloat)GL_scaleFromFileSuffix;
 - (NSString *)GL_normalizedPathWithDefaultExtension:(NSString *)extension;
 
 @end
@@ -128,8 +129,8 @@ PVRPixelType;
 @property (nonatomic, assign) CGFloat scale;
 @property (nonatomic, assign) GLuint texture;
 @property (nonatomic, assign) CGSize textureSize;
-@property (nonatomic, assign) const GLfloat *textureCoords;
-@property (nonatomic, assign) const GLfloat *vertexCoords;
+@property (nonatomic, assign) GLfloat *textureCoords;
+@property (nonatomic, assign) GLfloat *vertexCoords;
 @property (nonatomic, assign) CGRect clipRect;
 @property (nonatomic, assign) CGRect contentRect;
 @property (nonatomic, getter = isRotated) BOOL rotated;
@@ -204,7 +205,7 @@ static NSCache *imageCache = nil;
 
     //load image
     NSData *data = [NSData dataWithContentsOfFile:path];
-    return [self initWithData:data scale:[path GL_hasRetinaFileSuffix]? 2.0f: 1.0f];
+    return [self initWithData:data scale:[path GL_scaleFromFileSuffix]];
 }
 
 - (instancetype)initWithUIImage:(UIImage *)image
@@ -227,12 +228,12 @@ static NSCache *imageCache = nil;
         //dimensions and scale
         self.scale = scale;
         self.size = size;
-        self.textureSize = CGSizeMake(powf(2.0f, ceilf(log2f(size.width * scale))),
-                                      powf(2.0f, ceilf(log2f(size.height * scale))));
+        self.textureSize = CGSizeMake(pow(2.0, ceil(log2(size.width * scale))),
+                                      pow(2.0, ceil(log2(size.height * scale))));
         
         //clip and content rects
-        self.clipRect = CGRectMake(0.0f, 0.0f, size.width * scale, size.height * scale);
-        self.contentRect = CGRectMake(0.0f, 0.0f, size.width, size.height);
+        self.clipRect = CGRectMake(0.0, 0.0, size.width * scale, size.height * scale);
+        self.contentRect = CGRectMake(0.0, 0.0, size.width, size.height);
 
         //alpha
         self.premultipliedAlpha = YES;
@@ -286,7 +287,7 @@ static NSCache *imageCache = nil;
     if ([data length] >= sizeof(PVRTextureHeaderV2))
     {
         //parse header
-        PVRTextureHeaderV2 *header = (PVRTextureHeaderV2 *)[data bytes];
+        const PVRTextureHeaderV2 *header = (const PVRTextureHeaderV2 *)[data bytes];
         
         //check tag
         if (CFSwapInt32HostToBig(header->pvrTag) == 'PVR!')
@@ -305,10 +306,10 @@ static NSCache *imageCache = nil;
                 GLint width = header->width;
                 GLint height = header->height;
                 self.scale = scale;
-                self.size = CGSizeMake((float)width/self.scale, (float)height/self.scale);
+                self.size = CGSizeMake(width/scale, height/scale);
                 self.textureSize = CGSizeMake(width, height);
-                self.clipRect = CGRectMake(0.0f, 0.0f, width, height);
-                self.contentRect = CGRectMake(0.0f, 0.0f, self.size.width, self.size.height);
+                self.clipRect = CGRectMake(0.0, 0.0, width, height);
+                self.contentRect = CGRectMake(0.0, 0.0, self.size.width, self.size.height);
                 
                 //used for caching
                 self.cost = [data length] - header->headerLength;
@@ -433,12 +434,12 @@ static NSCache *imageCache = nil;
                     {
                         pixelBytes = MAX(32, pixelBytes);
                         glCompressedTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight, 0,
-                                               pixelBytes, (uint8_t *)[data bytes] + offset);
+                                               pixelBytes, (const uint8_t *)[data bytes] + offset);
                     }
                     else
                     {
                         glTexImage2D(GL_TEXTURE_2D, i, format, mipmapWidth, mipmapHeight,
-                                     0, format, type, (uint8_t *)[data bytes] + offset);
+                                     0, format, type, (const uint8_t *)[data bytes] + offset);
                     }
                     offset += pixelBytes;
                 }
@@ -454,7 +455,7 @@ static NSCache *imageCache = nil;
     if ([data length] >= sizeof(PVRTextureHeaderV3))
     {
         //parse header
-        PVRTextureHeaderV3 *header = (PVRTextureHeaderV3 *)[data bytes];
+        const PVRTextureHeaderV3 *header = (const PVRTextureHeaderV3 *)[data bytes];
         
         //check tag
         if (header->version == 0x03525650 || header->version == 0x50565203)
@@ -466,7 +467,9 @@ static NSCache *imageCache = nil;
 
     //attempt to load as regular image
     UIImage *image = [UIImage imageWithData:data];
-    image = [UIImage imageWithCGImage:image.CGImage scale:scale orientation:UIImageOrientationUp];
+    image = [UIImage imageWithCGImage:(__nonnull CGImageRef)image.CGImage
+                                scale:scale
+                          orientation:UIImageOrientationUp];
     return [self initWithUIImage:image];
 }
 
@@ -521,7 +524,7 @@ static NSCache *imageCache = nil;
     GLImage *copy = [self copy];
     copy.clipRect = clipRect;
     copy.size = CGSizeMake(clipRect.size.width / copy.scale, clipRect.size.height / copy.scale);
-    copy.contentRect = CGRectMake(0.0f, 0.0f, copy.size.width, copy.size.height);
+    copy.contentRect = CGRectMake(0.0, 0.0, copy.size.width, copy.size.height);
     return copy;
 }
 
@@ -597,7 +600,7 @@ static NSCache *imageCache = nil;
     glBindTexture(GL_TEXTURE_2D, self.texture);
 }
 
-- (const GLfloat *)textureCoords
+- (GLfloat *)textureCoords
 {
     if (_textureCoords == NULL)
     {
@@ -632,7 +635,7 @@ static NSCache *imageCache = nil;
     return _textureCoords;
 }
 
-- (const GLfloat *)vertexCoords
+- (GLfloat *)vertexCoords
 {
     if (_vertexCoords == NULL)
     {

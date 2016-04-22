@@ -2,7 +2,7 @@
 //  GLView.m
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -34,10 +34,10 @@
 #import "GLView.h"
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wconversion"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 @interface GLLayer : CAEAGLLayer
@@ -79,13 +79,13 @@
     GLLoadCATransform3D(view.contentTransform);
     
     //do drawing
-    if (view.fov <= 0.0f)
+    if (view.fov <= 0.0)
     {
         [view drawRect:view.bounds];
     }
     else
     {
-        [view drawRect:CGRectMake(-1.0f, -1.0f, 2.0f, 2.0f)];
+        [view drawRect:CGRectMake(-1.0, -1.0, 2.0, 2.0)];
     }
 }
 
@@ -145,6 +145,9 @@
 
 
 @implementation GLView
+{
+    UIViewContentMode _contentMode;
+}
 
 - (void)dealloc
 {
@@ -186,13 +189,13 @@
                                      sharegroup:[[self class] sharedContext].sharegroup];
     
     //create framebuffer
-    _framebufferWidth = 0.0f;
-    _framebufferHeight = 0.0f;
+    _framebufferWidth = 0.0;
+    _framebufferHeight = 0.0;
     _previousSize = CGSizeZero;
     [self createFramebuffer];
     
     //defaults
-    _fov = 0.0f; //orthographic
+    _fov = 0.0; //orthographic
     _frameInterval = 1.0/60.0; // 60 fps
     _contentTransform = CATransform3DIdentity;
 }
@@ -250,6 +253,17 @@
             [self startTimer];
         }
     }
+}
+
+- (UIViewContentMode)contentMode
+{
+    //ignore layer.needsDisplayOnBoundsChange
+    return _contentMode;
+}
+
+- (void)setContentMode:(UIViewContentMode)contentMode
+{
+    _contentMode = contentMode;
 }
 
 - (void)layoutSubviews
@@ -327,21 +341,21 @@
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (self.fov <= 0.0f)
+    if (self.fov <= 0.0)
     {
-        GLfloat near = self.near ?: (-self.framebufferWidth * 0.5f);
-        GLfloat far = self.far ?: (self.framebufferWidth * 0.5f);
-        glOrthof(-self.bounds.size.width / 2.0f, self.bounds.size.width / 2.0,
-                 self.bounds.size.height / 2.0f, -self.bounds.size.height / 2.0f, near, far);
+        GLfloat near = self.near ?: (-self.framebufferWidth * 0.5);
+        GLfloat far = self.far ?: (self.framebufferWidth * 0.5);
+        glOrthof(-self.bounds.size.width / 2.0, self.bounds.size.width / 2.0,
+                 self.bounds.size.height / 2.0, -self.bounds.size.height / 2.0, near, far);
     }
     else
     {
-        GLfloat near = (self.near > 0.0f)? self.near: 1.0f;
+        GLfloat near = (self.near > 0.0)? self.near: 1.0;
         GLfloat far = (self.far > self.near)? self.far: (near + 50.0f);
         GLfloat aspect = self.bounds.size.width / self.bounds.size.height;
-        GLfloat top = tanf(self.fov * 0.5f) * near;
+        GLfloat top = tanf(self.fov * 0.5) * near;
         glFrustumf(aspect * -top, aspect * top, -top, top, near, far);
-        glTranslatef(0.0f, 0.0f, -near);
+        glTranslatef(0.0, 0.0, -near);
     }
     
     glMatrixMode(GL_MODELVIEW);

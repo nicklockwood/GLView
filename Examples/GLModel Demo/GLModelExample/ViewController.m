@@ -11,13 +11,6 @@
 
 @implementation ViewController
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    self.navBar = nil;
-    self.modelView = nil;
-}
-
 - (void)setModel:(NSInteger)index
 {
     switch (index)
@@ -33,9 +26,9 @@
             self.modelView.model = [GLModel modelWithContentsOfFile:@"demon.model"];
             
             //set default transform
-            CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
-            transform = CATransform3DScale(transform, 0.01f, 0.01f, 0.01f);
-            transform = CATransform3DRotate(transform, (CGFloat)-M_PI_2, 1.0f, 0.0f, 0.0f);
+            CATransform3D transform = CATransform3DMakeTranslation(0.0, 0.0, -2.0);
+            transform = CATransform3DScale(transform, 0.01, 0.01, 0.01);
+            transform = CATransform3DRotate(transform, (CGFloat)-M_PI_2, 1.0, 0.0, 0.0);
             self.modelView.modelTransform = transform;
             
             break;
@@ -51,7 +44,7 @@
             self.modelView.model = [GLModel modelWithContentsOfFile:@"quad.obj"];
             
             //set default transform
-            self.modelView.modelTransform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
+            self.modelView.modelTransform = CATransform3DMakeTranslation(0.0, 0.0, -2.0);
             
             break;
         }
@@ -66,9 +59,9 @@
             self.modelView.model = [GLModel modelWithContentsOfFile:@"chair.obj"];
             
             //set default transform
-            CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -2.0f);
-            transform = CATransform3DScale(transform, 0.01f, 0.01f, 0.01f);
-            transform = CATransform3DRotate(transform, 0.2f, 1.0f, 0.0f, 0.0f);
+            CATransform3D transform = CATransform3DMakeTranslation(0.0, 0.0, -2.0);
+            transform = CATransform3DScale(transform, 0.01, 0.01, 0.01);
+            transform = CATransform3DRotate(transform, 0.2, 1.0, 0.0, 0.0);
             self.modelView.modelTransform = transform;
             
             break;
@@ -84,9 +77,9 @@
             self.modelView.model = [GLModel modelWithContentsOfFile:@"diamond.obj"];
             
             //set default transform
-            CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -1.0f);
-            transform = CATransform3DScale(transform, 0.01f, 0.01f, 0.01f);
-            transform = CATransform3DRotate(transform, (CGFloat)M_PI_2, 1.0f, 0.0f, 0.0f);
+            CATransform3D transform = CATransform3DMakeTranslation(0.0, 0.0, -1.0);
+            transform = CATransform3DScale(transform, 0.01, 0.01, 0.01);
+            transform = CATransform3DRotate(transform, (CGFloat)M_PI_2, 1.0, 0.0, 0.0);
             self.modelView.modelTransform = transform;
             
             break;
@@ -102,8 +95,8 @@
             self.modelView.model = [GLModel modelWithContentsOfFile:@"cube.obj"];
             
             //set default transform
-            CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -1.0f);
-            transform = CATransform3DRotate(transform, (CGFloat)M_PI_4, 1.0f, 1.0f, 0.0f);
+            CATransform3D transform = CATransform3DMakeTranslation(0.0, 0.0, -1.0);
+            transform = CATransform3DRotate(transform, (CGFloat)M_PI_4, 1.0, 1.0, 0.0);
             self.modelView.modelTransform = transform;
             
             break;
@@ -119,11 +112,11 @@
             self.modelView.model = [GLModel modelWithContentsOfFile:@"ship.obj"];
             
             //set default transform
-            CATransform3D transform = CATransform3DMakeTranslation(0.0f, 0.0f, -15.0f);
-            transform = CATransform3DRotate(transform, (CGFloat)M_PI + 0.4f, 0.0f, 0.0f, 1.0f);
-            transform = CATransform3DRotate(transform, (CGFloat)M_PI_4, 1.0f, 0.0f, 0.0f);
-            transform = CATransform3DRotate(transform, -0.4f, 0.0f, 1.0f, 0.0f);
-            transform = CATransform3DScale(transform, 3.0f, 3.0f, 3.0f);
+            CATransform3D transform = CATransform3DMakeTranslation(0.0, 0.0, -15.0);
+            transform = CATransform3DRotate(transform, (CGFloat)M_PI + 0.4, 0.0, 0.0, 1.0);
+            transform = CATransform3DRotate(transform, (CGFloat)M_PI_4, 1.0, 0.0, 0.0);
+            transform = CATransform3DRotate(transform, -0.4, 0.0, 1.0, 0.0);
+            transform = CATransform3DScale(transform, 3.0, 3.0, 3.0);
             self.modelView.modelTransform = transform;
             
             break;

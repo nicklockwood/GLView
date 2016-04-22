@@ -2,7 +2,7 @@
 //  GLModelView.h
 //
 //  GLView Project
-//  Version 1.6.1
+//  Version 1.6.2
 //
 //  Created by Nick Lockwood on 10/07/2011.
 //  Copyright 2011 Charcoal Design
@@ -34,9 +34,9 @@
 #import "GLModelView.h"
 
 
-#pragma GCC diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma GCC diagnostic ignored "-Wdirect-ivar-access"
-#pragma GCC diagnostic ignored "-Wgnu"
+#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 @implementation GLModelView
@@ -48,7 +48,7 @@
 	self.fov = (CGFloat)M_PI_2;
     
     GLLight *light = [[GLLight alloc] init];
-    light.transform = CATransform3DMakeTranslation(-0.5f, 1.0f, 0.5f);
+    light.transform = CATransform3DMakeTranslation(-0.5, 1.0, 0.5);
     self.lights = @[light];
     
     _modelTransform = CATransform3DIdentity;
