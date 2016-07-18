@@ -50,6 +50,7 @@
 @property (nonatomic, strong) UIColor *blendColor;
 @property (nonatomic, assign) CATransform3D modelTransform;
 @property (nonatomic, copy) NSArray *lights;
+@property (nonatomic, assign) IBInspectable BOOL drawVertexColors;
 
 @end
 

@@ -138,7 +138,7 @@
     }
     
     //render the model
-    [self.model draw];
+    [self.model drawWithVertexColors:self.drawVertexColors];
 }
 
 @end

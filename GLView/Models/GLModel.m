@@ -489,7 +489,7 @@ static NSCache *modelCache = nil;
 #pragma mark -
 #pragma mark Drawing
 
-- (void)draw
+- (void)drawWithVertexColors:(BOOL)drawVertexColors
 {
     // Vertex color rendering example: http://stackoverflow.com/a/18774932/363789
     // Note: 'po glGetError()' in debug console gives you errors from the last-run GL line
@@ -499,7 +499,7 @@ static NSCache *modelCache = nil;
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(self.componentCount, GL_FLOAT, 0, self.vertices);
     
-    if (self.vertexColors) {
+    if (drawVertexColors && self.vertexColors) {
         glEnableClientState(GL_COLOR_ARRAY);
         // Note: Open GL ES only supports colors with 4 components (RGBA), so don't try a size of 3 below
         glColorPointer(4, GL_FLOAT, 0, self.vertexColors);

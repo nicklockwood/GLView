@@ -49,7 +49,7 @@
 - (instancetype)initWithContentsOfFile:(NSString *)nameOrPath;
 - (instancetype)initWithData:(NSData *)data;
 
-- (void)draw;
+- (void)drawWithVertexColors:(BOOL)drawVertexColors;
 
 @end
 
